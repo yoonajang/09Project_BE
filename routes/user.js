@@ -1,9 +1,9 @@
-const express = require("express");
-const CryptoJS = require("crypto-js"); //비번 암호화
-const jwt = require("jsonwebtoken");    
-const router = express.Router();
-const User = require("../schemas/user");
-const authMiddleware = require("../middlewares/auth-middleware");
+// const express = require("express");
+// const CryptoJS = require("crypto-js"); //비번 암호화
+// const jwt = require("jsonwebtoken");    
+// const router = express.Router();
+// const User = require("../schemas/user");
+// const authMiddleware = require("../middlewares/auth-middleware");
 
 
 //로그인하기
