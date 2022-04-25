@@ -1,7 +1,37 @@
+require("dotenv").config();
 const express = require("express"); 
 const router = express.Router();
+const mysql = require('mysql');
+
 // const User = require("../schemas/user");
 // const authMiddleware = require("../middlewares/auth-middleware");
+const conn = {  
+    host: process.env.mysql_host,
+    port: '3306',
+    user: process.env.mysql_user,
+    password: process.env.mysql_pw,
+    database: 'sparta_realDB'
+};
+
+let connection = mysql.createConnection(conn); // DB 커넥션 생성
+connection.connect();
+
+
+
+//해당 유저의 챌린지 가져오기
+router.get("/me", async (req, res) => {
+    //authmiddleware 작동필요
+    userQuery = "SELECT * FROM User";
+
+    connection.query(userQuery, function (err, results, fields) { // testQuery 실행
+        if (err) {
+            console.log(err);
+        }
+        console.log(results);
+        res.status(201).send({results}); 
+    });
+
+});
 
 
 // //로그인하기
