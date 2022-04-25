@@ -42,7 +42,7 @@ connection.query(testQuery, function (err, results, fields) { // testQuery 실�
  
 connection.end(); // DB 접속 종료
 
-
+//
 
 
 // // 미들웨어 (가장 상위에 위치)
