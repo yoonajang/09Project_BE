@@ -10,7 +10,7 @@ const mysql = require('mysql');
 
 // mysql 접속 설정
 const conn = {  
-    host: 'spartarealdb.ccdieiaoicbb.ap-northeast-2.rds.amazonaws.com',
+    host: process.env.mysql_host,
     port: '3306',
     user: process.env.mysql_user,
     password: process.env.mysql_pw,
