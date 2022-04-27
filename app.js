@@ -1,10 +1,5 @@
 require("dotenv").config();
-// const express = require("express");
-// const cors = require("cors");
-// const bodyParser = require("body-parser");
-// const routers = require("./routes");
-// const app = express();
-// const port = 3000;
+
 
 const mysql = require('mysql');
 
