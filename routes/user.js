@@ -1,28 +1,16 @@
-const express = require("express");
-const CryptoJS = require("crypto-js"); //비번 암호화
-const jwt = require("jsonwebtoken");    
-const router = express.Router();
-const User = require("../schemas/user");
-const authMiddleware = require("../middlewares/auth-middleware");
+const express= require('express')
+const router = express.Router()
 
 
-//로그인하기
-router.post("/login", async (req, res) => {
-    const {userId, password} = req.body;
-    const user = await User.findOne({userId}).exec();
+const db= require('../config')
 
-    if (!user) {
-        res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
-        return;
-    }
+const bcrypt = require('bcrypt')
+const saltRounds =10 
 
-    //암호화 비밀번호 확인
-    const existPw = user.hashedpassword 
-    const decryptedPw = CryptoJS.AES.decrypt(existPw,process.env.keyForDecrypt);
-    const originPw = decryptedPw.toString(CryptoJS.enc.Utf8);
 
 <<<<<<< Updated upstream
 
+<<<<<<< HEAD
     if (originPw != password) {
         res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
         return;
@@ -95,6 +83,8 @@ router.post("/idCheck", async (req, res) => {
 
 =======
 //회원가입
+=======
+>>>>>>> main
 router.post('/signup',(req,res,next)=>{
     const param= [ req.body.userEmail, req.body.userName ,req.body.password, req.body.userImage ]
     
@@ -105,30 +95,15 @@ router.post('/signup',(req,res,next)=>{
    if(err) {
        console.log(err)}
        res.status(201).send({row})
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> main
 });
 
 //이메일 중복검사
 
+})
+})
 
-//회원가입: 닉네임 중복확인
-router.post("/nickCheck", async (req, res) => {
-    const { nickName } = req.body
-
-    const existUsers = await User.find({
-        $or: [{ nickName }]
-    });
-
-    if (existUsers.length) {
-        res.status(201).send({result: "false"});
-        return;
-    } else {
-        res.status(201).send({result: "true"}); 
-    }        
-
-});
-
-
-
-
-module.exports = router;
+module.exports=router; 
