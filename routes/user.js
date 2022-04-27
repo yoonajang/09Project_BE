@@ -21,6 +21,7 @@ router.post("/login", async (req, res) => {
     const decryptedPw = CryptoJS.AES.decrypt(existPw,process.env.keyForDecrypt);
     const originPw = decryptedPw.toString(CryptoJS.enc.Utf8);
 
+<<<<<<< Updated upstream
 
     if (originPw != password) {
         res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
@@ -92,8 +93,22 @@ router.post("/idCheck", async (req, res) => {
         res.status(201).send({result: "true"}); 
     }     
 
+=======
+//회원가입
+router.post('/signup',(req,res,next)=>{
+    const param= [ req.body.userEmail, req.body.userName ,req.body.password, req.body.userImage ]
+    
+    bcrypt.hash(param[1],saltRounds,(error,hash)=>{
+    param[2]=hash;
+    db.query('INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,?)',
+    param,(err,row) => {
+   if(err) {
+       console.log(err)}
+       res.status(201).send({row})
+>>>>>>> Stashed changes
 });
 
+//이메일 중복검사
 
 
 //회원가입: 닉네임 중복확인
