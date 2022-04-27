@@ -3,25 +3,14 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const routers = require("./routes");
+const db = require("./config/db");
 const app = express();
 const port = 3000;
 
-const mysql = require('mysql');
-
-// mysql 접속 설정
-const conn = {  
-    host: process.env.mysql_host,
-    port: '3306',
-    user: process.env.mysql_user,
-    password: process.env.mysql_pw,
-    database: 'sparta_realDB'
-};
-
-let connection = mysql.createConnection(conn); // DB 커넥션 생성
-connection.connect();
 
 // 테스트용
 // var testQuery = "INSERT INTO `User` (`userName`,`password`) VALUES ('test','test');";
+
  
 // connection.query(testQuery, function (err, results, fields) { // testQuery 실행
 //     if (err) {
@@ -33,6 +22,7 @@ connection.connect();
 // router.get("challenge/me", async (req, res) => {
 //     //authmiddleware 작동필요
 //     testQuery = "SELECT * FROM User";
+
  
 //     connection.query(testQuery, function (err, results, fields) { // testQuery 실행
 //         if (err) {
@@ -53,7 +43,7 @@ connection.connect();
 // });
  
  
-connection.end(); // DB 접속 종료
+// db.end(); // DB 접속 종료
 
 
 // 미들웨어 (가장 상위에 위치)
@@ -73,11 +63,10 @@ app.use(requestMiddleware);
 
 
 app.use('/', routers);
-
+// db.end(); // DB 접속 종료
 
 //도메인
 app.listen(port, () => {
   console.log(port, '포트로 서버가 켜졌어요!')
 }); 
 
-module.exports = connection;
