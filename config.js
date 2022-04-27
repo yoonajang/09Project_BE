@@ -1,12 +1,13 @@
 const mysql = require('mysql');
+require('dotenv').config();
 
 // mysql 접속 설정
 const db = mysql.createConnection({  
-    host: 'spartarealdb.ccdieiaoicbb.ap-northeast-2.rds.amazonaws.com',
-    port: '3306',
-    user: 'sparta_real',
-    password: 'sparta.2022!',
-    database: 'sparta_realDB'
+    host: process.env.host,
+    port: process.env.port,
+    user: process.env.user,
+    password: process.env.password,
+    database: process.env.database
 });
 
 db.connect();
