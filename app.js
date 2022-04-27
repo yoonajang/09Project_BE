@@ -2,48 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const routers = require("./routes");
-const db = require("./config/db");
+const routers = require("./routes/user");
 const app = express();
 const port = 3000;
-
-
-// 테스트용
-// var testQuery = "INSERT INTO `User` (`userName`,`password`) VALUES ('test','test');";
-
  
-// connection.query(testQuery, function (err, results, fields) { // testQuery 실행
-//     if (err) {
-//         console.log(err);
-//     }
-//     console.log(results);
-// });
-
-// router.get("challenge/me", async (req, res) => {
-//     //authmiddleware 작동필요
-//     testQuery = "SELECT * FROM User";
-
- 
-//     connection.query(testQuery, function (err, results, fields) { // testQuery 실행
-//         if (err) {
-//             console.log(err);
-//         }
-//         console.log(results);
-//     });
-
-// });
-
-// testQuery = "SELECT * FROM User";
- 
-// connection.query(testQuery, function (err, results, fields) { // testQuery 실행
-//     if (err) {
-//         console.log(err);
-//     }
-//     console.log(results);
-// });
- 
- 
-// db.end(); // DB 접속 종료
 
 
 // 미들웨어 (가장 상위에 위치)
@@ -64,6 +26,7 @@ app.use(requestMiddleware);
 
 app.use('/', routers);
 // db.end(); // DB 접속 종료
+
 
 //도메인
 app.listen(port, () => {
