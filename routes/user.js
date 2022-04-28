@@ -33,7 +33,7 @@ router.post('/signUp',(req,res,next)=>{
 router.post('/emailCheck', (req, res) => {
     const email = req.body.userEmail;
     const sql = 'select * from User where userEmail=?'
-
+    
 
     db.query(sql, [email], (err, data) => {
         if (data.length === 0) {
@@ -66,6 +66,8 @@ router.post('/nameCheck', (req, res) => {
 router.post('/login', (req, res) => {
     const param = [ req.body.userEmail, req.body.userPassword]
     const sql = 'SELECT * FROM User WHERE userEmail=?'
+
+    console.log(param)
 
     db.query(sql, param[0], (err, data) => {
         if (err) console.log(err)
