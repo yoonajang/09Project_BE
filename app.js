@@ -42,10 +42,16 @@ app.use('/', routers);
 app.get(
  "/.well-known/pki-validation/FEFFF8AAD41B2BDD0AC37B8AE376E000.txt",
  (req, res) => {
-   res.sendFile(__dirname + "/.well-known/pki-validation/FEFFF8AAD41B2BDD0AC37B8AE376E000.txt");
+   res.sendFile(__dirname + "/.well-known/pki-validation/FEFFF8AAD41B2BDD0AC37B8AE376E000.txt")
+   || 
+   res.sendFile("www."+__dirname + "/.well-known/pki-validation/FEFFF8AAD41B2BDD0AC37B8AE376E000.txt");
+   console.log(__dirname)
  }
 );
 
+
+// http://www.redpingpong.shop/.well-known/pki-validation/FEFFF8AAD41B2BDD0AC37B8AE376E000.txt
+// Click "Next Step" to continue.
 
 
 //도메인
