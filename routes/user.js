@@ -7,6 +7,7 @@ const authMiddleware = require("../middlewares/auth");
 const bcrypt = require('bcrypt')
 const saltRounds = 10 
 
+
 // 회원가입
 router.post('/signUp',(req,res,next)=>{
     const userImage = "https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27";
