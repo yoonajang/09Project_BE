@@ -2,15 +2,14 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const routers = require("./routes/user");
+const routers = require("./routes");
 const app = express();
 const port = 3000;
  
 
-
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
-    console.log('Request URL:', req.originalUrl, ' - ', new Date());
+    console.log('Request URL:', req.originalUrl, '-', new Date());
     next();
 }
 
@@ -25,7 +24,7 @@ app.use(requestMiddleware);
 
 
 app.use('/', routers);
-// db.end(); // DB 접속 종료
+
 
 
 //도메인
