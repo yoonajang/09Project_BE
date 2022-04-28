@@ -52,7 +52,7 @@ app_http.use((req, res, next) => {
   }
 })
 
-
+//https 설정
 app.get(
  "/.well-known/pki-validation/FEFFF8AAD41B2BDD0AC37B8AE376E000.txt",
  (req, res) => {
