@@ -3,8 +3,12 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const routers = require("./routes");
+const fs = require('fs')
+const http = require ('http')
+
 // const db = require('../config');
 // const AWS = require('aws-sdk');
+const https = require("https");
 const app = express();
 const port = 3000;
  
@@ -34,6 +38,13 @@ app.use(requestMiddleware);
 
 
 app.use('/', routers);
+
+app.get(
+ "/.well-known/pki-validation/FEFFF8AAD41B2BDD0AC37B8AE376E000.txt",
+ (req, res) => {
+   res.sendFile(_dirname + "/.well-known/pki-validation/FEFFF8AAD41B2BDD0AC37B8AE376E000.txt");
+ }
+);
 
 
 
