@@ -3,9 +3,20 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const routers = require("./routes");
+const db = require('../config');
+const AWS = require('aws-sdk');
 const app = express();
 const port = 3000;
  
+
+//소켓
+// const socketIo = require('socket.io');
+// const { Iot, Route53Domains } = require('aws-sdk');
+// const { SocketAddress } = require('net');
+// const server = require('http').createServer(app)
+
+
+app.use(cors());
 
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
@@ -13,7 +24,6 @@ const requestMiddleware = (req, res, next) => {
     next();
 }
 
-app.use(cors());
 app.use(express.static("static"))
 app.use(express.urlencoded({extended: false}))
 app.use(express.json());
