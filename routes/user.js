@@ -14,7 +14,8 @@ router.post('/signUp',(req,res,next)=>{
 
     bcrypt.hash(param[2],saltRounds,(err,hash)=>{
         param[2]=hash;
-        db.query('INSERT INTO User(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,?)', param,(err,data) => {
+        db.query('INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,"https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27")',
+        param,(err,row) => {
             if(err) {
                 console.log(err) 
                 res.status(401).send({meg: "fail"})
@@ -32,7 +33,7 @@ router.post('/signUp',(req,res,next)=>{
 router.post('/emailCheck', (req, res) => {
     const email = req.body.userEmail;
     const sql = 'select * from User where userEmail=?'
-
+    
 
     db.query(sql, [email], (err, data) => {
         if (data.length === 0) {
@@ -65,6 +66,8 @@ router.post('/nameCheck', (req, res) => {
 router.post('/login', (req, res) => {
     const param = [ req.body.userEmail, req.body.userPassword]
     const sql = 'SELECT * FROM User WHERE userEmail=?'
+
+    console.log(param)
 
     db.query(sql, param[0], (err, data) => {
         if (err) console.log(err)
