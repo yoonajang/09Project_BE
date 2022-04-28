@@ -62,9 +62,9 @@ app.get(
 
 
 const credentials = {
-  key: fs.readFileSync(__dirname + './private.key', 'utf8'),
-  cert: fs.readFileSync(__dirname + './certificate.crt', 'utf8'),
-  ca: fs.readFileSync(__dirname + './ca_bundle.crt', 'utf8'),
+  key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
+  cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8'),
+  ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 }
 
 
