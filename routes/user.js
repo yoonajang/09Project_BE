@@ -14,8 +14,12 @@ router.post('/signUp',(req,res,next)=>{
     const userImage = "https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27";
     bcrypt.hash(param[1],saltRounds,(error,hash)=>{
         param[2]=hash;
+<<<<<<< Updated upstream
         db.query('INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,"https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27")',
         param,(err,row) => {
+=======
+        db.query('INSERT INTO User(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,"https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27")', param,(err,data) => {
+>>>>>>> Stashed changes
             if(err) {
                 console.log(err)}
                 res.status(201).send({row})
