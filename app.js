@@ -3,8 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const routers = require("./routes");
-const db = require('../config');
-const AWS = require('aws-sdk');
+// const db = require('../config');
+// const AWS = require('aws-sdk');
 const app = express();
 const port = 3000;
  
