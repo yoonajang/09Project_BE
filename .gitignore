@@ -8,3 +8,5 @@ certificate.crt
 private.key
 
 createTable.sql
+
+.well-known
