@@ -18,7 +18,7 @@ router.post('/postList', (req, res) => {
 });
 
 
-
+// 메인페이지 게시글 불러오기
 router.get('/postList', (req, res) => {
     const address = req.body.address;
     const sql = 'select * from Post where address=?'
@@ -27,11 +27,23 @@ router.get('/postList', (req, res) => {
     db.query(sql, address, (err, data) => {
         if (err) console.log(err);
         console.log(data)
-        res.status(201).send({msg:'sucess',data});
+        res.status(201).send({msg:'success',data});
         
     });
 });
 
+// 메인페이지 게시글 상세보기
+router.get('/postDetail', (req, res) => {
+    const postId = req.body.postId;
+    const sql = 'select * from Post where postId=?'
+
+
+    db.query(sql, postId, (err, data) => {
+        if (err) console.log(err);
+        res.status(201).send({msg:'success',data});
+        
+    });
+});
 
 
 
