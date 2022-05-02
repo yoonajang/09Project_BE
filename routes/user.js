@@ -34,40 +34,71 @@ router.post('/signUp',(req,res,next)=>{
 
 //회원가입시 이메일 인증
 router.post('/mail', async (req, res) => {
+    const userEmail = req.body.userEmail
     let authNum = Math.random().toString().substr(2, 6);
     let emailTemplete;
 
     ejs.renderFile(
-      appDir + '/template/authMail.ejs',
-      { authCode: authNum },
-      function (err, data) {
-        if (err) {
-          console.log(err);
-        }
-        emailTemplete = data;
-      },
+        appDir + '/template/authMail.ejs',
+        { authCode: authNum },
+        function (err, data) {
+            if (err) {
+                console.log(err);
+            }
+            emailTemplete = data;
+        },
     );
 
     let transporter = nodemailer.createTransport({
-      service: 'gmail',
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.nodemailerUser,
-        pass: process.env.nodemailerPw,
-      },
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.nodemailerUser,
+            pass: process.env.nodemailerPw,
+        },
     });
 
     //메일 제목 설정
     let mailOptions = await transporter.sendMail({
-      from: process.env.nodemailerUser,
-      to: req.body.userEmail,
-      subject: '[Nbbang] 회원가입을 위한 인증번호를 입력해주세요.',
-      html: emailTemplete,
+        from: process.env.nodemailerUser,
+        to: userEmail,
+        subject: '[Nbbang] 회원가입을 위한 인증번호를 입력해주세요.',
+        html: emailTemplete,
     });
 
-    res.status(200).send({ authNum : authNum });
+    //authNum 저장
+    db.query('SELECT * FROM AuthNum WHERE userEmail=?', userEmail, (err, data) => {
+        // if(err) console.log(err)
+        console.log(data.length === 0)
+        if (data.length === 0) {
+            db.query('INSERT AuthNum(`authNum`, `userEmail`) VALUES (?,?)', 
+            [authNum, userEmail], (err, data) => {
+                res.status(200).send({ msg: 'success' });
+            })
+        } else {
+            db.query('UPDATE AuthNum SET authNum=? WHERE userEmail=?', 
+            [authNum, userEmail], (err, data) => {
+                res.status(200).send({ msg: 'success' });
+            })
+        }
+    });
+
+});
+
+
+//이메일 인증 확인
+router.get('/mail', async (req, res) => {
+    const {userEmail, authNum} = req.body;
+
+    db.query('SELECT * FROM AuthNum WHERE userEmail=?', userEmail, (err, data) => {
+        if (data[0].authNum === authNum) {
+            res.send({ msg: 'success' });
+        } else {
+            res.send({ msg: 'fail' });
+        }
+    });
 });
 
 
