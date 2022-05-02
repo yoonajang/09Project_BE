@@ -3,9 +3,9 @@ const router = express.Router();
 const db = require('../config');
 const jwt = require("jsonwebtoken");    
 const authMiddleware = require("../middlewares/auth");
-const nodemailer = require('nodemailer');
-const ejs = require('ejs');
-const path = require('path');
+// const nodemailer = require('nodemailer');
+// const ejs = require('ejs');
+// const path = require('path');
 let appDir = path.dirname(require.main.filename);
 
 const bcrypt = require('bcrypt')
