@@ -3,10 +3,10 @@ const router = express.Router();
 const db = require('../config');
 const jwt = require("jsonwebtoken");    
 const authMiddleware = require("../middlewares/auth");
-// const nodemailer = require('nodemailer');
-// const ejs = require('ejs');
-// const path = require('path');
-// let appDir = path.dirname(require.main.filename);
+const nodemailer = require('nodemailer');
+const ejs = require('ejs');
+const path = require('path');
+let appDir = path.dirname(require.main.filename);
 
 const bcrypt = require('bcrypt')
 const saltRounds = 10 
@@ -33,42 +33,42 @@ router.post('/signUp',(req,res,next)=>{
 });
 
 //회원가입시 이메일 인증
-// router.post('/mail', async (req, res) => {
-//     let authNum = Math.random().toString().substr(2, 6);
-//     let emailTemplete;
+router.post('/mail', async (req, res) => {
+    let authNum = Math.random().toString().substr(2, 6);
+    let emailTemplete;
 
-//     ejs.renderFile(
-//       appDir + '/template/authMail.ejs',
-//       { authCode: authNum },
-//       function (err, data) {
-//         if (err) {
-//           console.log(err);
-//         }
-//         emailTemplete = data;
-//       },
-//     );
+    ejs.renderFile(
+      appDir + '/template/authMail.ejs',
+      { authCode: authNum },
+      function (err, data) {
+        if (err) {
+          console.log(err);
+        }
+        emailTemplete = data;
+      },
+    );
 
-//     let transporter = nodemailer.createTransport({
-//       service: 'gmail',
-//       host: 'smtp.gmail.com',
-//       port: 587,
-//       secure: false,
-//       auth: {
-//         user: process.env.nodemailerUser,
-//         pass: process.env.nodemailerPw,
-//       },
-//     });
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.nodemailerUser,
+        pass: process.env.nodemailerPw,
+      },
+    });
 
-//     //메일 제목 설정
-//     let mailOptions = await transporter.sendMail({
-//       from: process.env.nodemailerUser,
-//       to: req.body.userEmail,
-//       subject: '[Nbbang] 회원가입을 위한 인증번호를 입력해주세요.',
-//       html: emailTemplete,
-//     });
+    //메일 제목 설정
+    let mailOptions = await transporter.sendMail({
+      from: process.env.nodemailerUser,
+      to: req.body.userEmail,
+      subject: '[Nbbang] 회원가입을 위한 인증번호를 입력해주세요.',
+      html: emailTemplete,
+    });
 
-//     res.status(200).send({ authNum : authNum });
-// });
+    res.status(200).send({ authNum : authNum });
+});
 
 
 // 이메일 중복확인
