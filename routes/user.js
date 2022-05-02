@@ -8,12 +8,12 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 // 회원가입
-router.post('/signUp', (req, res, next) => {
+router.post('/signup', (req, res, next) => {
     const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
     const param = [
         req.body.userEmail,
         req.body.userName,
-        req.body.password,
+        req.body.userPassword,
         userImage,
     ];
 
@@ -35,7 +35,7 @@ router.post('/signUp', (req, res, next) => {
 });
 
 // 이메일 중복확인
-router.post('/emailCheck', (req, res) => {
+router.post('/emailcheck', (req, res) => {
     const email = req.body.userEmail;
     const sql = 'select * from User where userEmail=?';
 
@@ -50,7 +50,7 @@ router.post('/emailCheck', (req, res) => {
 });
 
 // 닉네임 중복확인
-router.post('/nameCheck', (req, res) => {
+router.post('/namecheck', (req, res) => {
     const name = req.body.userName;
     const sql = 'select * from User where userName=?';
 
@@ -102,7 +102,7 @@ router.post('/login', (req, res) => {
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1MTExMTcxNH0.tOJwDg7BeBp8CR8BaNSnBca7Iyc_JVELkmlm6Pi4pUk
 
 // 로그인 여부확인
-router.get('/isLogin', authMiddleware, async (req, res) => {
+router.get('/islogin', authMiddleware, async (req, res) => {
     const { user } = res.locals;
     console.log({ user });
     res.send({
