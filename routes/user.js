@@ -6,7 +6,7 @@ const authMiddleware = require("../middlewares/auth");
 // const nodemailer = require('nodemailer');
 // const ejs = require('ejs');
 // const path = require('path');
-let appDir = path.dirname(require.main.filename);
+// let appDir = path.dirname(require.main.filename);
 
 const bcrypt = require('bcrypt')
 const saltRounds = 10 
