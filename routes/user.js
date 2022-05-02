@@ -38,9 +38,9 @@ router.post('/emailCheck', (req, res) => {
     db.query(sql, [email], (err, data) => {
         if (data.length === 0) {
             console.log(err)
-            res.status(201).send({msg:'사용할 수 있는 이메일입니다'});
+            res.status(201).send({msg:'success'});
         } else {
-            res.status(401).send({msg:'중복된 이메일입니다'});
+            res.status(201).send({msg:'fail'});
         };
     });
 });
@@ -54,9 +54,9 @@ router.post('/nameCheck', (req, res) => {
     db.query(sql, [name], (err, data) => {
         if (data.length === 0) {
             console.log(err)
-            res.status(201).send({msg:'사용할 수 있는 닉네임입니다'});
+            res.status(201).send({msg:'success'});
         } else {
-            res.status(401).send({msg:'중복된 닉네임입니다'});
+            res.status(201).send({msg:'fail'});
         };
     });
 });
