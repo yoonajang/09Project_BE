@@ -5,9 +5,6 @@ const db = require('../config');
 const authMiddleware = require('../middlewares/auth');
 
 const upload = require('../S3/s3');
-// const AWS = require('aws-sdk');
-// const { is } = require('express/lib/request');
-// const s3 = new AWS.S3();
 
 //게시글 작성
 router.post(
