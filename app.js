@@ -11,7 +11,7 @@ const http = require ('http')
 const https = require("https");
 const app = express();
 const app_http = express();
-// const port = 3000;
+const port = 3000;
 const httpPort = 80;
 const httpsPort = 443;
 
@@ -68,17 +68,17 @@ const credentials = {
 }
 
 
-http.createServer(app_http).listen(httpPort, () => {
-  console.log('http서버가 켜졌어요!')
-})
+// http.createServer(app_http).listen(httpPort, () => {
+//   console.log('http서버가 켜졌어요!')
+// })
 
-https.createServer(credentials, app).listen(httpsPort, () => {
-  console.log('https서버가 켜졌어요!')
-})
+// https.createServer(credentials, app).listen(httpsPort, () => {
+//   console.log('https서버가 켜졌어요!')
+// })
 
 
 //도메인
-// app.listen(port, () => {
-//   console.log(port, '포트로 서버가 켜졌어요!')
-// }); 
+app.listen(port, () => {
+  console.log(port, '포트로 서버가 켜졌어요!')
+}); 
 
