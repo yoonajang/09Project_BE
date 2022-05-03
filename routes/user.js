@@ -25,7 +25,7 @@ router.post('/signup', (req, res, next) => {
                 bcrypt.hash(param[2], saltRounds, (err, hash) => {
                     param[2] = hash;
                     db.query(
-                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,"https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27")',
+                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,?)',
                         param,
                         (err, row) => {
                             if (err) {
