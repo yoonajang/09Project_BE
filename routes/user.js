@@ -179,8 +179,6 @@ router.post('/login', (req, res) => {
 });
 
 
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1MTExMTcxNH0.tOJwDg7BeBp8CR8BaNSnBca7Iyc_JVELkmlm6Pi4pUk
-
 // 로그인 여부확인
 router.get("/islogin", authMiddleware, async (req, res) => {
     const {user} = res.locals;
