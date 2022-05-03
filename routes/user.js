@@ -11,26 +11,33 @@ let appDir = path.dirname(require.main.filename);
 const bcrypt = require('bcrypt')
 const saltRounds = 10 
 
-// 회원가입
-router.post('/signUp',(req,res,next)=>{
-    const userImage = "https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27";
-    const param = [ req.body.userEmail, req.body.userName ,req.body.userPassword, userImage]
 
-    bcrypt.hash(param[2],saltRounds,(err,hash)=>{
-        param[2]=hash;
-        db.query('INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,"https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27")',
-        param,(err,row) => {
-            if(err) {
-                console.log(err) 
-                res.send({meg: "fail"})
-            } else {
-                res.send({meg: "success"})
-            }
-        });
-        
+// 회원가입
+router.post('/signup',(req,res,next)=>{
+    const userImage = "https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27";
+    const {userEmail, userName , userPassword} = req.body
+    const param = [userEmail, userName , userPassword, userImage]
+
+    db.query('SELECT * FROM AuthNum WHERE userEmail=?', userEmail, (err, data) => {
+        if (data.length) {
+            bcrypt.hash(param[2],saltRounds,(err,hash)=>{
+                param[2]=hash;
+                db.query('INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,"https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27")',
+                param,(err,row) => {
+                    if(err) {
+                        console.log(err) 
+                        res.send({meg: "fail"})
+                    } else {
+                        res.send({meg: "success"})
+                    }
+                });   
+            });                       
+        } else {
+            res.send({meg: "fail"})
+        }
     });
- 
 });
+
 
 //회원가입시 이메일 인증
 router.post('/mail', async (req, res) => {
@@ -103,7 +110,7 @@ router.post('/mailauth', async (req, res) => {
 
 
 // 이메일 중복확인
-router.post('/emailCheck', (req, res) => {
+router.post('/emailcheck', (req, res) => {
     const email = req.body.userEmail;
     const sql = 'select * from User where userEmail=?'
     
@@ -120,7 +127,7 @@ router.post('/emailCheck', (req, res) => {
 
 
 // 닉네임 중복확인 
-router.post('/nameCheck', (req, res) => {
+router.post('/namecheck', (req, res) => {
     const name = req.body.userName;
     const sql = 'select * from User where userName=?'
 
@@ -175,7 +182,7 @@ router.post('/login', (req, res) => {
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1MTExMTcxNH0.tOJwDg7BeBp8CR8BaNSnBca7Iyc_JVELkmlm6Pi4pUk
 
 // 로그인 여부확인
-router.get("/isLogin", authMiddleware, async (req, res) => {
+router.get("/islogin", authMiddleware, async (req, res) => {
     const {user} = res.locals;
     console.log({user})
     res.send({
