@@ -1,12 +1,6 @@
 node_modules
-dist/*
-*.log
-
 .env
 ca_bundle.crt
 certificate.crt
 private.key
-
-createTable.sql
-
-.well-known
+s3config.json
