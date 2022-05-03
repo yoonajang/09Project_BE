@@ -22,9 +22,9 @@ router.post('/signUp',(req,res,next)=>{
         param,(err,row) => {
             if(err) {
                 console.log(err) 
-                res.status(401).send({meg: "fail"})
+                res.send({meg: "fail"})
             } else {
-                res.status(201).send({meg: "success"})
+                res.send({meg: "success"})
             }
         });
         
@@ -75,12 +75,12 @@ router.post('/mail', async (req, res) => {
         if (data.length === 0) {
             db.query('INSERT AuthNum(`authNum`, `userEmail`) VALUES (?,?)', 
             [authNum, userEmail], (err, data) => {
-                res.status(200).send({ msg: 'success' });
+                res.send({ msg: 'success' });
             })
         } else {
             db.query('UPDATE AuthNum SET authNum=? WHERE userEmail=?', 
             [authNum, userEmail], (err, data) => {
-                res.status(200).send({ msg: 'success' });
+                res.send({ msg: 'success' });
             })
         }
     });
@@ -94,9 +94,9 @@ router.post('/mailauth', async (req, res) => {
 
     db.query('SELECT * FROM AuthNum WHERE userEmail=?', userEmail, (err, data) => {
         if (data[0].authNum === authNum) {
-            res.send({ msg: 'success' });
+            res.send({ msg:'success'});
         } else {
-            res.send({ msg: 'fail' });
+            res.send({ msg:'fail'});
         }
     });
 });
@@ -111,9 +111,9 @@ router.post('/emailCheck', (req, res) => {
     db.query(sql, [email], (err, data) => {
         if (data.length === 0) {
             console.log(err)
-            res.status(201).send({msg:'success'});
+            res.send({msg:'success'});
         } else {
-            res.status(201).send({msg:'fail'});
+            res.send({msg:'fail'});
         };
     });
 });
@@ -127,9 +127,9 @@ router.post('/nameCheck', (req, res) => {
     db.query(sql, [name], (err, data) => {
         if (data.length === 0) {
             console.log(err)
-            res.status(201).send({msg:'success'});
+            res.send({msg:'success'});
         } else {
-            res.status(201).send({msg:'fail'});
+            res.send({msg:'fail'});
         };
     });
 });
@@ -156,16 +156,16 @@ router.post('/login', (req, res) => {
                         tradeCount: data[0].tradeCount,
                     }
                     const token = jwt.sign({ userId : data[0].userId},process.env.JWT_SECRET);
-                    res.status(201).send({msg:'success', token, userInfo});
+                    res.send({msg:'success', token, userInfo});
 
                 } else {
                     console.log('비밀번호 틀림')
-                    res.status(401).send({msg:'fail'});
+                    res.send({msg:'fail'});
                 }
             })
         } else {
             console.log('아이디 없음')
-            res.status(401).send({msg:'fail'});
+            res.send({msg:'fail'});
         }
 
     })    
