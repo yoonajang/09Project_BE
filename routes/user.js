@@ -89,7 +89,7 @@ router.post('/mail', async (req, res) => {
 
 
 //이메일 인증 확인
-router.get('/mail', async (req, res) => {
+router.post('/mailauth', async (req, res) => {
     const {userEmail, authNum} = req.body;
 
     db.query('SELECT * FROM AuthNum WHERE userEmail=?', userEmail, (err, data) => {
