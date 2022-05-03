@@ -195,9 +195,9 @@ router.post('/login', (req, res) => {
 // 로그인 여부확인
 router.get('/islogin', authMiddleware, async (req, res) => {
     const { user } = res.locals;
-    console.log({ user });
+    console.log(user.userId);
     res.send({
-        userinfo: {
+        userInfo: {
             userId: user.userId,
             userEmail: user.userEmail,
             userName: user.userName,
