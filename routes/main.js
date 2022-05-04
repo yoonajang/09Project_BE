@@ -76,22 +76,49 @@ router.get('/postlist', (req, res) => {
 
     console.log(findAddr)
 
+    // const addr = findAddr +'%'
+    // const sql = "SELECT P.*, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P INNER JOIN `JoinPost` JP ON P.postId = JP.Post_postId INNER JOIN `User` U ON JP.User_userId = U.userId WHERE address LIKE ? ORDER BY createdAt DESC"
+    // let data = [];
+
+    // db.query(sql, addr, (err, main) => {
+    //     // if (err) console.log(err);
+
+    //     // for (let i=0; i<main.length; i++){
+    //     //     console.log( '<<<<<<<<<<<')
+    //     //     const postid = main[i].postId
+
+    //     //     console.log(postid,'!!!!!!!!!!!!!!!!')
+
+    //     //     const sql = "SELECT P.*, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P INNER JOIN `JoinPost` JP ON P.postId = JP.Post_postId INNER JOIN `User` U  ON JP.User_userId = U.userId WHERE P.postId =?"
+
+    //     //     db.query(sql, postid, (err, doc) => {
+    //     //         console.log(doc, '?')
+    //     //         // if (doc.length !== 0) {
+    //     //         //     doc[0].headList = doc[0].headList.split(',').map(id => Number(id))
+    //     //         //     // data.push(doc)
+    //     //         // } else {
+    //     //         //     // data.push(doc)
+    //     //         // }
+    //     //     });
+
+    //     //     // data.push(list)
+    //     // }
+
+    //     res.send({ msg: 'success', main });
+    // })
+
+
+
+
+
+
+
     const addr = findAddr +'%'
-    const sql = "SELECT * FROM Post WHERE address LIKE ? ORDER BY createdAt DESC"
-    let headList = [];
+    const sql = "SELECT * FROM `Post` WHERE address LIKE ? ORDER BY createdAt DESC"
 
-    db.query(sql, addr, (err, main) => {
-        if (err) console.log(err);
-
-        for (list of main) {
-            const sql = "SELECT P.*, GROUP_CONCAT(U.userId SEPARATOR ',') HeadList FROM `Post` P INNER JOIN `JoinPost` JP ON P.postId = JP.Post_postId INNER JOIN `User` U  ON JP.User_userId = U.userId WHERE P.postId =?"
-            const postid = list.postId
-            
-            db.query(sql, postid, (err, data) => {
-                data[0].HeadList = data[0].HeadList.split(',').map(id => Number(id))
-                res.send({ msg: 'success', data });
-            });
-        }   
+    db.query(sql, addr, (err, data) => {
+        console.log(data)
+        res.send({ msg: 'success', data });
     })
 
 });
