@@ -43,7 +43,7 @@ router.post('/postadd', authMiddleware, upload.single('image'), (req, res, next)
                 console.log(err);
                 res.status(201).send({ msg: 'fail' });
             } else {
-                res.status(201).send({ msg: 'success' });
+                res.status(201).send({ msg: 'success' }, rows);
             }
         });
     },
