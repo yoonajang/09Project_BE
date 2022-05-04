@@ -38,13 +38,17 @@ router.post('/postadd', authMiddleware, upload.single('image'), (req, res, next)
         const sql =
             'INSERT INTO Post (`title`, `content`, `price`, `headCount`, `category`, `endTime`, `address`, `lat`, `lng`, `writer`, `User_userId`, `image`, `isDone`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,false)';
 
+        console.log(sql)
+
         db.query(sql, datas, (err, rows) => {
             if (err) {
                 console.log(err);
                 res.status(201).send({ msg: 'fail' });
             } else {
-                console.log(rows)
-                res.status(201).send({ msg: 'success' }, rows);
+                console.log(rows.insertId)
+                db.query('SELECT * FROM Post WHERE `postId`=?',rows.insertId, (err, row) => {
+                res.status(201).send({ msg: 'success', row });
+                })
             }
         });
     },
@@ -71,7 +75,7 @@ router.get('/postlist', (req, res) => {
     const fineAddr = address[0]+' '+address[1]+' '+address[2]
 
     const addr = fineAddr +'%'
-    const sql = "select * from Post where address LIKE ? ORDER BY createdAt DESC"
+    const sql = "SELECT * FROM Post WHERE address LIKE ? ORDER BY createdAt DESC"
 
     db.query(sql, addr, (err, data) => {
         if (err) console.log(err);
