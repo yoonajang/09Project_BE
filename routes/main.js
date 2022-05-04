@@ -71,10 +71,12 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
 
 // 메인페이지 게시글 불러오기
 router.get('/postlist', (req, res) => {
-    const address = req.body.address;
-    const sql = 'select * from Post where address=?';
+    const address = req.body.address.split(' ');
+    const findAddr = address[0]+' '+address[1]+' '+address[2]
+    const addr = findAddr +'%'
+    const sql = "SELECT * FROM `Post` WHERE address LIKE ? ORDER BY createdAt DESC"
 
-    db.query(sql, address, (err, data) => {
+    db.query(sql, addr, (err, data) => {
         if (err) console.log(err);
         console.log(data);
         res.status(201).send({ msg: 'success', data });
