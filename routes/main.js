@@ -70,18 +70,30 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
 });
 
 // 메인페이지 게시글 불러오기
-router.post('/postlist', (req, res) => {
+router.get('/postlist', (req, res) => {
     const address = req.body.address.split(' ');
-    const fineAddr = address[0]+' '+address[1]+' '+address[2]
+    const findAddr = address[0]+' '+address[1]+' '+address[2]
 
-    const addr = fineAddr +'%'
+    console.log(findAddr)
+
+    const addr = findAddr +'%'
     const sql = "SELECT * FROM Post WHERE address LIKE ? ORDER BY createdAt DESC"
+    let headList = [];
 
-    db.query(sql, addr, (err, data) => {
+    db.query(sql, addr, (err, main) => {
         if (err) console.log(err);
-        console.log(data);
-        res.status(201).send({ msg: 'success', data });
-    });
+
+        for (list of main) {
+            const sql = "SELECT P.*, GROUP_CONCAT(U.userId SEPARATOR ',') HeadList FROM `Post` P INNER JOIN `JoinPost` JP ON P.postId = JP.Post_postId INNER JOIN `User` U  ON JP.User_userId = U.userId WHERE P.postId =?"
+            const postid = list.postId
+            
+            db.query(sql, postid, (err, data) => {
+                data[0].HeadList = data[0].HeadList.split(',').map(id => Number(id))
+                res.send({ msg: 'success', data });
+            });
+        }   
+    })
+
 });
 
 // 메인페이지 게시글 상세보기
