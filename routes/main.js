@@ -70,7 +70,7 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
 });
 
 // 메인페이지 게시글 불러오기
-router.get('/postlist', (req, res) => {
+router.post('/postlist', (req, res) => {
     const address = req.body.address.split(' ');
     console.log(address)
     const findAddr = address[0]+' '+address[1]+' '+address[2]
