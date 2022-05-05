@@ -1,6 +1,11 @@
 node_modules
 .env
+<<<<<<< HEAD
 ca_bundle.crt
 certificate.crt
 private.key
 s3config.json
+=======
+
+createTable.sql
+>>>>>>> user_09
