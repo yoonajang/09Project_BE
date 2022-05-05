@@ -64,6 +64,7 @@ const credentials = {
     cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8'),
     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 };
+<<<<<<< HEAD
 
 http.createServer(app_http).listen(httpPort, () => {
     console.log('http서버가 켜졌어요!');
@@ -77,3 +78,18 @@ https.createServer(credentials, app).listen(httpsPort, () => {
 // app.listen(port, () => {
 //     console.log(port, '포트로 서버가 켜졌어요!');
 // });
+=======
+
+// http.createServer(app_http).listen(httpPort, () => {
+//   console.log('http서버가 켜졌어요!')
+// })
+
+// https.createServer(credentials, app).listen(httpsPort, () => {
+//   console.log('https서버가 켜졌어요!')
+// })
+
+//도메인
+app.listen(port, () => {
+    console.log(port, '포트로 서버가 켜졌어요!');
+});
+>>>>>>> user_09

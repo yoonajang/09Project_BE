@@ -18,7 +18,11 @@
   },
   "homepage": "https://github.com/moonhjang/donationChallenge_BK#readme",
   "dependencies": {
+<<<<<<< HEAD
     "aws-sdk": "^2.1124.0",
+=======
+    "aws-sdk": "^2.1125.0",
+>>>>>>> user_09
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
