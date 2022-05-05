@@ -76,9 +76,41 @@ router.post('/postlist', (req, res) => {
     const findAddr = address[0]+' '+address[1]+' '+address[2]+' '
     const addr = findAddr +'%'
 
-    const sql = "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId  WHERE `address` like ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime"
+    const sql = "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId  WHERE `address` like ?  GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime"
 
-    db.query(sql, addr, (err, data) => {
+    db.query(sql, addr, (err, datas) => {
+        
+        if (err) console.log(err);
+       
+        for (list of datas){
+            let head = list.headList
+            if (isNaN(Number(head))){
+                list.headList = head.split(',').map(id => Number(id))
+            } else {
+                let newList = [];
+                newList.push(Number(head))
+                list.headList = newList
+            }
+        }
+        const data = datas.reverse()
+
+        res.send({ msg: 'success',  data });
+    })
+
+});
+
+
+// 메인페이지 게시글 불러오기 (수정)
+router.post('/postlist', (req, res) => {
+    const address = req.body.address.split(' ');
+    const userId = req.body.userId
+    console.log(userId)
+    const findAddr = address[0]+' '+address[1]+' '+address[2]+' '
+    const addr = findAddr +'%'
+
+    const sql = "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList, GROUP_CONCAT(L.User_userId) isLike FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.User_userId = ? WHERE `address` like ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime"
+
+    db.query(sql, [userId, addr], (err, data) => {
         
         if (err) console.log(err);
        
@@ -99,26 +131,28 @@ router.post('/postlist', (req, res) => {
 });
 
 
-// 메인페이지 게시글 상세보기
-router.get('/:postId', (req, res) => {
-    const postId = req.params.postId;
+// // 메인페이지 게시글 상세보기
+// router.get('/:postId', (req, res) => {
+//     const postId = req.params.postId;
 
-    const sql = "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId  WHERE `postId`=? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime"
+//     const sql = "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId  WHERE `postId`=? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime"
 
-    db.query(sql, postId, (err, data) => {
-        if (err) console.log(err);
-        let head = data[0].headList
-            if (isNaN(Number(head))){
-                data[0].headList = head.split(',').map(id => Number(id))
-            } else {
-                let newList = [];
-                newList.push(Number(head))
-                data[0].headList = newList
-            }
+//     db.query(sql, postId, (err, data) => {
+//         if (err) console.log(err);
+//         let head = data[0].headList
+//             if (isNaN(Number(head))){
+//                 data[0].headList = head.split(',').map(id => Number(id))
+//             } else {
+//                 let newList = [];
+//                 newList.push(Number(head))
+//                 data[0].headList = newList
+//             }
         
-        res.send({ msg: 'success', data });
-    });
-});
+//         res.send({ msg: 'success', data });
+//     });
+// });
+
+
 
 // 좋아요 생성
 router.get('/like/:postId', authMiddleware, (req, res) => {

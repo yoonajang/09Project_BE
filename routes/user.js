@@ -259,7 +259,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
     })  
     })
     })
-    });
+    })
 });
 
 //유저 좋아요 조회
