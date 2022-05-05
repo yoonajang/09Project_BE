@@ -120,29 +120,53 @@ router.get('/:postId', (req, res) => {
     });
 });
 
-// 좋아요 생성 
+// 좋아요 생성
 router.post('/like/:postId', authMiddleware, (req, res) => {
-    const user = res.locals;
-    const postId = req.params;
-    const sql = 'INSERT INTO `Like` (`Post_postId`,`User_userId`) VALUES (?,?)'
+    const userId = res.locals.user.userId;
+    const postId = req.params.postId;
 
-    db.query(sql, [Number(postId.postId.toString()), user.user.userId], (err, data) => {
-        if(err) console.log(err)
-        res.status(201).send({msg:'success'});       
-    });
+    const sql = "SELECT `Post_postId`,`User_userId` FROM `Like` WHERE `Post_postId`=? and `User_userId`=?";
+
+    db.query(sql, [postId, userId], (err, rows) => {
+
+        if(rows.length === 0){  
+            const sql = 'INSERT INTO `Like` (`Post_postId`,`User_userId`) VALUES (?,?)'
+
+            db.query(sql, [Number(postId), userId], (err, like) => {
+                if(err) console.log(err)
+                res.send({msg:'success'});       
+            });
+
+        } else {
+            res.send({msg:'fail'});  
+        }
+    })
+
 });
+
 
 // 좋아요 삭제
 router.delete('/like/:postId', authMiddleware, (req, res) => {
-    const user = res.locals;
-    const postId = req.params;
-    const sql = 'DELETE FROM `Like` WHERE `Post_postId`=? and `User_userId`=?'
+    const userId = res.locals.user.userId;
+    const postId = req.params.postId;
 
-    // console.log(user.user.userId, Number(postId.postId))
-    db.query(sql, [Number(postId.postId), user.user.userId], (err, data) => {
-        if(err) console.log(err)
-        res.status(201).send({msg:'success'});       
-    });
+    const sql = "SELECT `Post_postId`,`User_userId` FROM `Like` WHERE `Post_postId`=? and `User_userId`=?";
+
+    db.query(sql, [postId, userId], (err, rows) => {
+
+        if(rows.length !== 0){  
+            const sql = 'DELETE FROM `Like` WHERE `Post_postId`=? and `User_userId`=?'
+
+            db.query(sql, [Number(postId), userId], (err, data) => {
+                if(err) console.log(err)
+                res.send({msg:'success'});       
+            });
+
+        } else {
+            res.send({msg:'fail'});  
+        }
+    })
+
 })
 
 module.exports = router;
