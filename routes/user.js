@@ -120,6 +120,7 @@ router.get('/isLogin', authMiddleware, async (req, res) => {
 // 유저 프로필 업로드
 
 const upload = require('../S3/s3');
+const { PollyCustomizations } = require('aws-sdk/lib/services/polly');
 router.post(
     '/me',
     upload.single('userImage'),
@@ -138,5 +139,46 @@ router.post(
         }
     },
 );
+
+//유저 마이페이지
+
+//buylist
+router.get('/buy/:userId', authMiddleware, (req, res) => {
+    const userId = req.params.userId;
+
+    const sql =
+        'SELECT * FROM Post WHERE `User_userId`= ? and `category`="buy"';
+
+    db.query(sql, [userId], (err, data) => {
+        if (err) console.log(err);
+        console.log(data);
+        res.status(201).send({ msg: 'success', data });
+    });
+});
+
+router.get('/eat/:userId', authMiddleware, (req, res) => {
+    const userId = req.params.userId;
+
+    const sql =
+        'SELECT * FROM Post WHERE `User_userId`= ? and `category`="eat"';
+
+    db.query(sql, [userId], (err, data) => {
+        if (err) console.log(err);
+        console.log(data);
+        res.status(201).send({ msg: 'success', data });
+    });
+});
+
+//유저 좋아요
+
+router.get('/like/:userId', authMiddleware, (req, res) => {
+    const userId = req.params.userId;
+
+    const sql = 'SELECT * FROM `Like` WHERE `User_userId`= ?';
+    db.query(sql, [userId], (err, data) => {
+        if (err) console.log(err);
+        res.status(201).send({ msg: 'success', data });
+    });
+});
 
 module.exports = router;
