@@ -121,7 +121,7 @@ router.get('/:postId', (req, res) => {
 });
 
 // 좋아요 생성
-router.post('/like/:postId', authMiddleware, (req, res) => {
+router.get('/like/:postId', authMiddleware, (req, res) => {
     const userId = res.locals.user.userId;
     const postId = req.params.postId;
 

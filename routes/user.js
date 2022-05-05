@@ -210,7 +210,7 @@ router.get('/islogin', authMiddleware, async (req, res) => {
     });
 });
 
-// 유저 프로필 업로드
+// 유저 프로필 수정
 router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
         const userId = res.locals.user.userId;
         const userImage = req.file?.location;
@@ -226,35 +226,43 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     },
 );
 
-// //유저 마이페이지
-// //buylist
-// router.get('/buy/:userId', authMiddleware, (req, res) => {
-//     const userId = req.params.userId;
+//유저 마이페이지 (참여한 게시판 조회) *** 자신의 것 조회할때랑 다른사람것 조회할때를... 프론트와 의논.
+router.get('/:userId', authMiddleware, (req, res) => {
+    const userId = req.params.userId;
 
-//     const sql =
-//         'SELECT * FROM Post WHERE `User_userId`= ? and `category`="buy"';
+    const userinfo = 
+        'SELECT * FROM `User` WHERE `userId`=?';
+    db.query(userinfo, [userId],(err, userinfo) =>{
+        if (err) console.log(err);
+        console.log(userinfo);
+    
+    const buylist =
+        'SELECT * FROM Post WHERE `User_userId`= ? and `category`="buy"';
+    db.query(buylist, [userId], (err, buylist) => {
+        if (err) console.log(err);
+        console.log(buylist);
 
-//     db.query(sql, [userId], (err, data) => {
-//         if (err) console.log(err);
-//         console.log(data);
-//         res.status(201).send({ msg: 'success', data });
-//     });
-// });
+    const eatlist =
+        'SELECT * FROM Post WHERE `User_userId`= ? and `category`="eat"';
+    db.query(eatlist, [userId], (err, eatlist) => {
+        if (err) console.log(err);
+        console.log(eatlist);
 
-// router.get('/eat/:userId', authMiddleware, (req, res) => {
-//     const userId = req.params.userId;
+    const likelist = 
+        'SELECT * FROM `Like` WHERE `User_userId`= ?';
+    db.query(likelist, [userId], (err, likelist) => {
+        if (err) console.log(err);
+        console.log(likelist);
+    
+        
+        res.status(201).send({ msg: 'success', userinfo, buylist, eatlist ,likelist});
+    })  
+    })
+    })
+    });
+});
 
-//     const sql =
-//         'SELECT * FROM Post WHERE `User_userId`= ? and `category`="eat"';
-
-//     db.query(sql, [userId], (err, data) => {
-//         if (err) console.log(err);
-//         console.log(data);
-//         res.status(201).send({ msg: 'success', data });
-//     });
-// });
-
-//유저 좋아요
+//유저 좋아요 조회
 router.get('/like/:userId', authMiddleware, (req, res) => {
     const userId = req.params.userId;
 
