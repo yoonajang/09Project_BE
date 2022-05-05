@@ -84,7 +84,6 @@ router.post('/postlist', (req, res) => {
        
         for (list of data){
             let head = list.headList
-            console.log(isNaN(Number(head)))
             if (isNaN(Number(head))){
                 list.headList = head.split(',').map(id => Number(id))
             } else {
