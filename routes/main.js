@@ -70,71 +70,89 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
 });
 
 // 메인페이지 게시글 불러오기
-router.post('/postlist', (req, res) => {
-    const address = req.body.address.split(' ');
-    console.log(address)
-    const findAddr = address[0]+' '+address[1]+' '+address[2]
-    const addr = findAddr +'%'
-    const sql = "SELECT * FROM `Post` WHERE address LIKE ? ORDER BY createdAt DESC"
-
-    db.query(sql, addr, (err, data) => {
-        if (err) console.log(err);
-        console.log(data);
-        res.status(201).send({ msg: 'success', data });
-    });
-});
-// router.get('/postlist', (req, res) => {
+// router.post('/postlist', (req, res) => {
 //     const address = req.body.address.split(' ');
+//     console.log(address)
 //     const findAddr = address[0]+' '+address[1]+' '+address[2]
-
-//     console.log(findAddr)
-
-//     // const addr = findAddr +'%'
-//     // const sql = "SELECT P.*, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P INNER JOIN `JoinPost` JP ON P.postId = JP.Post_postId INNER JOIN `User` U ON JP.User_userId = U.userId WHERE address LIKE ? ORDER BY createdAt DESC"
-//     // let data = [];
-
-//     // db.query(sql, addr, (err, main) => {
-//     //     // if (err) console.log(err);
-
-//     //     // for (let i=0; i<main.length; i++){
-//     //     //     console.log( '<<<<<<<<<<<')
-//     //     //     const postid = main[i].postId
-
-//     //     //     console.log(postid,'!!!!!!!!!!!!!!!!')
-
-//     //     //     const sql = "SELECT P.*, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P INNER JOIN `JoinPost` JP ON P.postId = JP.Post_postId INNER JOIN `User` U  ON JP.User_userId = U.userId WHERE P.postId =?"
-
-//     //     //     db.query(sql, postid, (err, doc) => {
-//     //     //         console.log(doc, '?')
-//     //     //         // if (doc.length !== 0) {
-//     //     //         //     doc[0].headList = doc[0].headList.split(',').map(id => Number(id))
-//     //     //         //     // data.push(doc)
-//     //     //         // } else {
-//     //     //         //     // data.push(doc)
-//     //     //         // }
-//     //     //     });
-
-//     //     //     // data.push(list)
-//     //     // }
-
-//     //     res.send({ msg: 'success', main });
-//     // })
-
-
-
-
-
-
-
 //     const addr = findAddr +'%'
 //     const sql = "SELECT * FROM `Post` WHERE address LIKE ? ORDER BY createdAt DESC"
 
 //     db.query(sql, addr, (err, data) => {
-//         console.log(data)
-//         res.send({ msg: 'success', data });
+//         if (err) console.log(err);
+//         console.log(data);
+//         res.status(201).send({ msg: 'success', data });
+//     });
+// });
+
+
+
+// router.post('/postlist', (req, res) => {
+//     const address = req.body.address.split(' ');
+//     const findAddr = address[0]+' '+address[1]+' '+address[2]
+//     const addr = findAddr +'%'
+
+//     const sql = "SELECT * FROM `Post` WHERE address LIKE ? ORDER BY createdAt DESC"
+//     let data = [];
+
+//     db.query(sql, addr, (err, main) => {
+//         if (err) console.log(err);
+
+//         for (list of main ){
+//             const postid = list.postId
+
+//             console.log(postid,'!!!!!!!!!!!!!!!!')
+
+//             const sql = "SELECT P.*, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P INNER JOIN `JoinPost` JP ON P.postId = JP.Post_postId INNER JOIN `User` U ON JP.User_userId = U.userId WHERE P.postId = ?"
+//             console.log(sql,'!!!!!!!!!!!!!!!!!!!!!')
+
+//             db.query(sql, postid, (err, doc) => {
+//                 console.log(doc, postid, '?')
+//                 // if (doc.length !== 0) {
+//                 //     doc[0].headList = doc[0].headList.split(',').map(id => Number(id))
+//                 //     // data.push(doc)
+//                 // } else {
+//                 //     // data.push(doc)
+//                 // }
+//             });
+
+//             // data.push(list)
+//         }
+
+//         res.send({ msg: 'success', main });
 //     })
 
 // });
+
+
+// 메인페이지 게시글 불러오기
+router.post('/postlist', (req, res) => {
+    const address = req.body.address.split(' ');
+    const findAddr = address[0]+' '+address[1]+' '+address[2]+' '
+    const addr = findAddr +'%'
+
+    const sql = "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId  WHERE `address` like ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime"
+
+    db.query(sql, addr, (err, data) => {
+        
+        if (err) console.log(err);
+       
+        for (list of data){
+            let head = list.headList
+            console.log(isNaN(Number(head)))
+            if (isNaN(Number(head))){
+                list.headList = head.split(',').map(id => Number(id))
+            } else {
+                let newList = [];
+                newList.push(Number(head))
+                list.headList = newList
+            }
+        }
+
+        res.send({ msg: 'success',  data });
+    })
+
+});
+
 
 // 메인페이지 게시글 상세보기
 router.get('/postdetail', (req, res) => {
