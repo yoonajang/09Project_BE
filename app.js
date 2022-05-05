@@ -16,10 +16,10 @@ const httpPort = 80;
 const httpsPort = 443;
 
 //소켓
-// const socketIo = require('socket.io');
-// const { Iot, Route53Domains } = require('aws-sdk');
-// const { SocketAddress } = require('net');
-// const server = require('http').createServer(app)
+const socketIo = require('socket.io');
+const { Iot, Route53Domains } = require('aws-sdk');
+const { SocketAddress } = require('net');
+const server = require('http').createServer(app)
 
 app.use(cors());
 
@@ -66,14 +66,14 @@ const credentials = {
 };
 
 http.createServer(app_http).listen(httpPort, () => {
-    console.log('http서버가 켜졌어요!');
-});
+  console.log('http서버가 켜졌어요!')
+})
 
 https.createServer(credentials, app).listen(httpsPort, () => {
-    console.log('https서버가 켜졌어요!');
-});
+  console.log('https서버가 켜졌어요!')
+})
 
-// 도메인
+//도메인
 // app.listen(port, () => {
 //     console.log(port, '포트로 서버가 켜졌어요!');
 // });

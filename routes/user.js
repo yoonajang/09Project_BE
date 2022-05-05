@@ -7,6 +7,9 @@ const nodemailer = require('nodemailer');
 const ejs = require('ejs');
 const path = require('path');
 let appDir = path.dirname(require.main.filename);
+const upload = require('../S3/s3');
+const { PollyCustomizations } = require('aws-sdk/lib/services/polly');
+
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -204,6 +207,61 @@ router.get('/islogin', authMiddleware, async (req, res) => {
             userImage: user.userImage,
             tradeCount: user.tradeCount,
         },
+    });
+});
+
+// 유저 프로필 업로드
+router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
+        const userId = res.locals.user.userId;
+        const userImage = req.file?.location;
+        // console.log(userId, userImage);
+        try {
+            const sql = ' UPDATE User SET userImage=? WHERE userId=?';
+            db.query(sql, [userImage, userId], (err, rows) => {
+                res.send({ msg: '글 등록 성공' });
+            });
+        } catch (error) {
+            res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
+        }
+    },
+);
+
+// //유저 마이페이지
+// //buylist
+// router.get('/buy/:userId', authMiddleware, (req, res) => {
+//     const userId = req.params.userId;
+
+//     const sql =
+//         'SELECT * FROM Post WHERE `User_userId`= ? and `category`="buy"';
+
+//     db.query(sql, [userId], (err, data) => {
+//         if (err) console.log(err);
+//         console.log(data);
+//         res.status(201).send({ msg: 'success', data });
+//     });
+// });
+
+// router.get('/eat/:userId', authMiddleware, (req, res) => {
+//     const userId = req.params.userId;
+
+//     const sql =
+//         'SELECT * FROM Post WHERE `User_userId`= ? and `category`="eat"';
+
+//     db.query(sql, [userId], (err, data) => {
+//         if (err) console.log(err);
+//         console.log(data);
+//         res.status(201).send({ msg: 'success', data });
+//     });
+// });
+
+//유저 좋아요
+router.get('/like/:userId', authMiddleware, (req, res) => {
+    const userId = req.params.userId;
+
+    const sql = 'SELECT * FROM `Like` WHERE `User_userId`= ?';
+    db.query(sql, [userId], (err, data) => {
+        if (err) console.log(err);
+        res.status(201).send({ msg: 'success', data });
     });
 });
 
