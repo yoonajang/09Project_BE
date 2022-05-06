@@ -86,8 +86,6 @@ https.createServer(credentials, app).listen(httpsPort, () => {
 //     console.log(port, '포트로 서버가 켜졌어요!');
 // });
 
-
-
 io.on("connection", (socket)=> {
     console.log("연결이되었습니다.")
     socket.on("init", (payload) => {
