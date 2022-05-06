@@ -16,17 +16,17 @@ const httpPort = 80;
 const httpsPort = 443;
 
 //소켓
-// const socketIo = require('socket.io');
-// const { Iot, Route53Domains } = require('aws-sdk');
-// const { SocketAddress } = require('net');
-// const server = require('http').createServer(app)
+const socketIo = require('socket.io');
+const { Iot, Route53Domains } = require('aws-sdk');
+const { SocketAddress } = require('net');
+const server = require('http').createServer(app)
 
-// const io = socketIo(server, {
-//     cors: {
-//         origin: "*", //여기에 명시된 서버만 호스트만 내서버로 연결을 허용할거야
-//         methods: ["GET", "POST"],
-//     },
-// })
+const io = socketIo(server, {
+    cors: {
+        origin: "*", //여기에 명시된 서버만 호스트만 내서버로 연결을 허용할거야
+        methods: ["GET", "POST"],
+    },
+})
 
 app.use(cors());
 
@@ -84,3 +84,17 @@ https.createServer(credentials, app).listen(httpsPort, () => {
 // app.listen(port, () => {
 //     console.log(port, '포트로 서버가 켜졌어요!');
 // });
+
+io.on("connection", (socket)=> {
+    console.log("연결이되었습니다.")
+    socket.on("init", (payload) => {
+        console.log(payload)
+    })
+    socket.on("send message", (item) => {//send message 이벤트 발생
+        console.log(item.name + " : " + item.message);
+       io.emit("receive message", { name: item.name, message: item.message });
+       //클라이언트에 이벤트를 보냄
+     });
+})
+
+module.exports = app
