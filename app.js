@@ -19,9 +19,10 @@ const httpsPort = 443;
 const socketIo = require('socket.io');
 const { Iot, Route53Domains } = require('aws-sdk');
 const { SocketAddress } = require('net');
-const server = require('http').createServer(app)
+// const server = require('http').createServer(app)
+const toHttp = http.createServer(app_http)
 
-const io = socketIo(server, {
+const io = socketIo(toHttp, {
     cors: {
         origin: "*", //여기에 명시된 서버만 호스트만 내서버로 연결을 허용할거야
         methods: ["GET", "POST"],
@@ -72,13 +73,9 @@ const credentials = {
     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 };
 
-// http.createServer(app_http).listen(httpPort, () => {
-//   console.log('http서버가 켜졌어요!')
-// })
-
-server.listen(httpPort, () => {
-    console.log('http서버가 켜졌어요!')
-  })
+http.createServer(app_http).listen(httpPort, () => {
+  console.log('http서버가 켜졌어요!')
+})
 
 https.createServer(credentials, app).listen(httpsPort, () => {
   console.log('https서버가 켜졌어요!')
