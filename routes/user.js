@@ -14,7 +14,7 @@ router.post('/signup', (req, res, next) => {
     const param = [
         req.body.userEmail,
         req.body.userName,
-        req.body.userPassword,
+        req.body.password,
         userImage,
     ];
 
