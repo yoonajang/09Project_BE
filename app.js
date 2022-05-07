@@ -32,6 +32,10 @@ const credentials = {
     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 };
 
+console.log(credentials.key, typeof credentials.key)
+console.log(credentials.cert, typeof credentials.cert)
+console.log(credentials.ca, typeof credentials.ca)
+
 const server = https.createServer(
     credentials, app
     );
@@ -164,7 +168,6 @@ https.createServer(credentials, app).listen(httpsPort, () => {
     console.log('https서버가 켜졌어요!')
   })
   
-console.log(1)
 io.on('connection', socket => {
     if(err) console.log(err)
     console.log('연결성공');
