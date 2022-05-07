@@ -1,11 +1,11 @@
 require('dotenv').config();
+const helmet = require('helmet');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const routers = require('./routes');
 const fs = require('fs');
 const http = require('http');
-
 const https = require('https');
 const app = express();
 const app_http = express();
@@ -49,6 +49,7 @@ const requestMiddleware = (req, res, next) => {
 };
 
 // app.use(express.static(path.join(__dirname, 'src'))); //채팅연습용
+app.use(helmet());
 app.use(express.static('static')); //채팅연습끝나면살리기
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
