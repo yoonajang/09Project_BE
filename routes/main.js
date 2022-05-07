@@ -107,17 +107,26 @@ router.post('/getchat/:postid', authMiddleware, (req, res) => {
     const userName = res.locals.user.userName;
     const userImage = res.locals.user.userImage;
     const userId = res.locals.user.userId;
-    
+
     //waitingUser table 데이터 넣기
     const sql =
-        'INSERT INTO JoinPost (`Post_postId`, `User_userEmail`, `User_userName`, `userImage`, `User_userId`, `isPick`) VALUES (?,?,?,?,?,?);';
-    const params = [postId, userEmail, userName, userImage, userId, false];
+        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ?);';
+    const params = [
+        postId,
+        userEmail,
+        userName,
+        userImage,
+        userId,
+        'false',
+        userId,
+    ];
     const sqls = mysql.format(sql, params);
     //waitingUser table 데이터 불러오기
     const sql_1 = 'SELECT * FROM JoinPost WHERE Post_postId=?;';
     const sql_1s = mysql.format(sql_1, postId);
     //Chat table 데이터 가져오기
-    const sql_2 = 'SELECT * FROM Chat WHERE Post_postId=? ORDER BY createdAt ASC;';
+    const sql_2 =
+        'SELECT * FROM Chat WHERE Post_postId=? ORDER BY createdAt ASC;';
     const sql_2s = mysql.format(sql_2, postId);
     //게시글 작성자 정보 가져오기
     const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
@@ -129,7 +138,6 @@ router.post('/getchat/:postid', authMiddleware, (req, res) => {
             const userInfo = results[1];
             const chatInfo = results[2];
             const chatAdmin = results[3];
-            console.log(chatAdmin)
             return res.status(200).send({
                 data: { userInfo, chatInfo, chatAdmin },
                 message: '채팅 참여자와 메세지 정보가 전달되었습니다',
