@@ -17,11 +17,7 @@ const httpsPort = 443;
 
 //소켓
 const path = require('path'); //__dirname 쓰기 위해 필요
-const server = http.createServer({
-    key: readFileSync('/private.key'),
-    cert: readFileSync('/certificate.crt'),
-    ca: readFileSync('/ca_bundle.crt'),
-    },app); //이 전에 node 기본 모듈 http 불러오기 필요
+const server = http.createServer(app); //이 전에 node 기본 모듈 http 불러오기 필요
 
 
 const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
