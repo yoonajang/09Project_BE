@@ -39,8 +39,7 @@ const server = https.createServer(
 
  
 
-// const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
-const {Server} = require('socket.io'); //소켓 라이브러리 불러오기
+const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
 const moment = require('moment'); //시간 표시를 위해 사용
 // const res = require('express/lib/response');
 
@@ -162,7 +161,7 @@ let a = http.createServer(app_http).listen(httpPort, () => {
   console.log('http서버가 켜졌어요!')
 })
 
-var io = socket.listen(a );
+var io = socketIO.listen(a );
 io.sockets.on('connection', function () {
     console.log('hello world im a hot socket');
 });
