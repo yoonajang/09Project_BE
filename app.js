@@ -12,7 +12,7 @@ const app_http = express();
 const port = 3000;
 const httpPort = 80;
 const httpsPort = 443;
-const connect = require('../config');
+// const connect = require('../config');
 
 const credentials = {
     key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
@@ -20,7 +20,7 @@ const credentials = {
     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 };
 
-connect();
+
 
 //소켓
 const path = require('path'); //__dirname 쓰기 위해 필요
