@@ -18,12 +18,23 @@ const httpsPort = 443;
 //소켓
 const path = require('path'); //__dirname 쓰기 위해 필요
 
-const server = https.createServer(app)
-// const server = https.createServer({
-//     key: fs.readFileSync(__dirname + '/private.key'),
-//     cert: fs.readFileSync(__dirname + '/certificate.crt'),
-//     ca: fs.readFileSync(__dirname + '/ca_bundle.crt'),
-//     }); //이 전에 node 기본 모듈 http 불러오기 필요
+// const server = http.createServer(app)
+// const server = https.createServer(
+//     credentials, app
+//     // key: fs.readFileSync(__dirname + '/private.key'),
+//     // cert: fs.readFileSync(__dirname + '/certificate.crt'),
+//     // ca: fs.readFileSync(__dirname + '/ca_bundle.crt'),
+//     ); //이 전에 node 기본 모듈 http 불러오기 필요
+
+const credentials = {
+    key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
+    cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8'),
+    ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
+};
+
+const server = https.createServer(
+    credentials, app
+    );
 
 
 const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
@@ -134,11 +145,15 @@ app.get(
     },
 );
 
-const credentials = {
-    key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
-    cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8'),
-    ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
-};
+// const credentials = {
+//     key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
+//     cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8'),
+//     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
+// };
+
+// const server = https.createServer(
+//     credentials, app
+//     );
 
 http.createServer(app_http).listen(httpPort, () => {
   console.log('http서버가 켜졌어요!')
@@ -148,7 +163,7 @@ https.createServer(credentials, app).listen(httpsPort, () => {
     console.log('https서버가 켜졌어요!')
   })
   
-
+console.log(1)
 io.on('connection', socket => {
     console.log('연결성공');
     //메세지 주고 받기
@@ -205,6 +220,6 @@ io.on('connection', socket => {
 
 
 //도메인
-server.listen(port, () => {
-    console.log(port, '포트로 서버가 켜졌어요!');
-});
+// server.listen(port, () => {
+//     console.log(port, '포트로 서버가 켜졌어요!');
+// });
