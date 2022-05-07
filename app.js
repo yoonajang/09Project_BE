@@ -166,6 +166,7 @@ https.createServer(credentials, app).listen(httpsPort, () => {
   
 console.log(1)
 io.on('connection', socket => {
+    if(err) console.log(err)
     console.log('연결성공');
     //메세지 주고 받기
     socket.on('sendmessage', param => {
