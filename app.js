@@ -18,12 +18,12 @@ const httpsPort = 443;
 //소켓
 const path = require('path'); //__dirname 쓰기 위해 필요
 const server = http.createServer(app); //이 전에 node 기본 모듈 http 불러오기 필요
-const socketIO = require('socket.io'); //소켓 라이브러라 불러오기
+const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
 const moment = require('moment'); //시간 표시를 위해 사용
 const res = require('express/lib/response');
 
 const io = socketIO(server, {
-    //socketIO에서 server를 담아간 내용을 변수
+    //socketIO에서 server를 담아간 내용을 변수에 넣기
     cors: {
         origin: '*', //여기에 명시된 서버만 호스트만 내서버로 연결을 허용할거야
         methods: ['GET', 'POST'],
@@ -50,51 +50,58 @@ app.use(requestMiddleware);
 app.use('/', routers);
 
 //소켓
-// const chat = io.of('/chat');
 io.on('connection', socket => {
-    console.log('연결성공')
-    //프론트와 연결
-    socket.on('chatting', param => {
+    console.log('연결성공');
+    //메세지 주고 받기
+    socket.on('sendmessage', param => {
         //프론트 입력값 받아주는 코드
         //chat table data 입력
-        console.log(param)
-        return
+        console.log(param);
         const postId = param.postId;
-        const sql = 'INSERT INTO Chat (`Post_postId`, `User_userId`, `chat`) VALUES (?,?,?)';
+        const userId = param.userId;
+        const userName = param.userName;
+        const userImage = param.userImage;
+        const chat = param.chat;
+        const sql =
+            'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `userImage`, `chat`) VALUES (?,?,?,?,?)';
+        const data = [postId, userId, userName, userImage, chat];
 
         db.query(sql, data, (err, rows) => {
             if (err) {
                 console.log(err);
-                res.status(401).send({ msg: '데이터 입력 실패' });
             } else {
-                res.status(201).send({ msg: '데이터 입력 성공' });
+                //해당 게시글 채팅방에 메세지 전송
+                socket.join(postId);
+                //room에 join(room이름 = postId)
+                io.to(postId).emit('sendmessage', {
+                    //room에 join되어 있는 클라이언트에게 전송
+                    time: moment(new Date()).format('h:mm A'),
+                    userName,
+                    userImage,
+                    chat,
+                });
             }
         });
-        //chatRoomUser table data 입력
-        const datas = [postId, userId, userEmail, userName, userImage];
-        const sqls =
-            'INSERT INTO chatRoomUser (`Post_postId`, `User_userId`, `User_userEmail`, `User_userName`, `User_userImage`,) VALUES (?,?,?,?,?)';
 
-        db.query(sqls, datas, (err, rows) => {
+        
+    });
+    //거래할 유저 선택
+    socket.on('userpick', pick => {
+        const postId = pick.postId;
+        const userId = pick.userId;
+
+        const sql = 'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?';
+        const data = [postId, userId];
+
+        db.query(sql, data, (err, rows) => {
             if (err) {
                 console.log(err);
-                res.status(401).send({ msg: '데이터 입력 실패' });
+                res.status(401).send({ msg: '수정 실패' });
             } else {
-                res.status(201).send({ msg: '데이터 입력 성공' });
+                res.status(201).send({ msg: 'isPick이 수정되었습니다', rows });
             }
         });
-
-        socket.join(postId);
-        //room에 join(room이름 = postId)
-        chat.to(postId).emit('sendmessage', {
-            //room에 join되어 있는 클라이언트에게 전송
-            // time: moment(new Date()).format('h:mm A'),
-            postId,
-            userName,
-            userImage,
-        });
-    });
-    socket.on('sendMessage', data => {});
+    })
 });
 
 app_http.use((req, res, next) => {
