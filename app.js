@@ -28,7 +28,8 @@ const server = https.createServer(app)
 
 const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
 const moment = require('moment'); //시간 표시를 위해 사용
-const res = require('express/lib/response');
+// const res = require('express/lib/response');
+
 
 const io = socketIO(server, {
     //socketIO에서 server를 담아간 내용을 변수에 넣기
@@ -201,8 +202,6 @@ io.on('connection', socket => {
         });
     })
 });
-
-
 
 
 //도메인
