@@ -146,6 +146,6 @@ https.createServer(credentials, app).listen(httpsPort, () => {
 })
 
 //도메인
-// server.listen(port, () => {
-//     console.log(port, '포트로 서버가 켜졌어요!');
-// });
+server.listen(port, () => {
+    console.log(port, '포트로 서버가 켜졌어요!');
+});
