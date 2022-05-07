@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
     }
 
     try {
-        const { userId } = jwt.verify(authToken, process.env.JWT_SECRET);
+        const { userId } = jwt.verify(authToken, process.env.JWT_SECRET);           
 
         const sql = 'select * from User where userId=?';
 

@@ -16,6 +16,28 @@ const saltRounds = 10;
 // 회원가입
 router.post('/signup', (req, res, next) => {
     const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
+    const param = [
+        req.body.userEmail,
+        req.body.userName,
+        req.body.password,
+        userImage,
+    ];
+
+    bcrypt.hash(param[2], saltRounds, (err, hash) => {
+        param[2] = hash;
+        db.query(
+            'INSERT INTO User(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,?)',
+            param,
+            (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.status(401).send({ meg: 'fail' });
+                } else {
+                    res.status(201).send({ meg: 'success' });
+                }
+            },
+        );
+
     const { userEmail, userName, userPassword } = req.body;
     const param = [userEmail, userName, userPassword, userImage];
 
