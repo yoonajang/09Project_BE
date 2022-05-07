@@ -32,12 +32,18 @@ const credentials = {
     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 };
 
-console.log(credentials.key, typeof credentials.key, 'key')
-console.log(credentials.cert, typeof credentials.cert, 'cert')
-console.log(credentials.ca, typeof credentials.ca, 'ca')
+const credential2 = {
+    key: fs.readFileSync(__dirname + '/private.key').toString(),
+    cert: fs.readFileSync(__dirname + '/certificate.crt').toString(),
+    ca: fs.readFileSync(__dirname + '/ca_bundle.crt').toString(),
+};
+
+console.log(credentials2.key, typeof credentials2.key, 'key')
+console.log(credentials2.cert, typeof credentials2.cert, 'cert')
+console.log(credentials2.ca, typeof credentials2.ca, 'ca')
 
 const server = https.createServer(
-    credentials, app
+    credentials2, app
     );
 
 
