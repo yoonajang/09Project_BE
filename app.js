@@ -30,9 +30,6 @@ const io = socketIO(server, {
         credentials: true,
     },
 });
-instrument(io, {
-    auth: false,
-});
 
 app.use(cors());
 
