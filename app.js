@@ -12,8 +12,7 @@ const app_http = express();
 const port = 3000;
 const httpPort = 80;
 const httpsPort = 443;
-
-// const db = require('../config');
+const connect = require('../config');
 
 const credentials = {
     key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
@@ -144,6 +143,7 @@ app.get(
 );
 
 
+socketIO(https.createServer(credentials, app));
 
 http.createServer(app_http).listen(httpPort, () => {
   console.log('http서버가 켜졌어요!')
