@@ -32,9 +32,9 @@ const credentials = {
     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 };
 
-console.log(credentials.key, typeof credentials.key)
-console.log(credentials.cert, typeof credentials.cert)
-console.log(credentials.ca, typeof credentials.ca)
+console.log(credentials.key, typeof credentials.key, 'key')
+console.log(credentials.cert, typeof credentials.cert, 'cert')
+console.log(credentials.ca, typeof credentials.ca, 'ca')
 
 const server = https.createServer(
     credentials, app
