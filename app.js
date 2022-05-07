@@ -37,12 +37,13 @@ const server = https.createServer(
     );
 
 
-const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
+// const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
+const {Server} = require('socket.io'); //소켓 라이브러리 불러오기
 const moment = require('moment'); //시간 표시를 위해 사용
 // const res = require('express/lib/response');
 
-
-const io = socketIO(server, {
+// const io = socketIO(server, {
+const io = new Server(server, {
     //socketIO에서 server를 담아간 내용을 변수에 넣기
     cors: {
         origin: '*', //여기에 명시된 서버만 호스트만 내서버로 연결을 허용할거야
