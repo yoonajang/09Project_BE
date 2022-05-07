@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config');
+const mysql = require('mysql');
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
@@ -84,6 +85,55 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
         }
     });
 });
+
+
+
+//채팅 시작하기
+router.post('/getchat/:postid', authMiddleware, (req, res) => {
+    const postId = req.params.postid;
+    const userEmail = res.locals.user.userEmail;
+    const userName = res.locals.user.userName;
+    const userImage = res.locals.user.userImage;
+    const userId = res.locals.user.userId;
+
+    //waitingUser table 데이터 넣기
+    const sql =
+        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ?);';
+    const params = [
+        postId,
+        userEmail,
+        userName,
+        userImage,
+        userId,
+        'false',
+        userId,
+    ];
+    const sqls = mysql.format(sql, params);
+    //waitingUser table 데이터 불러오기
+    const sql_1 = 'SELECT * FROM JoinPost WHERE Post_postId=?;';
+    const sql_1s = mysql.format(sql_1, postId);
+    //Chat table 데이터 가져오기
+    const sql_2 =
+        'SELECT * FROM Chat WHERE Post_postId=? ORDER BY createdAt ASC;';
+    const sql_2s = mysql.format(sql_2, postId);
+    //게시글 작성자 정보 가져오기
+    const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
+    const sql_3s = mysql.format(sql_3, postId);
+
+    db.query(sqls + sql_1s + sql_2s + sql_3s, (err, results) => {
+        if (err) console.log(err);
+        else {
+            const userInfo = results[1];
+            const chatInfo = results[2];
+            const chatAdmin = results[3];
+            return res.status(200).send({
+                data: { userInfo, chatInfo, chatAdmin },
+                message: '채팅 참여자와 메세지 정보가 전달되었습니다',
+            });
+        }
+    })
+
+})
 
 
 // 메인페이지 게시글 불러오기
@@ -209,6 +259,19 @@ router.delete('/like/:postId', authMiddleware, (req, res) => {
         } else {
             res.send({ msg: 'fail' });
         }
+    });
+});
+
+//채팅 나가기
+router.get('/outchat/:postid', authMiddleware, (req, res) => {
+    const postId = req.params.postid;
+    const userId = res.locals.user.userId;
+    const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
+    const params = [postId, userId];
+
+    db.query(sql, params, (err, data) => {
+        if (err) console.log(err);
+        res.status(201).send({ msg: 'success', data });
     });
 });
 
