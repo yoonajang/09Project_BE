@@ -18,7 +18,7 @@ const httpsPort = 443;
 //소켓
 const path = require('path'); //__dirname 쓰기 위해 필요
 
-//const server = https.createServer(app)
+const server = https.createServer(app)
 // const server = https.createServer({
 //     key: fs.readFileSync(__dirname + '/private.key'),
 //     cert: fs.readFileSync(__dirname + '/certificate.crt'),
@@ -30,14 +30,14 @@ const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
 const moment = require('moment'); //시간 표시를 위해 사용
 const res = require('express/lib/response');
 
-// const io = socketIO(server, {
-//     //socketIO에서 server를 담아간 내용을 변수에 넣기
-//     cors: {
-//         origin: '*', //여기에 명시된 서버만 호스트만 내서버로 연결을 허용할거야
-//         methods: ['GET', 'POST'],
-//         // credentials: true,
-//     },
-// });
+const io = socketIO(server, {
+    //socketIO에서 server를 담아간 내용을 변수에 넣기
+    cors: {
+        origin: '*', //여기에 명시된 서버만 호스트만 내서버로 연결을 허용할거야
+        methods: ['GET', 'POST'],
+        // credentials: true,
+    },
+});
 
 app.use(cors());
 
@@ -143,20 +143,10 @@ http.createServer(app_http).listen(httpPort, () => {
   console.log('http서버가 켜졌어요!')
 })
 
-const server = https.createServer(credentials, app)
-
-server.listen(httpsPort, () => {
-  console.log('https서버가 켜졌어요!')
-})
-
-const io = socketIO(server, {
-    //socketIO에서 server를 담아간 내용을 변수에 넣기
-    cors: {
-        origin: '*', //여기에 명시된 서버만 호스트만 내서버로 연결을 허용할거야
-        methods: ['GET', 'POST'],
-        // credentials: true,
-    },
-});
+https.createServer(credentials, app).listen(httpsPort, () => {
+    console.log('https서버가 켜졌어요!')
+  })
+  
 
 io.on('connection', socket => {
     console.log('연결성공');
@@ -212,11 +202,6 @@ io.on('connection', socket => {
     })
 });
 
-
-// https.createServer(credentials, app).listen(httpsPort, () => {
-//     console.log('https서버가 켜졌어요!')
-//   })
-  
 
 
 
