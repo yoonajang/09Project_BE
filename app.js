@@ -14,7 +14,7 @@ const httpPort = 80;
 const httpsPort = 3443;
 // const httpsPort = 443;
 const path = require('path')
-const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
+const {Server} = require('socket.io'); //소켓 라이브러리 불러오기
 const moment = require('moment'); //시간 표시를 위해 사용
 // const connect = require('../config');
 
@@ -28,7 +28,7 @@ const credentials = {
 
 
 const server = https.createServer(credentials, app)
-const io = new socketIO(server, {
+const io = new Server(server, {
     cors: {
         origin: '*', 
         methods: ['GET', 'POST'],
