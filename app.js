@@ -161,7 +161,7 @@ let a = http.createServer(app_http).listen(httpPort, () => {
   console.log('http서버가 켜졌어요!')
 })
 
-var io = socketIO.listen(a );
+var io = socketIO.listen(a);
 io.sockets.on('connection', function () {
     console.log('hello world im a hot socket');
 });
