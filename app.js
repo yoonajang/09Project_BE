@@ -79,7 +79,7 @@ http.createServer(app_http).listen(httpPort, () => {
   console.log('http서버가 켜졌어요!')
 })
 
-https.createServer(credentials, app).listen(httpsPort, () => {
+server.listen(httpsPort, () => {
     console.log('https서버가 켜졌어요!')
   })
 
