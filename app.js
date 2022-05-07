@@ -17,7 +17,12 @@ const httpsPort = 443;
 
 //소켓
 const path = require('path'); //__dirname 쓰기 위해 필요
-const server = http.createServer(app); //이 전에 node 기본 모듈 http 불러오기 필요
+const server = http.createServer({
+    key: fs.readFileSync('privkey.pem'),
+    cert: fs.readFileSync('fullchain.pem')
+    },app); //이 전에 node 기본 모듈 http 불러오기 필요
+
+
 const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
 const moment = require('moment'); //시간 표시를 위해 사용
 const res = require('express/lib/response');
@@ -27,7 +32,7 @@ const io = socketIO(server, {
     cors: {
         origin: '*', //여기에 명시된 서버만 호스트만 내서버로 연결을 허용할거야
         methods: ['GET', 'POST'],
-        credentials: true,
+        // credentials: true,
     },
 });
 
