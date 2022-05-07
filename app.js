@@ -18,8 +18,9 @@ const httpsPort = 443;
 //소켓
 const path = require('path'); //__dirname 쓰기 위해 필요
 const server = http.createServer({
-    key: fs.readFileSync('privkey.pem'),
-    cert: fs.readFileSync('fullchain.pem')
+    key: fs.readFileSync('/private.key'),
+    cert: fs.readFileSync('/certificate.crt'),
+    ca: fs.readFileSync('/ca_bundle.crt'),
     },app); //이 전에 node 기본 모듈 http 불러오기 필요
 
 
