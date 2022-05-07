@@ -89,7 +89,7 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
 });
 
 //채팅 시작하기
-router.post('/getchat/:postid', authMiddleware, (req, res) => {
+router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const postId = req.params.postid;
     const userEmail = res.locals.user.userEmail;
     const userName = res.locals.user.userName;
@@ -98,7 +98,7 @@ router.post('/getchat/:postid', authMiddleware, (req, res) => {
 
     //waitingUser table 데이터 넣기
     const sql =
-        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ?);';
+        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
     const params = [
         postId,
         userEmail,
@@ -107,6 +107,7 @@ router.post('/getchat/:postid', authMiddleware, (req, res) => {
         userId,
         'false',
         userId,
+        postId,
     ];
     const sqls = mysql.format(sql, params);
     //waitingUser table 데이터 불러오기
