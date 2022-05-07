@@ -32,18 +32,9 @@ const credentials = {
     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 };
 
-const credential2 = {
-    key: fs.readFileSync(__dirname + '/private.key').toString(),
-    cert: fs.readFileSync(__dirname + '/certificate.crt').toString(),
-    ca: fs.readFileSync(__dirname + '/ca_bundle.crt').toString(),
-};
-
-console.log(credentials2.key, typeof credentials2.key, 'key')
-console.log(credentials2.cert, typeof credentials2.cert, 'cert')
-console.log(credentials2.ca, typeof credentials2.ca, 'ca')
 
 const server = https.createServer(
-    credentials2, app
+    credentials, app
     );
 
 
@@ -170,9 +161,9 @@ http.createServer(app_http).listen(httpPort, () => {
   console.log('http서버가 켜졌어요!')
 })
 
-https.createServer(credentials, app).listen(httpsPort, () => {
-    console.log('https서버가 켜졌어요!')
-  })
+// https.createServer(credentials, app).listen(httpsPort, () => {
+//     console.log('https서버가 켜졌어요!')
+//   })
   
 io.on('connection', socket => {
     if(err) console.log(err)
@@ -231,6 +222,6 @@ io.on('connection', socket => {
 
 
 //도메인
-// server.listen(port, () => {
-//     console.log(port, '포트로 서버가 켜졌어요!');
-// });
+server.listen(port, () => {
+    console.log(port, '포트로 서버가 켜졌어요!');
+});
