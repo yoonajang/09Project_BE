@@ -52,8 +52,6 @@ router.post(
         const sql =
             'INSERT INTO Post (`title`, `content`, `price`, `headCount`, `category`, `endTime`, `address`, `lat`, `lng`, `writer`, `User_userId`, `image`, `isDone`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,false)';
 
-        console.log(sql);
-
         db.query(sql, datas, (err, rows) => {
             if (err) {
                 console.log(err);
@@ -87,7 +85,8 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
     });
 });
 
-// 메인페이지 게시글 불러오기 (수정)
+
+// 메인페이지 게시글 불러오기
 router.post('/postlist', (req, res) => {
     const address = req.body.address.split(' ');
     const userId = req.body.userId;
@@ -102,39 +101,44 @@ router.post('/postlist', (req, res) => {
 
     if (userId) {
         const sql =
-            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime";
-        db.query(sql, [userId, findAddr + '%'], (err, datas) => {
+            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
+
+        db.query(sql, [userId, findAddr + '%'], (err, data) => {
             if (err) console.log(err);
-            for (list of datas) {
+            for (list of data) {
                 let head = list.headList;
+                let newList = [];
+
                 if (isNaN(Number(head))) {
-                    list.headList = head.split(',').map(id => Number(id));
+                    newList.push(list.User_userId);
+                    head.split(',').map(id => newList.push(Number(id)));
+                    list.headList = newList;
                 } else {
-                    let newList = [];
-                    newList.push(Number(head));
+                    newList.push(list.User_userId);
                     list.headList = newList;
                 }
             }
-            const data = datas.reverse();
             res.send({ msg: 'success', data });
         });
     } else {
         const sql =
-            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime";
+            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
 
-        db.query(sql, [findAddr + '%'], (err, datas) => {
+        db.query(sql, [findAddr + '%'], (err, data) => {
             if (err) console.log(err);
-            for (list of datas) {
+            for (list of data) {
                 let head = list.headList;
+                let newList = [];
+
                 if (isNaN(Number(head))) {
-                    list.headList = head.split(',').map(id => Number(id));
+                    newList.push(list.User_userId);
+                    head.split(',').map(id => newList.push(Number(id)));
+                    list.headList = newList;
                 } else {
-                    let newList = [];
-                    newList.push(Number(head));
+                    newList.push(list.User_userId);
                     list.headList = newList;
                 }
             }
-            const data = datas.reverse();
             res.send({ msg: 'success', data });
         });
     }
@@ -207,6 +211,5 @@ router.delete('/like/:postId', authMiddleware, (req, res) => {
         }
     });
 });
-
 
 module.exports = router;
