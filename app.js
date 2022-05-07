@@ -153,7 +153,7 @@ https.createServer(credentials, app).listen(httpsPort, () => {
     console.log('https서버가 켜졌어요!')
   })
 
-io.socket.on('connection', socket => {
+io.on('connection', socket => {
     if(err) console.log(err)
     console.log('연결성공');
     //메세지 주고 받기
