@@ -161,9 +161,9 @@ http.createServer(app_http).listen(httpPort, () => {
   console.log('http서버가 켜졌어요!')
 })
 
-// https.createServer(credentials, app).listen(httpsPort, () => {
-//     console.log('https서버가 켜졌어요!')
-//   })
+https.createServer(credentials, app).listen(httpsPort, () => {
+    console.log('https서버가 켜졌어요!')
+  })
   
 io.on('connection', socket => {
     if(err) console.log(err)
@@ -222,6 +222,6 @@ io.on('connection', socket => {
 
 
 //도메인
-server.listen(port, () => {
-    console.log(port, '포트로 서버가 켜졌어요!');
-});
+// server.listen(port, () => {
+//     console.log(port, '포트로 서버가 켜졌어요!');
+// });
