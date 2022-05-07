@@ -42,8 +42,8 @@ const io = socketIO(server, {
     //socketIO에서 server를 담아간 내용을 변수에 넣기
     cors: {
         origin: '*', //여기에 명시된 서버만 호스트만 내서버로 연결을 허용할거야
-        methods: ['GET', 'POST'],
-        credentials: true,
+        // methods: ['GET', 'POST'],
+        // credentials: true,
     },
 });
 
