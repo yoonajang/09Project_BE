@@ -1,7 +1,7 @@
 require('dotenv').config();
-const helmet = require('helmet');
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const routers = require('./routes');
 const fs = require('fs');
@@ -14,6 +14,14 @@ const httpPort = 80;
 const httpsPort = 443;
 
 // const db = require('../config');
+
+const credentials = {
+    key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
+    cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8'),
+    ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
+};
+
+connect();
 
 //소켓
 const path = require('path'); //__dirname 쓰기 위해 필요
@@ -135,11 +143,7 @@ app.get(
     },
 );
 
-const credentials = {
-    key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
-    cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8'),
-    ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
-};
+
 
 http.createServer(app_http).listen(httpPort, () => {
   console.log('http서버가 켜졌어요!')
