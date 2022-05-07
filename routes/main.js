@@ -88,30 +88,6 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
     });
 });
 
-
-// 메인페이지 게시글 불러오기
-router.get('/postlist', (req, res) => {
-    const address = req.body.address;
-    const sql = 'select * from Post where address=?';
-
-    db.query(sql, address, (err, data) => {
-        if (err) console.log(err);
-        console.log(data);
-        res.status(201).send({ msg: 'success', data });
-    });
-});
-
-// 메인페이지 게시글 상세보기
-router.get('/postdetail', (req, res) => {
-    const postId = req.body.postId;
-    const sql = 'select * from Post where postId=?';
-
-    db.query(sql, postId, (err, data) => {
-        if (err) console.log(err);
-        res.status(201).send({ msg: 'success', data });
-    });
-});
-
 //채팅 시작하기
 router.post('/getchat/:postid', authMiddleware, (req, res) => {
     const postId = req.params.postid;
@@ -154,7 +130,11 @@ router.post('/getchat/:postid', authMiddleware, (req, res) => {
                 data: { userInfo, chatInfo, chatAdmin },
                 message: '채팅 참여자와 메세지 정보가 전달되었습니다',
             });
-          
+        }
+    })
+
+})
+
 // 메인페이지 게시글 불러오기 (수정)
 router.post('/postlist', (req, res) => {
     const address = req.body.address.split(' ');
