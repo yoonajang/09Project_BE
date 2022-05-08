@@ -84,6 +84,7 @@ server.listen(httpsPort, () => {
 
 
 io.on('connection', socket => {
+    const db = require('../config');
     console.log('연결성공');
 
     // 채팅시작
