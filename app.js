@@ -90,7 +90,7 @@ io.on('connection', socket => {
     // 채팅시작
     socket.on('startchat', (param) => {
         console.log(param)
-        const postId = param.postId;
+        const postId = param.postid;
         const {userId, userName} = param.loggedUser;
 
         console.log(socket.id)
