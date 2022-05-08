@@ -131,7 +131,14 @@ io.on('connection', socket => {
             }
         });
 
+        socket.on("typing", (postid) => 
+            socket.to(postid).emit("typing")); 
         
+        socket.on("stop typing", (postid) => 
+            socket.to(postid).emit("stop typing"));
+
+
+
     });
 
 
