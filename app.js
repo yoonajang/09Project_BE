@@ -88,10 +88,10 @@ io.on('connection', socket => {
     console.log('연결성공');
 
     // 채팅시작
-    socket.on('startchat', param1, param2 => {
+    socket.on('startchat', param => {
 
         //새로 로그인된 인원이 없으면 추가, 있으면 말고.
-        console.log(param1, param2,'채팅 시작!')
+        console.log(param,'채팅 시작!')
 
         // const sql =
         //     'SELECT User_userId FROM JOINPOST WHERE Post_postId=? and User_userId=?'
@@ -102,7 +102,7 @@ io.on('connection', socket => {
         //     if(rows.length === 0)
         // })        
 
-        socket.join(param1)
+        // socket.join(param1)
     })
 
     // 메세지 주고 받기
