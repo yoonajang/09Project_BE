@@ -12,8 +12,8 @@ const app_http = express();
 const port = 3000;
 const httpPort = 80;
 const httpsPort = 443;
-const path = require('path')
-const {Server} = require('socket.io'); //소켓 라이브러리 불러오기
+const path = require('path');
+const { Server } = require('socket.io'); //소켓 라이브러리 불러오기
 const moment = require('moment'); //시간 표시를 위해 사용
 const db = require('./config');
 
@@ -25,22 +25,19 @@ const credentials = {
     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 };
 
-
-const server = https.createServer(credentials, app)
+const server = https.createServer(credentials, app);
 const io = new Server(server, {
     cors: {
-        origin: '*', 
+        origin: '*',
         methods: ['GET', 'POST'],
     },
 });
-
 
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
     console.log('Request URL:', req.originalUrl, '-', new Date());
     next();
 };
-
 
 // app.use(express.static(path.join(__dirname, 'src'))); //채팅연습용
 app.use(helmet());
@@ -51,7 +48,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestMiddleware);
 app.use('/', routers);
-
 
 app_http.use((req, res, next) => {
     if (req.secure) {
@@ -73,44 +69,38 @@ app.get(
     },
 );
 
-
 http.createServer(app_http).listen(httpPort, () => {
-  console.log('http서버가 켜졌어요!')
-})
+    console.log('http서버가 켜졌어요!');
+});
 
 server.listen(httpsPort, () => {
-    console.log('https서버가 켜졌어요!')
-  })
-
+    console.log('https서버가 켜졌어요!');
+});
 
 io.on('connection', socket => {
     console.log('연결성공');
 
     // 채팅시작
-    socket.on('startchat', (param) => {
-        console.log(param)
+    socket.on('startchat', param => {
+        console.log(param);
         const postId = param.postid;
-        const {userId, userName} = param.loggedUser;
+        const { userId, userName } = param.loggedUser;
 
-        console.log(socket.id)
-        socket.join(postId) // string ('p' + postId)
-        socket.join(userId)
-        console.log(socket.rooms)
+        console.log(socket.id);
+        socket.join(postId); // string ('p' + postId)
+        socket.join(userId);
+        console.log(socket.rooms);
 
         //수찬님 테스트용
-        io.emit('connected', userName + " 님이 입장했습니다.");
+        io.emit('connected', userName + ' 님이 입장했습니다.');
+    });
 
-    })
-
-    
     // 메세지 주고 받기
     socket.on('sendmessage', param => {
-        //프론트 입력값 받아주는 코드
-        //chat table data 입력
         console.log(param);
 
         const postid = param.newMessage.Post_postId;
-        const postId = postid.replace('p','')
+        const postId = postid.replace('p', '');
         const userId = param.newMessage.User_userId;
         const userName = param.newMessage.User_userName;
         const userEmail = param.newMessage.User_userEmail;
@@ -127,31 +117,25 @@ io.on('connection', socket => {
                 console.log(err);
             } else {
                 //room에 join(room이름 = postId)
-                socket.to(postid).emit('receive message', param.newMessage);
+        
+                socket.to(postid).emit('receive message', chat);
             }
         });
 
-        socket.on("typing", (postid) => 
-            socket.to(postid).emit("typing")); 
-        
-        socket.on("stop typing", (postid) => 
-            socket.to(postid).emit("stop typing"));
+        socket.on('typing', postid => socket.to(postid).emit('typing'));
 
-
-
+        socket.on('stop typing', postid =>
+            socket.to(postid).emit('stop typing'),
+        );
     });
-
-
-
-
-
 
     //거래할 유저 선택
     socket.on('userpick', pick => {
         const postId = pick.postId;
         const userId = pick.userId;
 
-        const sql = 'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?';
+        const sql =
+            'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?';
         const data = [postId, userId];
 
         db.query(sql, data, (err, rows) => {
@@ -162,9 +146,8 @@ io.on('connection', socket => {
                 res.status(201).send({ msg: 'isPick이 수정되었습니다', rows });
             }
         });
-    })
+    });
 });
-
 
 //도메인
 // server.listen(port, () => {
