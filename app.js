@@ -121,13 +121,14 @@ io.on('connection', socket => {
                 socket.to(postid).emit('receive message', chat);
             }
         });
-
-        socket.on('typing', postid => socket.to(postid).emit('typing'));
-
-        socket.on('stop typing', postid =>
-            socket.to(postid).emit('stop typing'),
-        );
     });
+
+    
+    socket.on('typing', postid => socket.to(postid).emit('typing'));
+
+    socket.on('stop typing', postid =>
+        socket.to(postid).emit('stop typing'),
+    );
 
     //거래할 유저 선택
     socket.on('userpick', pick => {
