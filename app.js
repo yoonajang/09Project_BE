@@ -15,7 +15,7 @@ const httpsPort = 443;
 const path = require('path')
 const {Server} = require('socket.io'); //소켓 라이브러리 불러오기
 const moment = require('moment'); //시간 표시를 위해 사용
-const db = require('/config');
+const db = require('./config');
 
 app.use(cors());
 
