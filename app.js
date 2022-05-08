@@ -123,9 +123,11 @@ io.on('connection', socket => {
         });
     });
 
-    socket.on('test', postid => socket.emit('typing'));
+    socket.on('test', postid => {
+        console.log(postid) 
+        socket.emit('test2');
 
-
+    })
     
     socket.on('typing', postid => socket.to(postid).emit('typing'));
 
