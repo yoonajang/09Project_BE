@@ -109,11 +109,16 @@ io.on('connection', socket => {
         //chat table data 입력
         console.log(param);
 
-        const { postid, content, createdAt, userId, userName, userImage } = param.newMessage;
+        const postId = param.newMessage.Post_postId;
+        const userId = param.newMessage.User_userId;
+        const userName = param.newMessage.User_userName;
+        const userImage = param.newMessage.userImage;
+        const chat = param.newMessage.chat;
+        const createdAt = param.newMessage.createdAt;
 
         const sql =
             'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `userImage`, `chat`) VALUES (?,?,?,?,?)';
-        const data = [postid, userId, userName, userImage, content ];
+        const data = [postId, userId, userName, userImage, chat];
 
         db.query(sql, data, (err, rows) => {
             if (err) {
