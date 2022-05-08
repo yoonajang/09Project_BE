@@ -126,7 +126,7 @@ io.on('connection', socket => {
                 console.log(err);
             } else {
                 //room에 join(room이름 = postId)
-                socket.to(postId).emit('receivemessage', {
+                socket.to(postId).emit('receive message', {
                     //room에 join되어 있는 클라이언트에게 전송
                     // createdAt: moment(new Date()).format('h:mm A'),
                     createdAt,
