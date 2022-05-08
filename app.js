@@ -109,7 +109,8 @@ io.on('connection', socket => {
         //chat table data 입력
         console.log(param);
 
-        const postId = param.newMessage.Post_postId;
+        const postid = param.newMessage.Post_postId;
+        const postId = postid.replace('p','')
         const userId = param.newMessage.User_userId;
         const userName = param.newMessage.User_userName;
         const userEmail = param.newMessage.User_userEmail;
