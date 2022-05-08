@@ -118,7 +118,7 @@ io.on('connection', socket => {
         const createdAt = param.newMessage.createdAt;
 
         const sql =
-            'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?)';
+            'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?,?)';
         const data = [postId, userId, userName, userEmail, userImage, chat];
 
         db.query(sql, data, (err, rows) => {
@@ -126,14 +126,7 @@ io.on('connection', socket => {
                 console.log(err);
             } else {
                 //room에 join(room이름 = postId)
-                socket.to(postId).emit('receive message', {
-                    //room에 join되어 있는 클라이언트에게 전송
-                    // createdAt: moment(new Date()).format('h:mm A'),
-                    createdAt,
-                    userName,
-                    userImage,
-                    chat,
-                });
+                socket.to(postId).emit('receive message', param.newMessage);
             }
         });
 
