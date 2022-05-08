@@ -89,6 +89,7 @@ io.on('connection', socket => {
 
     // 채팅시작
     socket.on('startchat', (param) => {
+        console.log(param)
         const postId = param.postId;
         const userId = param.userId;
         const userName = param.userName;
