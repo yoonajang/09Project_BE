@@ -88,12 +88,25 @@ io.on('connection', socket => {
     console.log('연결성공');
 
     // 채팅시작
-    socket.on('startchat', ({postid: postId, userid: userId}) => {
+    socket.on('startchat', (param) => {
+        const postId = param.postId;
+        const userId = param.userId;
+        const userName = param.userName;
+
         console.log(socket.id)
-        socket.join(postId)
+        socket.join(postId) // string ('p' + postId)
         socket.join(userId)
         console.log(socket.rooms)
+
+        //수찬님 테스트용
+        socket.emit('connected', userName + " 님이 입장했습니다.");
+
     })
+
+    //수찬님 테스트용
+    
+
+
 
     // 메세지 주고 받기
     socket.on('sendmessage', param => {
