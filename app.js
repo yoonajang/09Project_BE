@@ -94,6 +94,7 @@ io.on('connection', socket => {
         const userId = param.userid;
         // socket.join(postId);
         // socket.join(userId);
+        console.log(socket.id, socket.room)
         socket.join(postId, userId)
         console.log(socket.rooms)
     })
