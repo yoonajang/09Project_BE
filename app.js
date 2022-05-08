@@ -117,7 +117,7 @@ io.on('connection', socket => {
                 console.log(err);
             } else {
                 //room에 join(room이름 = postId)
-        
+                console.log(param,'<<<<<<<<<<<<<<<<<<<<<<<<<')
                 socket.to(postid).emit('receive message', chat);
             }
         });
