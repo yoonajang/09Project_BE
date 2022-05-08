@@ -83,10 +83,13 @@ server.listen(httpsPort, () => {
     console.log('https서버가 켜졌어요!')
   })
 
-  
+
 io.on('connection', socket => {
     console.log('연결성공');
     // 메세지 주고 받기
+    socket.on('test',param => console.log(param))
+    return 
+
     socket.on('sendmessage', param => {
         //프론트 입력값 받아주는 코드
         //chat table data 입력
