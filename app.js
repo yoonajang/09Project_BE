@@ -109,9 +109,8 @@ io.on('connection', socket => {
         //프론트 입력값 받아주는 코드
         //chat table data 입력
         console.log(param);
-;
-        const { postid, content, createdAt } = param.newMessage;
-        const { userId, userName, userImage } = param.loggedUser;
+
+        const { postid, content, createdAt, userId, userName, userImage } = param.newMessage;
 
         const sql =
             'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `userImage`, `chat`) VALUES (?,?,?,?,?)';
@@ -122,16 +121,16 @@ io.on('connection', socket => {
                 console.log(err);
             } else {
                 //해당 게시글 채팅방에 메세지 전송
-                socket.join(postid);
+                // socket.join(postid);
                 //room에 join(room이름 = postId)
-                io.to(postid).emit('sendmessage', {
-                    //room에 join되어 있는 클라이언트에게 전송
-                    // createdAt: moment(new Date()).format('h:mm A'),
-                    createdAt,
-                    userName,
-                    userImage,
-                    content,
-                });
+                // io.to(postid).emit('receivemessage', {
+                //     //room에 join되어 있는 클라이언트에게 전송
+                //     // createdAt: moment(new Date()).format('h:mm A'),
+                //     createdAt,
+                //     userName,
+                //     userImage,
+                //     content,
+                // });
             }
         });
 
