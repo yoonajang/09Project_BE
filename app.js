@@ -88,14 +88,10 @@ io.on('connection', socket => {
     console.log('연결성공');
 
     // 채팅시작
-    socket.on('startchat', param => {
-        console.log(param,'채팅 시작!') 
-        const postId = param.postid;
-        const userId = param.userid;
-        // socket.join(postId);
-        // socket.join(userId);
-        console.log(socket.id, socket.room)
-        socket.join(postId, userId)
+    socket.on('startchat', ({postid: postId, userid: userId}) => {
+        console.log(socket.id)
+        socket.join(postId)
+        socket.join(userId)
         console.log(socket.rooms)
     })
 
