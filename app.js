@@ -125,7 +125,7 @@ io.on('connection', socket => {
 
     socket.on('test', postid => {
         console.log(postid) 
-        socket.emit('test2');
+        socket.emit('test2', postid);
 
     })
     
