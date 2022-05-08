@@ -91,8 +91,7 @@ io.on('connection', socket => {
     socket.on('startchat', (param) => {
         console.log(param)
         const postId = param.postId;
-        const userId = param.userId;
-        const userName = param.userName;
+        const {userId, userName} = param.loggeduser;
 
         console.log(socket.id)
         socket.join(postId) // string ('p' + postId)
