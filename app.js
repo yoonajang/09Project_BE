@@ -91,7 +91,9 @@ io.on('connection', socket => {
     socket.on('startchat', param => {
         console.log(param,'채팅 시작!') 
         const postId = param.postid;
+        const userId = param.userid;
         socket.join(postId);
+        socket.join(userId);
     })
 
     // 메세지 주고 받기
