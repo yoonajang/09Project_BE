@@ -85,56 +85,56 @@ server.listen(httpsPort, () => {
 
 io.on('connection', socket => {
     console.log('연결성공');
-    //메세지 주고 받기
-    // socket.on('sendmessage', param => {
-    //     //프론트 입력값 받아주는 코드
-    //     //chat table data 입력
-    //     console.log(param);
-    //     const postId = param.postId;
-    //     const userId = param.userId;
-    //     const userName = param.userName;
-    //     const userImage = param.userImage;
-    //     const chat = param.chat;
-    //     const sql =
-    //         'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `userImage`, `chat`) VALUES (?,?,?,?,?)';
-    //     const data = [postId, userId, userName, userImage, chat];
+    메세지 주고 받기
+    socket.on('sendmessage', param => {
+        //프론트 입력값 받아주는 코드
+        //chat table data 입력
+        console.log(param);
+        const postId = param.postId;
+        const userId = param.userId;
+        const userName = param.userName;
+        const userImage = param.userImage;
+        const chat = param.chat;
+        const sql =
+            'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `userImage`, `chat`) VALUES (?,?,?,?,?)';
+        const data = [postId, userId, userName, userImage, chat];
 
-    //     db.query(sql, data, (err, rows) => {
-    //         if (err) {
-    //             console.log(err);
-    //         } else {
-    //             //해당 게시글 채팅방에 메세지 전송
-    //             socket.join(postId);
-    //             //room에 join(room이름 = postId)
-    //             io.to(postId).emit('sendmessage', {
-    //                 //room에 join되어 있는 클라이언트에게 전송
-    //                 time: moment(new Date()).format('h:mm A'),
-    //                 userName,
-    //                 userImage,
-    //                 chat,
-    //             });
-    //         }
-    //     });
+        db.query(sql, data, (err, rows) => {
+            if (err) {
+                console.log(err);
+            } else {
+                //해당 게시글 채팅방에 메세지 전송
+                socket.join(postId);
+                //room에 join(room이름 = postId)
+                io.to(postId).emit('sendmessage', {
+                    //room에 join되어 있는 클라이언트에게 전송
+                    time: moment(new Date()).format('h:mm A'),
+                    userName,
+                    userImage,
+                    chat,
+                });
+            }
+        });
 
         
-    // });
-    // //거래할 유저 선택
-    // socket.on('userpick', pick => {
-    //     const postId = pick.postId;
-    //     const userId = pick.userId;
+    });
+    //거래할 유저 선택
+    socket.on('userpick', pick => {
+        const postId = pick.postId;
+        const userId = pick.userId;
 
-    //     const sql = 'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?';
-    //     const data = [postId, userId];
+        const sql = 'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?';
+        const data = [postId, userId];
 
-    //     db.query(sql, data, (err, rows) => {
-    //         if (err) {
-    //             console.log(err);
-    //             res.status(401).send({ msg: '수정 실패' });
-    //         } else {
-    //             res.status(201).send({ msg: 'isPick이 수정되었습니다', rows });
-    //         }
-    //     });
-    // })
+        db.query(sql, data, (err, rows) => {
+            if (err) {
+                console.log(err);
+                res.status(401).send({ msg: '수정 실패' });
+            } else {
+                res.status(201).send({ msg: 'isPick이 수정되었습니다', rows });
+            }
+        });
+    })
 });
 
 
