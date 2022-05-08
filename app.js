@@ -112,29 +112,28 @@ io.on('connection', socket => {
         const postId = param.newMessage.Post_postId;
         const userId = param.newMessage.User_userId;
         const userName = param.newMessage.User_userName;
+        const userEmail = param.newMessage.User_userEmail;
         const userImage = param.newMessage.userImage;
         const chat = param.newMessage.chat;
         const createdAt = param.newMessage.createdAt;
 
         const sql =
-            'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `userImage`, `chat`) VALUES (?,?,?,?,?)';
-        const data = [postId, userId, userName, userImage, chat];
+            'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?)';
+        const data = [postId, userId, userName, userEmail, userImage, chat];
 
         db.query(sql, data, (err, rows) => {
             if (err) {
                 console.log(err);
             } else {
-                //해당 게시글 채팅방에 메세지 전송
-                // socket.join(postid);
                 //room에 join(room이름 = postId)
-                // io.to(postid).emit('receivemessage', {
-                //     //room에 join되어 있는 클라이언트에게 전송
-                //     // createdAt: moment(new Date()).format('h:mm A'),
-                //     createdAt,
-                //     userName,
-                //     userImage,
-                //     content,
-                // });
+                socket.to(postId).emit('receivemessage', {
+                    //room에 join되어 있는 클라이언트에게 전송
+                    // createdAt: moment(new Date()).format('h:mm A'),
+                    createdAt,
+                    userName,
+                    userImage,
+                    chat,
+                });
             }
         });
 
