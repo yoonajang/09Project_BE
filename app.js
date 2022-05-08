@@ -111,7 +111,6 @@ io.on('connection', socket => {
 
         const postid = param.newMessage.Post_postId;
         const postId = postid.replace('p','')
-        console.log(postid, postId)
         const userId = param.newMessage.User_userId;
         const userName = param.newMessage.User_userName;
         const userEmail = param.newMessage.User_userEmail;
@@ -128,7 +127,7 @@ io.on('connection', socket => {
                 console.log(err);
             } else {
                 //room에 join(room이름 = postId)
-                socket.to(postId).emit('receive message', param.newMessage);
+                socket.to(postid).emit('receive message', param.newMessage);
             }
         });
 
