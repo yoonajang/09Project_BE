@@ -99,7 +99,7 @@ io.on('connection', socket => {
         
 
         //새로 로그인된 인원이 없으면 추가, 있으면 말고. chat admin.
-        console.log(param.,'채팅 시작!') 
+        console.log(param,'채팅 시작!') 
 
         // const sql =
         //     'SELECT User_userId FROM JOINPOST WHERE Post_postId=? and User_userId=?'
