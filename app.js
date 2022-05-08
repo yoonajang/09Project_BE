@@ -99,7 +99,7 @@ io.on('connection', socket => {
         console.log(socket.rooms)
 
         //수찬님 테스트용
-        socket.emit('connected', userName + " 님이 입장했습니다.");
+        io.emit('connected', userName + " 님이 입장했습니다.");
 
     })
 
