@@ -89,9 +89,17 @@ io.on('connection', socket => {
 
     // 채팅시작
     socket.on('startchat', param => {
+        console.log(param)
+        const postId = param.postid;
+        const userIds = param.loggedUser.userId;
 
-        //새로 로그인된 인원이 없으면 추가, 있으면 말고.
-        console.log(param,'채팅 시작!')
+        // for (userId of userIds){
+
+        // }
+        
+
+        //새로 로그인된 인원이 없으면 추가, 있으면 말고. chat admin.
+        console.log(param.,'채팅 시작!') 
 
         // const sql =
         //     'SELECT User_userId FROM JOINPOST WHERE Post_postId=? and User_userId=?'
