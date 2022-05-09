@@ -109,9 +109,7 @@ io.on('connection', socket => {
         const userImage = param.newMessage.userImage;
         const chat = param.newMessage.chat;
         const createdAt = param.newMessage.createdAt;
-        console.log(postid)
 
-        // socket.to(postid).emit('receive message', param.newMessage);
         const sql =
             'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?,?)';
         const data = [postId, userId, userName, userEmail, userImage, chat];
@@ -133,24 +131,25 @@ io.on('connection', socket => {
     //     socket.to(postid).emit('stop typing'),
     // );
 
-    // //거래할 유저 선택
-    // socket.on('userpick', pick => {
-    //     const postId = pick.postId;
-    //     const userId = pick.userId;
+    //거래할 유저 선택
+    socket.on('userpick', pick => {
+        console.log(pick)
+        const postId = pick.postId;
+        const userId = pick.userId;
 
-    //     const sql =
-    //         'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?';
-    //     const data = [postId, userId];
+        const sql =
+            'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?';
+        const data = [postId, userId];
 
-    //     db.query(sql, data, (err, rows) => {
-    //         if (err) {
-    //             console.log(err);
-    //             res.status(401).send({ msg: '수정 실패' });
-    //         } else {
-    //             res.status(201).send({ msg: 'isPick이 수정되었습니다', rows });
-    //         }
-    //     });
-    // });
+        db.query(sql, data, (err, rows) => {
+            if (err) {
+                console.log(err);
+                res.status(401).send({ msg: '수정 실패' });
+            } else {
+                res.status(201).send({ msg: 'isPick이 수정되었습니다', rows });
+            }
+        });
+    });
 });
 
 //도메인
