@@ -126,13 +126,12 @@ io.on('connection', socket => {
     //찐참여자 선택
     socket.on('add_new_participant', param => {
         console.log(param)
-        const postid = param.Post_postId;
+        const postid = param.selectedUser.postid;
         const postId = postid.replace('p', '');
-        const userId = param.userId;
+        const userId = param.selectedUser.User_userId;
 
-        return
         const sql =
-            'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?;';
+            'UPDATE JoinPost SET isPick = 1 WHERE Post_postId=? and User_userId=?;';
         const data = [postId, userId];
         const sqls = mysql.format(sql, data);
 
@@ -152,12 +151,12 @@ io.on('connection', socket => {
 
     //찐참여자 선택 취소
     socket.on('cancel_new_participant', param => {
-        const postid = param.Post_postId;
+        const postid = param.selectedUser.postid;
         const postId = postid.replace('p', '');
-        const userId = param.userId;
+        const userId = param.selectedUser.User_userId;
 
         const sql =
-            'UPDATE JoinPost SET isPick = "False" WHERE Post_postId=? and User_userId=?;';
+            'UPDATE JoinPost SET isPick = 0 WHERE Post_postId=? and User_userId=?;';
         const data = [postId, userId];
         const sqls = mysql.format(sql, data);
 
