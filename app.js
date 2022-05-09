@@ -109,7 +109,7 @@ io.on('connection', socket => {
         const userImage = param.newMessage.userImage;
         const chat = param.newMessage.chat;
         const createdAt = param.newMessage.createdAt;
-
+        console.log(postid)
         // const sql =
         //     'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?,?)';
         // const data = [postId, userId, userName, userEmail, userImage, chat];
@@ -120,7 +120,7 @@ io.on('connection', socket => {
         //     } else {
         //         //room에 join(room이름 = postId)
         //         console.log(param,'<<<<<<<<<<<<<<<<<<<<<<<<<')
-                socket.to(postid).emit('receive message', chat);
+                socket.to(postid).emit('receive message', param.newMessage);
             // }
         });
     });
