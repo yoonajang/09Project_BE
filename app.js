@@ -151,7 +151,7 @@ io.on('connection', socket => {
     //         }
     //     });
     // });
-});
+// });
 
 //도메인
 // server.listen(port, () => {
