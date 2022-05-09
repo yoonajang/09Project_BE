@@ -126,7 +126,7 @@ io.on('connection', socket => {
 
     socket.on("test", (data) => { 
         console.log('여기', data);
-        socket.to('p2').emit("send", data); });
+        socket.to('p2').broadcast("send", data); });
     
     socket.on('typing', postid => socket.to(postid).emit('typing'));
 
