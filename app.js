@@ -192,7 +192,7 @@ io.on('connection', socket => {
         const sqls = mysql.format(sql, data);
 
         const sql_1 =
-            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ? ;';
         const sql_1s = mysql.format(sql_1, postId);
 
         db.query(sqls + sql_1s, (err, rows) => {
