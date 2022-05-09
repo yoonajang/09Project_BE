@@ -5,15 +5,12 @@ name: Node.js CI
 
 on:
   push:
-      # tags: 
-      #   v*
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -31,3 +28,18 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+
+
+    # steps: 
+    # - name: Deploy
+    #   uses: 
+    #   with: 
+    #     host: ${{ secrets.HOST }}
+    #     username: ${{ secrets.USERNAME }}
+    #     key: ${{ secrets.KEY }}
+    #     port: ${{ secrets.PORT }}
+    #     script: |
+    #       cd 09Poject
+    #       git pull https://github.com/moonhjang/09Project_BE.git
+    
+
