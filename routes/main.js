@@ -93,6 +93,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const userName = res.locals.user.userName;
     const userImage = res.locals.user.userImage;
     const userId = res.locals.user.userId;
+    
 
     //waitingUser table 데이터 넣기
     const sql =
@@ -122,8 +123,11 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const sql_4 = 'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
     const sql_4s = mysql.format(sql_4, postId);
     
+    
 
     db.query(sqls + sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
+        console.log(results)
+        
         if (err) console.log(err);
         else {
             const userInfo = results[1];
