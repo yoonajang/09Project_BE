@@ -82,6 +82,7 @@ io.on('connection', socket => {
 
     // 채팅시작
     socket.on('startchat', param => {
+        console.log('채팅시작');
         console.log(param);
         const postId = param.postid;
         const { userId, userName } = param.loggedUser;
@@ -123,7 +124,7 @@ io.on('connection', socket => {
         });
     });
 
-    socket.on("test", (data) => { socket.to("p1").emit("send", data); });
+    socket.on("test", (data) => { io.to("p1").emit("send", data); });
     
     socket.on('typing', postid => socket.to(postid).emit('typing'));
 
