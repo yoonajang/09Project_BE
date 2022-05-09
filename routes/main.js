@@ -118,20 +118,25 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     //게시글 작성자 정보 가져오기
     const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
     const sql_3s = mysql.format(sql_3, postId);
+    //찐참여자 목록 가져오기
+    const sql_4 = 'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+    const sql_4s = mysql.format(sql_4, postId);
 
-    db.query(sqls + sql_1s + sql_2s + sql_3s, (err, results) => {
+    db.query(sqls + sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
         if (err) console.log(err);
         else {
             const userInfo = results[1];
             const chatInfo = results[2];
             const chatAdmin = results[3];
+            const headList = results[4];
             return res.status(200).send({
-                data: { userInfo, chatInfo, chatAdmin },
+                data: { userInfo, chatInfo, chatAdmin, headList },
                 message: '채팅 참여자와 메세지 정보가 전달되었습니다',
             });
         }
     });
 });
+
 
 // 메인페이지 게시글 불러오기
 router.post('/postlist', (req, res) => {
