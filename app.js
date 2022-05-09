@@ -154,9 +154,9 @@ io.on('connection', socket => {
     //찐참여자 선택
     socket.on('add_new_participant', param => {
         console.log(param)
-        const postid = param.Post_postId;
+        const postid = param.postid;
         const postId = postid.replace('p', '');
-        const userId = param.userId;
+        const userId = param.selectedUser. User_userId;
 
         return
         const sql =
