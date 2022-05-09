@@ -126,7 +126,7 @@ io.on('connection', socket => {
 
     //찐참여자 선택
     socket.on('add_new_participant', param => {
-        console.log(param)
+        console.log(param);
         const postid = param.postid;
         const postId = postid.replace('p', '');
         const userId = param.selectedUser.User_userId;
@@ -140,13 +140,24 @@ io.on('connection', socket => {
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
         const sql_1s = mysql.format(sql_1, postId);
 
-        db.query(sqls + sql_1s, (err, rows) => {
+        const sql_2 =
+            'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
+        const sql_2s = mysql.format(sql_2, postId);
+
+        db.query(sqls + sql_1s + sql_2s, (err, rows) => {
             if (err) {
                 console.log(err);
             } else {
                 const headList = rows[1];
-                console.log(headList)
-                socket.to(postId).emit('receive_participant_list_after_added', headList);
+                const waitList = rows[2];
+                console.log(headList);
+                socket
+                    .to(postId)
+                    .emit(
+                        'receive_participant_list_after_added',
+                        headList,
+                        waitList,
+                    );
             }
         });
     });
@@ -166,13 +177,24 @@ io.on('connection', socket => {
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
         const sql_1s = mysql.format(sql_1, postId);
 
-        db.query(sqls + sql_1s, (err, rows) => {
+        const sql_2 =
+            'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
+        const sql_2s = mysql.format(sql_2, postId);
+
+        db.query(sqls + sql_1s + sql_2s, (err, rows) => {
             if (err) {
                 console.log(err);
             } else {
                 const headList = rows[1];
-                console.log(headList)
-                socket.to(postId).emit('receive_participant_list_after_canceled', headList);
+                const waitList = rows[2];
+                console.log(headList);
+                socket
+                    .to(postId)
+                    .emit(
+                        'receive_participant_list_after_canceled',
+                        headList,
+                        waitList,
+                    );
             }
         });
     });
