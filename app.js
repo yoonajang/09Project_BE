@@ -132,24 +132,52 @@ io.on('connection', socket => {
     // );
 
     //거래할 유저 선택
-    socket.on('userpick', pick => {
-        console.log(pick)
-        const postId = pick.postId;
-        const userId = pick.userId;
+    // socket.on('userpick', pick => {
+    //     console.log(pick)
+    //     const postId = pick.postId;
+    //     const userId = pick.userId;
 
+    //     const sql =
+    //         'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?';
+    //     const data = [postId, userId];
+
+    //     db.query(sql, data, (err, rows) => {
+    //         if (err) {
+    //             console.log(err);
+    //             res.status(401).send({ msg: '수정 실패' });
+    //         } else {
+    //             res.status(201).send({ msg: 'isPick이 수정되었습니다', rows });
+    //         }
+    //     });
+    // });
+
+    //찐참여자 선택
+    socket.on('add_new_participant', param => {
+        console.log(param)
+        const postid = param.Post_postId;
+        const postId = postid.replace('p', '');
+        const userId = param.userId;
+
+        return
         const sql =
-            'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?';
+            'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?;';
         const data = [postId, userId];
+        const sqls = mysql.format(sql, data);
 
-        db.query(sql, data, (err, rows) => {
+        const sql_1 =
+            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+        const sql_1s = mysql.format(sql_1, postId);
+
+        db.query(sqls + sql_1s, (err, rows) => {
             if (err) {
                 console.log(err);
-                res.status(401).send({ msg: '수정 실패' });
             } else {
-                res.status(201).send({ msg: 'isPick이 수정되었습니다', rows });
+                const headList = rows[1];
+                socket.to(postId).emit('eceive_participant_list_after_added', headList);
             }
         });
     });
+
 });
 
 //도메인
