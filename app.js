@@ -14,7 +14,6 @@ const httpPort = 80;
 const httpsPort = 443;
 const path = require('path');
 const { Server } = require('socket.io'); //소켓 라이브러리 불러오기
-const moment = require('moment'); //시간 표시를 위해 사용
 const db = require('./config');
 
 app.use(cors());
@@ -39,9 +38,8 @@ const requestMiddleware = (req, res, next) => {
     next();
 };
 
-// app.use(express.static(path.join(__dirname, 'src'))); //채팅연습용
 app.use(helmet());
-app.use(express.static('static')); //채팅연습끝나면살리기
+app.use(express.static('static'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(bodyParser.json());
@@ -69,18 +67,18 @@ app.get(
     },
 );
 
-// http.createServer(app_http).listen(httpPort, () => {
-//     console.log('http서버가 켜졌어요!');
-// });
+http.createServer(app_http).listen(httpPort, () => {
+    console.log('http서버가 켜졌어요!');
+});
 
-// server.listen(httpsPort, () => {
-//     console.log('https서버가 켜졌어요!');
-// });
+server.listen(httpsPort, () => {
+    console.log('https서버가 켜졌어요!');
+});
 
 io.on('connection', socket => {
     console.log('연결성공');
 
-    // 채팅시작 
+    // 채팅시작
     socket.on('startchat', param => {
         console.log('채팅시작');
         console.log(param);
@@ -118,36 +116,67 @@ io.on('connection', socket => {
             } else {
                 const newMsg = rows[0].chat;
                 const msgName = rows[0].User_userName;
-                const msgTime = moment(new Date()).format("h:ss A");
-                console.log(newMsg, msgName, msgTime)
+                const msgTime = moment(new Date()).format('h:ss A');
+                console.log(newMsg, msgName, msgTime);
                 socket.to(postId).emit('receive message', param.newMessage);
             }
         });
     });
 
+    //찐참여자 선택
+    socket.on('add_new_participant', param => {
+        console.log(param)
+        const postid = param.Post_postId;
+        const postId = postid.replace('p', '');
+        const userId = param.userId;
 
-    //거래할 유저 선택
-    socket.on('userpick', pick => {
-        console.log(pick)
-        const postId = pick.postId;
-        const userId = pick.userId;
-
+        return
         const sql =
-            'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?';
+            'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?;';
         const data = [postId, userId];
+        const sqls = mysql.format(sql, data);
 
-        db.query(sql, data, (err, rows) => {
+        const sql_1 =
+            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+        const sql_1s = mysql.format(sql_1, postId);
+
+        db.query(sqls + sql_1s, (err, rows) => {
             if (err) {
                 console.log(err);
             } else {
-                socket.to(postId).emit('receive message', param.newMessage);
-                res.status(201).send({ msg: 'isPick이 수정되었습니다', rows });
+                const headList = rows[1];
+                socket.to(postId).emit('eceive_participant_list_after_added', headList);
+            }
+        });
+    });
+
+    //찐참여자 선택 취소
+    socket.on('cancel_new_participant', param => {
+        const postid = param.Post_postId;
+        const postId = postid.replace('p', '');
+        const userId = param.userId;
+
+        const sql =
+            'UPDATE JoinPost SET isPick = "False" WHERE Post_postId=? and User_userId=?;';
+        const data = [postId, userId];
+        const sqls = mysql.format(sql, data);
+
+        const sql_1 =
+            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+        const sql_1s = mysql.format(sql_1, postId);
+
+        db.query(sqls + sql_1s, (err, rows) => {
+            if (err) {
+                console.log(err);
+            } else {
+                const headList = rows[1];
+                socket.to(postId).emit('receive_participant_list_after_canceled', headList);
             }
         });
     });
 });
 
 //도메인
-app.listen(port, () => {
-    console.log(port, '포트로 서버가 켜졌어요!');
-});
+// server.listen(port, () => {
+//     console.log(port, '포트로 서버가 켜졌어요!');
+// });
