@@ -229,32 +229,28 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
 router.get('/:userId', authMiddleware, (req, res) => {
     const userId = req.params.userId;
 
-    const userinfo = 
+    const userInfo = 
         'SELECT * FROM `User` WHERE `userId`=?';
-    db.query(userinfo, [userId],(err, userinfo) =>{
-        if (err) console.log(err);
-        console.log(userinfo);
+    db.query(userInfo, [userId],(err, userinfo) =>{
+        if (err) console.log(err)
     
-    const buylist =
+    const buyList =
         'SELECT * FROM Post WHERE `User_userId`= ? and `category`="buy"';
-    db.query(buylist, [userId], (err, buylist) => {
+    db.query(buyList, [userId], (err, buylist) => {
         if (err) console.log(err);
-        console.log(buylist);
 
-    const eatlist =
+    const eatList =
         'SELECT * FROM Post WHERE `User_userId`= ? and `category`="eat"';
-    db.query(eatlist, [userId], (err, eatlist) => {
+    db.query(eatList, [userId], (err, eatlist) => {
         if (err) console.log(err);
-        console.log(eatlist);
 
-    const likelist = 
+    const likeList = 
         'SELECT * FROM `Like` WHERE `User_userId`= ?';
-    db.query(likelist, [userId], (err, likelist) => {
+    db.query(likeList, [userId], (err, likelist) => {
         if (err) console.log(err);
-        console.log(likelist);
     
         
-        res.status(201).send({ msg: 'success', userinfo, buylist, eatlist ,likelist});
+        res.status(201).send({ msg: 'success', userInfo, buyList, eatList ,likeList});
     })  
     })
     })
