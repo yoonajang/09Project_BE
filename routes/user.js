@@ -16,30 +16,8 @@ const saltRounds = 10;
 // 회원가입
 router.post('/signup', (req, res, next) => {
     const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
-    const param = [
-        req.body.userEmail,
-        req.body.userName,
-        req.body.password,
-        userImage,
-    ];
-
-    bcrypt.hash(param[2], saltRounds, (err, hash) => {
-        param[2] = hash;
-        db.query(
-            'INSERT INTO User(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,?)',
-            param,
-            (err, data) => {
-                if (err) {
-                    console.log(err);
-                    res.status(401).send({ meg: 'fail' });
-                } else {
-                    res.status(201).send({ meg: 'success' });
-                }
-            },
-        );
-
-        const { userEmail, userName, userPassword } = req.body;
-        const param = [userEmail, userName, userPassword, userImage];
+    const { userEmail, userName, userPassword } = req.body;
+    const param = [userEmail, userName, userPassword, userImage];
 
         db.query(
             'SELECT * FROM AuthNum WHERE userEmail=?',
@@ -231,60 +209,52 @@ router.post('/signup', (req, res, next) => {
         });
     });
 
-    // 유저 프로필 수정
-    router.post(
-        '/me',
-        upload.single('userImage'),
-        authMiddleware,
-        async (req, res) => {
-            const userId = res.locals.user.userId;
-            const userImage = req.file?.location;
-            // console.log(userId, userImage);
-            try {
-                const sql = ' UPDATE User SET userImage=? WHERE userId=?';
-                db.query(sql, [userImage, userId], (err, rows) => {
-                    res.send({ msg: '글 등록 성공' });
-                });
-            } catch (error) {
-                res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
-            }
-        },
-    );
-
-    //유저 마이페이지 (참여한 게시판 조회) *** 자신의 것 조회할때랑 다른사람것 조회할때를... 프론트와 의논.
-    router.get('/:userId', authMiddleware, (req, res) => {
-        const userId = req.params.userId;
-
-        const userinfo = 'SELECT * FROM `User` WHERE `userId`=?';
-        db.query(userinfo, [userId], (err, userinfo) => {
-            if (err) console.log(err);
-            console.log(userinfo);
-        });
-        const buylist =
-            'SELECT * FROM Post WHERE `User_userId`= ? and `category`="buy"';
-        db.query(buylist, [userId], (err, buylist) => {
-            if (err) console.log(err);
-            console.log(buylist);
-        });
-        const eatlist =
-            'SELECT * FROM Post WHERE `User_userId`= ? and `category`="eat"';
-        db.query(eatlist, [userId], (err, eatlist) => {
-            if (err) console.log(err);
-            console.log(eatlist);
-        });
-        const likelist = 'SELECT * FROM `Like` WHERE `User_userId`= ?';
-        db.query(likelist, [userId], (err, likelist) => {
-            if (err) console.log(err);
-            console.log(likelist);
-            res.status(201).send({
-                msg: 'success',
-                userinfo,
-                buylist,
-                eatlist,
-                likelist,
+// 유저 프로필 수정
+router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
+        const userId = res.locals.user.userId;
+        const userImage = req.file?.location;
+        // console.log(userId, userImage);
+        try {
+            const sql = ' UPDATE User SET userImage=? WHERE userId=?';
+            db.query(sql, [userImage, userId], (err, rows) => {
+                res.send({ msg: '글 등록 성공' });
             });
-        });
-    });
+        } catch (error) {
+            res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
+        }
+    },
+);
+
+//유저 마이페이지 (참여한 게시판 조회) *** 자신의 것 조회할때랑 다른사람것 조회할때를... 프론트와 의논.
+router.get('/:userId', authMiddleware, (req, res) => {
+    const userId = req.params.userId;
+
+    const userInfo = 
+        'SELECT * FROM `User` WHERE `userId`=?';
+    db.query(userInfo, [userId],(err, userinfo) =>{
+        if (err) console.log(err)
+    
+    const buyList =
+        'SELECT * FROM Post WHERE `User_userId`= ? and `category`="buy"';
+    db.query(buyList, [userId], (err, buylist) => {
+        if (err) console.log(err);
+
+    const eatList =
+        'SELECT * FROM Post WHERE `User_userId`= ? and `category`="eat"';
+    db.query(eatList, [userId], (err, eatlist) => {
+        if (err) console.log(err);
+
+    const likeList = 
+        'SELECT * FROM `Like` WHERE `User_userId`= ?';
+    db.query(likeList, [userId], (err, likelist) => {
+        if (err) console.log(err);
+    
+        
+        res.status(201).send({ msg: 'success', userInfo, buyList, eatList ,likeList});
+    })  
+    })
+    })
+    })
 });
 
 //유저 좋아요 조회
@@ -298,4 +268,4 @@ router.get('/like/:userId', authMiddleware, (req, res) => {
     });
 });
 
-module.exports = router;
+module.exports = router; 

@@ -53,8 +53,6 @@ router.post(
         const sql =
             'INSERT INTO Post (`title`, `content`, `price`, `headCount`, `category`, `endTime`, `address`, `lat`, `lng`, `writer`, `User_userId`, `image`, `isDone`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,false)';
 
-        console.log(sql);
-
         db.query(sql, datas, (err, rows) => {
             if (err) {
                 console.log(err);
@@ -120,23 +118,26 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     //게시글 작성자 정보 가져오기
     const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
     const sql_3s = mysql.format(sql_3, postId);
+    //찐참여자 목록 가져오기
+    const sql_4 = 'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+    const sql_4s = mysql.format(sql_4, postId);
 
-    db.query(sqls + sql_1s + sql_2s + sql_3s, (err, results) => {
+    db.query(sqls + sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
         if (err) console.log(err);
         else {
             const userInfo = results[1];
             const chatInfo = results[2];
             const chatAdmin = results[3];
+            const headList = results[4];
             return res.status(200).send({
-                data: { userInfo, chatInfo, chatAdmin },
+                data: { userInfo, chatInfo, chatAdmin, headList },
                 message: '채팅 참여자와 메세지 정보가 전달되었습니다',
             });
         }
-    })
+    });
+});
 
-})
-
-// 메인페이지 게시글 불러오기 (수정)
+// 메인페이지 게시글 불러오기
 router.post('/postlist', (req, res) => {
     const address = req.body.address.split(' ');
     const userId = req.body.userId;
@@ -151,39 +152,44 @@ router.post('/postlist', (req, res) => {
 
     if (userId) {
         const sql =
-            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime";
-        db.query(sql, [userId, findAddr + '%'], (err, datas) => {
+            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
+
+        db.query(sql, [userId, findAddr + '%'], (err, data) => {
             if (err) console.log(err);
-            for (list of datas) {
+            for (list of data) {
                 let head = list.headList;
+                let newList = [];
+
                 if (isNaN(Number(head))) {
-                    list.headList = head.split(',').map(id => Number(id));
+                    newList.push(list.User_userId);
+                    head.split(',').map(id => newList.push(Number(id)));
+                    list.headList = newList;
                 } else {
-                    let newList = [];
-                    newList.push(Number(head));
+                    newList.push(list.User_userId);
                     list.headList = newList;
                 }
             }
-            const data = datas.reverse();
             res.send({ msg: 'success', data });
         });
     } else {
         const sql =
-            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime";
+            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
 
-        db.query(sql, [findAddr + '%'], (err, datas) => {
+        db.query(sql, [findAddr + '%'], (err, data) => {
             if (err) console.log(err);
-            for (list of datas) {
+            for (list of data) {
                 let head = list.headList;
+                let newList = [];
+
                 if (isNaN(Number(head))) {
-                    list.headList = head.split(',').map(id => Number(id));
+                    newList.push(list.User_userId);
+                    head.split(',').map(id => newList.push(Number(id)));
+                    list.headList = newList;
                 } else {
-                    let newList = [];
-                    newList.push(Number(head));
+                    newList.push(list.User_userId);
                     list.headList = newList;
                 }
             }
-            const data = datas.reverse();
             res.send({ msg: 'success', data });
         });
     }
