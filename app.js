@@ -17,10 +17,11 @@ const httpsPort = 443;
 
 //소켓
 const path = require('path'); //__dirname 쓰기 위해 필요
-const server = http.createServer(app); //이 전에 node 기본 모듈 http 불러오기 필요
+const server = https.createServer(app); //이 전에 node 기본 모듈 http 불러오기 필요
 const socketIO = require('socket.io'); //소켓 라이브러리 불러오기
 const moment = require('moment'); //시간 표시를 위해 사용
 const res = require('express/lib/response');
+// const { Http2ServerResponse } = require('http2');
 
 const io = socketIO(server, {
     //socketIO에서 server를 담아간 내용을 변수에 넣기
@@ -130,17 +131,17 @@ const credentials = {
     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 };
 
-// http.createServer(app_http).listen(httpPort, () => {
-//   console.log('http서버가 켜졌어요!')
-// })
+http.createServer(app_http).listen(httpPort, () => {
+  console.log('http서버가 켜졌어요!')
+})
 
-// https.createServer(credentials, app).listen(httpsPort, () => {
-//   console.log('https서버가 켜졌어요!')
-// })
+https.createServer(credentials, app).listen(httpsPort, () => {
+  console.log('https서버가 켜졌어요!')
+})
 
 //도메인
-server.listen(port, () => {
-    console.log(port, '포트로 서버가 켜졌어요!');
-});
+// server.listen(port, () => {
+//     console.log(port, '포트로 서버가 켜졌어요!');
+// });
 
 module.exports = app

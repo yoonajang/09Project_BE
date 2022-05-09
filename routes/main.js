@@ -257,17 +257,17 @@ router.delete('/like/:postId', authMiddleware, (req, res) => {
     });
 });
 
-//채팅 나가기
-router.get('/outchat/:postid', authMiddleware, (req, res) => {
-    const postId = req.params.postid;
-    const userId = res.locals.user.userId;
-    const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
-    const params = [postId, userId];
+//개인적으로 채팅방 나가기
+// router.get('/outchat/:postid', authMiddleware, (req, res) => {
+//     const postId = req.params.postid;
+//     const userId = res.locals.user.userId;
+//     const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
+//     const params = [postId, userId];
 
-    db.query(sql, params, (err, data) => {
-        if (err) console.log(err);
-        res.status(201).send({ msg: 'success', data });
-    });
-});
+//     db.query(sql, params, (err, data) => {
+//         if (err) console.log(err);
+//         res.status(201).send({ msg: 'success', data });
+//     });
+// });
 
 module.exports = router;
