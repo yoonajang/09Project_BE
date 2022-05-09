@@ -111,7 +111,7 @@ io.on('connection', socket => {
         const createdAt = param.newMessage.createdAt;
         console.log(postid)
 
-        socket.to(postid).emit('receive message', param.newMessage);
+        // socket.to(postid).emit('receive message', param.newMessage);
         const sql =
             'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?,?)';
         const data = [postId, userId, userName, userEmail, userImage, chat];
