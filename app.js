@@ -112,18 +112,18 @@ io.on('connection', socket => {
         console.log(postid)
 
         socket.to(postid).emit('receive message', param.newMessage);
-        // const sql =
-        //     'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?,?)';
-        // const data = [postId, userId, userName, userEmail, userImage, chat];
+        const sql =
+            'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?,?)';
+        const data = [postId, userId, userName, userEmail, userImage, chat];
 
-        // db.query(sql, data, (err, rows) => {
-        //     if (err) {
-        //         console.log(err);
-        //     } else {
-        //         //room에 join(room이름 = postId)
-        //         console.log(param,'<<<<<<<<<<<<<<<<<<<<<<<<<')
-                // socket.to(postid).emit('receive message', param.newMessage);
-            // }
+        db.query(sql, data, (err, rows) => {
+            if (err) {
+                console.log(err);
+            } else {
+                //room에 join(room이름 = postId)
+                // console.log(param,'<<<<<<<<<<<<<<<<<<<<<<<<<')
+                socket.to(postid).emit('receive message', param.newMessage);
+            }
         });
     });
 
