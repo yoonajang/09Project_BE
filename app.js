@@ -97,32 +97,33 @@ io.on('connection', socket => {
     });
 
     // 메세지 주고 받기
-    // socket.on('sendmessage', param => {
-    //     console.log(param);
+    socket.on('sendmessage', param => {
+        console.log('메세지');
+        console.log(param);
 
-    //     const postid = param.newMessage.Post_postId;
-    //     const postId = postid.replace('p', '');
-    //     const userId = param.newMessage.User_userId;
-    //     const userName = param.newMessage.User_userName;
-    //     const userEmail = param.newMessage.User_userEmail;
-    //     const userImage = param.newMessage.userImage;
-    //     const chat = param.newMessage.chat;
-    //     const createdAt = param.newMessage.createdAt;
+        const postid = param.newMessage.Post_postId;
+        const postId = postid.replace('p', '');
+        const userId = param.newMessage.User_userId;
+        const userName = param.newMessage.User_userName;
+        const userEmail = param.newMessage.User_userEmail;
+        const userImage = param.newMessage.userImage;
+        const chat = param.newMessage.chat;
+        const createdAt = param.newMessage.createdAt;
 
-    //     const sql =
-    //         'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?,?)';
-    //     const data = [postId, userId, userName, userEmail, userImage, chat];
+        // const sql =
+        //     'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?,?)';
+        // const data = [postId, userId, userName, userEmail, userImage, chat];
 
-    //     db.query(sql, data, (err, rows) => {
-    //         if (err) {
-    //             console.log(err);
-    //         } else {
-    //             //room에 join(room이름 = postId)
-    //             console.log(param,'<<<<<<<<<<<<<<<<<<<<<<<<<')
-    //             socket.to(postid).emit('receive message', chat);
-    //         }
-    //     });
-    // });
+        // db.query(sql, data, (err, rows) => {
+        //     if (err) {
+        //         console.log(err);
+        //     } else {
+        //         //room에 join(room이름 = postId)
+        //         console.log(param,'<<<<<<<<<<<<<<<<<<<<<<<<<')
+                socket.to(postid).emit('receive message', chat);
+            // }
+        });
+    });
 
     // socket.on('typing', postid => socket.to(postid).emit('typing'));
 
