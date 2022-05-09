@@ -15,6 +15,7 @@ const httpsPort = 443;
 const path = require('path');
 const { Server } = require('socket.io'); //소켓 라이브러리 불러오기
 const db = require('./config');
+const mysql = require('mysql');
 
 app.use(cors());
 
