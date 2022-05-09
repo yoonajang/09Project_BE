@@ -126,11 +126,11 @@ io.on('connection', socket => {
         });
     });
 
-    // socket.on('typing', postid => socket.to(postid).emit('typing'));
+    socket.on('typing', postid => 
+        socket.to(postid).emit('typing'));
 
-    // socket.on('stop typing', postid =>
-    //     socket.to(postid).emit('stop typing'),
-    // );
+    socket.on('stop typing', postid =>
+        socket.to(postid).emit('stop typing'));
     
     //찐참여자 선택
     socket.on('add_new_participant', param => {
