@@ -173,8 +173,8 @@ io.on('connection', socket => {
                 console.log(err);
             } else {
                 const headList = rows[1];
-                console.log(headList)
-                socket.to(postid).emit('receive_participant_list_after_added', headList);
+                console.log(headList.RowDataPacket)
+                socket.to(postid).emit('receive_participant_list_after_added', headList.RowDataPacket);
             }
         });
     });
@@ -200,8 +200,8 @@ io.on('connection', socket => {
                 console.log(err);
             } else {
                 const headList = rows[1];
-                console.log(headList)
-                socket.to(postid).emit('receive_participant_list_after_canceled', headList);
+                console.log(headList.RowDataPacket)
+                socket.to(postid).emit('receive_participant_list_after_canceled', headList.RowDataPacket);
             
             }
         });
