@@ -165,7 +165,7 @@ io.on('connection', socket => {
         const sqls = mysql.format(sql, data);
 
         const sql_1 =
-            'SELECT * FROM JoinPost WHERE isPick = "True" and Post_postId = ?;';
+            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
         const sql_1s = mysql.format(sql_1, postId);
 
         db.query(sqls + sql_1s, (err, rows) => {
@@ -187,7 +187,7 @@ io.on('connection', socket => {
         const userId = param.selectedUser.User_userId;
 
         const sql =
-            'UPDATE JoinPost SET isPick = "False" WHERE Post_postId=? and User_userId=?;';
+            'UPDATE JoinPost SET isPick = 0 WHERE Post_postId=? and User_userId=?;';
         const data = [postId, userId];
         const sqls = mysql.format(sql, data);
 
