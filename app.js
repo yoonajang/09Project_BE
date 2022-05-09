@@ -156,7 +156,7 @@ io.on('connection', socket => {
         console.log(param)
         const postid = param.postid;
         const postId = postid.replace('p', '');
-        const userId = param.selectedUser. User_userId;
+        const userId = param.selectedUser.User_userId;
 
         return
         const sql =
