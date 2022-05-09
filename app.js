@@ -127,7 +127,7 @@ io.on('connection', socket => {
     //찐참여자 선택
     socket.on('add_new_participant', param => {
         console.log(param)
-        const postid = param.selectedUser.postid;
+        const postid = param.postid;
         const postId = postid.replace('p', '');
         const userId = param.selectedUser.User_userId;
 
@@ -146,14 +146,14 @@ io.on('connection', socket => {
             } else {
                 const headList = rows[1];
                 console.log(headList)
-                socket.to(postId).emit('eceive_participant_list_after_added', headList);
+                socket.to(postId).emit('receive_participant_list_after_added', headList);
             }
         });
     });
 
     //찐참여자 선택 취소
     socket.on('cancel_new_participant', param => {
-        const postid = param.selectedUser.postid;
+        const postid = param.postid;
         const postId = postid.replace('p', '');
         const userId = param.selectedUser.User_userId;
 
