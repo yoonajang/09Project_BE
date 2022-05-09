@@ -178,6 +178,30 @@ io.on('connection', socket => {
         });
     });
 
+     //찐참여자 선택 취소
+     socket.on('cancel_new_participant', param => {
+        const postid = param.postid;
+        const postId = postid.replace('p', '');
+        const userId = param.selectedUser.User_userId;
+
+        const sql =
+            'UPDATE JoinPost SET isPick = "False" WHERE Post_postId=? and User_userId=?;';
+        const data = [postId, userId];
+        const sqls = mysql.format(sql, data);
+
+        const sql_1 =
+            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+        const sql_1s = mysql.format(sql_1, postId);
+
+        db.query(sqls + sql_1s, (err, rows) => {
+            if (err) {
+                console.log(err);
+            } else {
+                const headList = rows[1];
+                socket.to(postId).emit('receive_participant_list_after_canceled', headList);
+            }
+        });
+    });
 });
 
 //도메인
