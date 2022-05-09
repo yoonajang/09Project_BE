@@ -145,6 +145,7 @@ io.on('connection', socket => {
                 console.log(err);
             } else {
                 const headList = rows[1];
+                console.log(headList)
                 socket.to(postId).emit('eceive_participant_list_after_added', headList);
             }
         });
@@ -170,6 +171,7 @@ io.on('connection', socket => {
                 console.log(err);
             } else {
                 const headList = rows[1];
+                console.log(headList)
                 socket.to(postId).emit('receive_participant_list_after_canceled', headList);
             }
         });
