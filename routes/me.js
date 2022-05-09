@@ -76,6 +76,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
                         list.headList = newList;
                     }
                 }
+                console.log(joinList)
 
                 // 유저의 좋아요 리스트
                 const likelist =

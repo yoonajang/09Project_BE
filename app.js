@@ -208,7 +208,7 @@ io.on('connection', socket => {
     });
 });
 
-//도메인
+// //도메인
 // server.listen(port, () => {
 //     console.log(port, '포트로 서버가 켜졌어요!');
 // });
