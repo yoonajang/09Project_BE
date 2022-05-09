@@ -158,9 +158,8 @@ io.on('connection', socket => {
         const postId = postid.replace('p', '');
         const userId = param.selectedUser.User_userId;
 
-        return
         const sql =
-            'UPDATE JoinPost SET isPick = "True" WHERE Post_postId=? and User_userId=?;';
+            'UPDATE JoinPost SET isPick = 1 WHERE Post_postId=? and User_userId=?;';
         const data = [postId, userId];
         const sqls = mysql.format(sql, data);
 
