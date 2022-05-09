@@ -123,11 +123,7 @@ io.on('connection', socket => {
         });
     });
 
-    socket.on('test', postid => {
-        console.log(postid) 
-        socket.emit('test2', postid);
-
-    })
+    socket.on("test", (data) => { socket.to("p1").emit("send", data); });
     
     socket.on('typing', postid => socket.to(postid).emit('typing'));
 
