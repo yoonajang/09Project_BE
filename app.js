@@ -180,6 +180,7 @@ io.on('connection', socket => {
 
      //찐참여자 선택 취소
      socket.on('cancel_new_participant', param => {
+        console.log('찬여자취소',param)
         const postid = param.postid;
         const postId = postid.replace('p', '');
         const userId = param.selectedUser.User_userId;
