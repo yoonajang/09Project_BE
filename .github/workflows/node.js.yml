@@ -81,7 +81,7 @@ jobs:
         # echo database="$DATABASE_NAME" >> .env.production
         # echo nodemailerUser="$NODEMAILER_USER" >> .env.production
         # echo nodemailerPw="$NODEMAILER_PW" >> .env.production
-        # cat .env.production | head -n 1
+        cat .env.production | head -n 1
 
 
 # deploy: 
