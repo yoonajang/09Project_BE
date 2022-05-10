@@ -36,7 +36,7 @@ on:
   
       strategy:
         matrix:
-          node-version: [12.16.x]
+          node-version: [12.x, 16.x]
   
       steps:
         - uses: actions/checkout@v2
