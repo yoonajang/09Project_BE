@@ -85,8 +85,8 @@ jobs:
           sudo git pull
           sudo yarn
           sudo yarn build
-          # npm start
-          # npm run build
           sudo pm2 reload all
     
 
+# npm start
+# npm run build
