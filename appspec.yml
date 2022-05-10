@@ -14,5 +14,5 @@ hooks:
     - location: scripts/before_deploy.sh
       runas: ubuntu
   AfterInstall:
-    - location: scripts/after_deploy.sh
+    - location: after_deploy.sh
       runas: ubuntu
