@@ -34,11 +34,11 @@ const io = new Server(server, {
     },
 });
 
-// 미들웨어 (가장 상위에 위치)
-const requestMiddleware = (req, res, next) => {
-    console.log('Request URL:', req.originalUrl, '-', new Date());
-    next();
+// 미들웨어 (가장 상위에 위치) 
+const requestMiddleware = (req, res, next) => { 
+    console.log( "ip:", req.ip, "domain:", req.rawHeaders[1], "method:", req.method, "Request URL:", req.originalUrl, "-", new Date() ); next(); 
 };
+
 
 // app.use(express.static(path.join(__dirname, 'src'))); //채팅연습용
 app.use(helmet());
