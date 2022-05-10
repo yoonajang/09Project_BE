@@ -6,8 +6,8 @@ name: Node.js CI
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
 
 jobs:
   build:
@@ -80,13 +80,13 @@ jobs:
         # nodemailerUser: ${{ secrets.NODEMAILER_USER }}
         # nodemailerPw: ${{ secrets.NODEMAILER_PW }}
 
-      script: |
-        cd /home/ubuntu/09Project_BE
-        sudo git pull
-        sudo yarn
-        sudo yarn build
-        # npm start
-        # npm run build
-        sudo pm2 reload all
+        script: |
+          cd /home/ubuntu/09Project_BE
+          sudo git pull
+          sudo yarn
+          sudo yarn build
+          # npm start
+          # npm run build
+          sudo pm2 reload all
     
 
