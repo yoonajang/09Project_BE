@@ -70,13 +70,13 @@ app.get(
     },
 );
 
-http.createServer(app_http).listen(httpPort, () => {
-    console.log('http서버가 켜졌어요!');
-});
+// http.createServer(app_http).listen(httpPort, () => {
+//     console.log('http서버가 켜졌어요!');
+// });
 
-server.listen(httpsPort, () => {
-    console.log('https서버가 켜졌어요!');
-});
+// server.listen(httpsPort, () => {
+//     console.log('https서버가 켜졌어요!');
+// });
 
 io.on('connection', socket => {
     console.log('연결성공');
