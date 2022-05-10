@@ -62,12 +62,12 @@ jobs:
         registry-url: "https://npm.pkg.github.com"
         
     - name: Install dependencies
-      run: yarn install
+      run: npm install
       env:
         CI: true   
 
     - name: Run Build
-      run: yarn build    
+      run: npm run build    
 
     - name: build file upload to ec2
       uses: garygrossgarten/github-action-scp@release
