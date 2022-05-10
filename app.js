@@ -79,7 +79,7 @@ app.get(
 // });
 
 io.on('connection', socket => {
-    console.log('연결성공');
+    console.log('연결성공!!!!반영이 진짜 안되니');
 
     // 채팅시작 
     socket.on('startchat', param => {
