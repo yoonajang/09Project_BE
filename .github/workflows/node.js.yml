@@ -10,48 +10,48 @@ on:
   # pull_request:
   #   branches: [ main ]
 
-# jobs:
-#     build:
-#         # name: Build
-#         runs-on: ubuntu-latest
-
-#         steps:
-#             - name: executing remote ssh commands using password
-#               uses: appleboy/ssh-action@master
-#               with:
-#                   host: ${{ secrets.SSH_IP }}
-#                   username: ${{ secrets.SSH_ID }}
-#                   KEY: ${{ secrets.SSH_KEY }}
-#                   port: ${{ secrets.SSH_PORT }}
-#                   script: |
-#                       sudo -s
-#                       cd /home/ubuntu/09Project_BE
-#                       sudo git pull
-#                       sudo npm install
-#                       sudo pm2 reload app.js
-
-
-
-
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        # name: Build
+        runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        steps:
+            - name: executing remote ssh commands using password
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SSH_IP }}
+                  username: ${{ secrets.SSH_ID }}
+                  KEY: ${{ secrets.SSH_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script: |
+                      sudo -s
+                      cd /home/ubuntu/09Project_BE
+                      sudo git pull
+                      sudo npm install
+                      sudo pm2 reload app.js
 
-    steps:
-    - uses: actions/checkout@v3
-    # - name: Use Node.js ${{ matrix.node-version }}
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version: ${{ matrix.node-version }}
-    #     cache: 'npm'
-    # - run: npm ci
-    # - run: npm run build --if-present
-    # - run: npm test
+
+
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     strategy:
+#       matrix:
+#         node-version: [12.x, 14.x, 16.x]
+#         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+#     steps:
+#     - uses: actions/checkout@v3
+#     # - name: Use Node.js ${{ matrix.node-version }}
+#     #   uses: actions/setup-node@v3
+#     #   with:
+#     #     node-version: ${{ matrix.node-version }}
+#     #     cache: 'npm'
+#     # - run: npm ci
+#     # - run: npm run build --if-present
+#     # - run: npm test
 
 #     - name: Create env file
 #       env: 
