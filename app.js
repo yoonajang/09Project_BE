@@ -110,6 +110,7 @@ io.on('connection', socket => {
         const userImage = param.newMessage.userImage;
         const chat = param.newMessage.chat;
         const createdAt = param.newMessage.createdAt;
+        console.log(createdAt)
 
         const sql =
             'INSERT INTO Chat (`Post_postId`, `User_userId`, `User_userName`, `User_userEmail`,`userImage`, `chat`) VALUES (?,?,?,?,?,?)';
@@ -119,8 +120,6 @@ io.on('connection', socket => {
             if (err) {
                 console.log(err);
             } else {
-                //room에 join(room이름 = postId)
-                // console.log(param,'<<<<<<<<<<<<<<<<<<<<<<<<<')
                 socket.to(postid).emit('receive message', param.newMessage);
             }
         });
