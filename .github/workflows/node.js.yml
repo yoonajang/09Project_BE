@@ -6,87 +6,110 @@ name: Node.js CI
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        name: Build
+        runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        steps:
+            - name: executing remote ssh commands using password
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SHH_IP }}
+                  username: ${{ secrets.SHH_ID }}
+                  KEY: ${{ secrets.SHH_KEY }}
+                  port: ${{ secrets.SHH_PORT }}
+                  script: |
+                      sudo -s
+                      cd /home/ubuntu/09Project_BE
+                      sudo git pull
+                      sudo npm install
+                      sudo pm2 reload app.js
 
-    steps:
-    - uses: actions/checkout@v3
-    # - name: Use Node.js ${{ matrix.node-version }}
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version: ${{ matrix.node-version }}
-    #     cache: 'npm'
-    # - run: npm ci
-    # - run: npm run build --if-present
-    # - run: npm test
 
-    - name: Create env file
-      env: 
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
-        host: ${{ secrets.DATABASE_HOST }}
-        port: ${{ secrets.DATABASE_PORT }}
-        user: ${{ secrets.DATABASE_USERNAME }}
-        password: ${{ secrets.DATABASE_PASSWORD }}
-        database: ${{ secrets.DATABASE_NAME }}
-        nodemailerUser: ${{ secrets.NODEMAILER_USER }}
-        nodemailerPw: ${{ secrets.NODEMAILER_PW }}
 
-      run: 
-        touch .env.production
-        echo JWT_SECRET="$JWT_SECRET" >> .env.production
-        echo keyForDecrypt="$KEY_DECRYPT" >> .env.production
-        echo PORT="$PORT" >> .env.production
-        echo host="$DATABASE_HOST" >> .env.production
-        echo port="$DATABASE_PORT" >> .env.production
-        echo user="$DATABASE_USERNAME" >> .env.production
-        echo password="$DATABASE_PASSWORD" >> .env.production
-        echo database="$DATABASE_NAME" >> .env.production
-        echo nodemailerUser="$NODEMAILER_USER" >> .env.production
-        echo nodemailerPw="$NODEMAILER_PW" >> .env.production
-        cat .env.production | head -n 1
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        registry-url: "https://npm.pkg.github.com"
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     strategy:
+#       matrix:
+#         node-version: [12.x, 14.x, 16.x]
+#         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+#     steps:
+#     - uses: actions/checkout@v3
+#     # - name: Use Node.js ${{ matrix.node-version }}
+#     #   uses: actions/setup-node@v3
+#     #   with:
+#     #     node-version: ${{ matrix.node-version }}
+#     #     cache: 'npm'
+#     # - run: npm ci
+#     # - run: npm run build --if-present
+#     # - run: npm test
+
+#     - name: Create env file
+#       env: 
+#         JWT_SECRET: ${{ secrets.JWT_SECRET }}
+#         keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
+#         host: ${{ secrets.DATABASE_HOST }}
+#         port: ${{ secrets.DATABASE_PORT }}
+#         user: ${{ secrets.DATABASE_USERNAME }}
+#         password: ${{ secrets.DATABASE_PASSWORD }}
+#         database: ${{ secrets.DATABASE_NAME }}
+#         nodemailerUser: ${{ secrets.NODEMAILER_USER }}
+#         nodemailerPw: ${{ secrets.NODEMAILER_PW }}
+
+#       run: 
+#         touch .env.production
+#         echo JWT_SECRET="$JWT_SECRET" >> .env.production
+#         echo keyForDecrypt="$KEY_DECRYPT" >> .env.production
+#         echo PORT="$PORT" >> .env.production
+#         echo host="$DATABASE_HOST" >> .env.production
+#         echo port="$DATABASE_PORT" >> .env.production
+#         echo user="$DATABASE_USERNAME" >> .env.production
+#         echo password="$DATABASE_PASSWORD" >> .env.production
+#         echo database="$DATABASE_NAME" >> .env.production
+#         echo nodemailerUser="$NODEMAILER_USER" >> .env.production
+#         echo nodemailerPw="$NODEMAILER_PW" >> .env.production
+#         cat .env.production | head -n 1
+
+#     - name: Use Node.js ${{ matrix.node-version }}
+#       uses: actions/setup-node@v3
+#       with:
+#         node-version: ${{ matrix.node-version }}
+#         registry-url: "https://npm.pkg.github.com"
         
-    - name: Install dependencies
-      run: npm install
-      env:
-        CI: true   
+#     - name: Install dependencies
+#       run: npm install
+#       env:
+#         CI: true   
 
-    - name: Run Build
-      run: npm run build --if-present
-      run: npm test 
+#     - name: Run Build
+#       run: npm run build --if-present
+#       run: npm test 
 
-    - name: build file upload to ec2
-      uses: garygrossgarten/github-action-scp@release
-      with:
-          SSH_local: ./dist
-          SSH_remote: /home/ubuntu/code/42s_checkin_server/dist/
-          SSH_host: ${{ secrets.SSH_IP }}
-          SSH_username: ${{ secrets.SSH_ID }}
-          SSH_privateKey: ${{ secrets.SSH_KEY }}
-          recursive: true
+#     - name: build file upload to ec2
+#       uses: garygrossgarten/github-action-scp@release
+#       with:
+#           SSH_local: ./dist
+#           SSH_remote: /home/ubuntu/code/42s_checkin_server/dist/
+#           SSH_host: ${{ secrets.SSH_IP }}
+#           SSH_username: ${{ secrets.SSH_ID }}
+#           SSH_privateKey: ${{ secrets.SSH_KEY }}
+#           recursive: true
 
-    - name: ec2 update
-      uses: appleboy/ssh-action@master
-      with:
-          SSH_host: ${{ secrets.SSH_IP }}
-          SSH_username: ${{ secrets.SSH_ID }}
-          SSH_privateKey: ${{ secrets.SSH_KEY }}
-          script: pm2 restart 0 --update-env
+#     - name: ec2 update
+#       uses: appleboy/ssh-action@master
+#       with:
+#           SSH_host: ${{ secrets.SSH_IP }}
+#           SSH_username: ${{ secrets.SSH_ID }}
+#           SSH_privateKey: ${{ secrets.SSH_KEY }}
+#           script: pm2 restart 0 --update-env
 
     # - name: Deploy
     #     uses: appleboy/ssh-action@master
