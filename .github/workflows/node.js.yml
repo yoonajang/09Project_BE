@@ -55,16 +55,18 @@ jobs:
         echo nodemailerPw="$NODEMAILER_PW" >> .env.production
         cat .env.production | head -n 1
 
-    # steps: 
-    # - name: Deploy
-    #   uses: 
-    #   with: 
-    #     host: ${{ secrets.HOST }}
-    #     username: ${{ secrets.USERNAME }}
-    #     key: ${{ secrets.KEY }}
-    #     port: ${{ secrets.PORT }}
-    #     script: |
-    #       cd 09Poject
-    #       git pull https://github.com/moonhjang/09Project_BE.git
+  
+    - name: Deploy
+      uses: 
+      # with: 
+      #   host: ${{ secrets.HOST }}
+      #   username: ${{ secrets.USERNAME }}
+      #   key: ${{ secrets.KEY }}
+      #   port: ${{ secrets.PORT }}
+        script: |
+          cd 09Poject
+          git pull https://github.com/moonhjang/09Project_BE.git
+          pm2 restart app.js
+          pm2 log 0
     
 
