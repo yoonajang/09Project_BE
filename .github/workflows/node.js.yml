@@ -62,7 +62,7 @@ jobs:
 #   needs: [build]
 #   runs-on:  ubuntu-latest
 #   steps:
-    - name: connect with ssh
+    - name: Deploy
       uses: appleboy/ssh-action@master
       with: 
         SSH_IP: ${{ secrets.SSH_IP }}
@@ -70,21 +70,23 @@ jobs:
         SSH_KEY: ${{ secrets.SSH_KEY }}
         SSH_PORT: ${{ secrets.SSH_PORT }}
      
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
-        host: ${{ secrets.DATABASE_HOST }}
-        port: ${{ secrets.DATABASE_PORT }}
-        user: ${{ secrets.DATABASE_USERNAME }}
-        password: ${{ secrets.DATABASE_PASSWORD }}
-        database: ${{ secrets.DATABASE_NAME }}
-        nodemailerUser: ${{ secrets.NODEMAILER_USER }}
-        nodemailerPw: ${{ secrets.NODEMAILER_PW }}
+        # JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        # keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
+        # host: ${{ secrets.DATABASE_HOST }}
+        # port: ${{ secrets.DATABASE_PORT }}
+        # user: ${{ secrets.DATABASE_USERNAME }}
+        # password: ${{ secrets.DATABASE_PASSWORD }}
+        # database: ${{ secrets.DATABASE_NAME }}
+        # nodemailerUser: ${{ secrets.NODEMAILER_USER }}
+        # nodemailerPw: ${{ secrets.NODEMAILER_PW }}
 
       script: |
         cd /home/ubuntu/09Project_BE
         sudo git pull
-        npm start
-        npm run build
+        sudo yarn
+        sudo yarn build
+        # npm start
+        # npm run build
         sudo pm2 reload all
     
 
