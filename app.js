@@ -109,7 +109,8 @@ io.on('connection', socket => {
         const userEmail = param.newMessage.User_userEmail;
         const userImage = param.newMessage.userImage;
         const chat = param.newMessage.chat;
-        const createdAt = param.newMessage.createdAt;
+        const createdAt = toString(param.newMessage.createdAt);
+        
         console.log(createdAt)
 
         const sql =
