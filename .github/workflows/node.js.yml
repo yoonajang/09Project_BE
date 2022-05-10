@@ -27,16 +27,16 @@ jobs:
     - run: npm run build --if-present
     - run: npm test
            
-    - name: Transfer to S3 for serving static
-      uses: jakejarvis/s3-sync-action@master
-      with:
-        args: --acl public-read --follow-symlinks --delete
-      env:
-        AWS_S3_BUCKET: 'sparta-real-bucket'
-        AWS_ACCESS_KEY_ID: ${{ secrets. AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: 'ap-northeast-2'
-        SOURCE_DIR: 'dist'
+    # - name: Transfer to S3 for serving static
+    #   uses: jakejarvis/s3-sync-action@master
+    #   with:
+    #     args: --acl public-read --follow-symlinks --delete
+    #   env:
+    #     AWS_S3_BUCKET: 'sparta-real-bucket'
+    #     AWS_ACCESS_KEY_ID: ${{ secrets. AWS_ACCESS_KEY_ID }}
+    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     AWS_REGION: 'ap-northeast-2'
+    #     SOURCE_DIR: 'dist'
 
 
 
@@ -45,12 +45,12 @@ jobs:
 
            
 
-    # - name: Create env file
-    #   env: 
-    #     SSH_IP: ${{ secrets.SSH_IP }}
-    #     SSH_ID: ${{ secrets.SSH_ID }}
-    #     SSH_KEY: ${{ secrets.SSH_KEY }}
-    #     SSH_PORT: ${{ secrets.SSH_PORT }}
+    - name: Create env file
+      env: 
+        SSH_IP: ${{ secrets.SSH_IP }}
+        SSH_ID: ${{ secrets.SSH_ID }}
+        SSH_KEY: ${{ secrets.SSH_KEY }}
+        SSH_PORT: ${{ secrets.SSH_PORT }}
         # PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
         # JWT_SECRET: ${{ secrets.JWT_SECRET }}
         # keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
@@ -62,12 +62,12 @@ jobs:
         # nodemailerUser: ${{ secrets.NODEMAILER_USER }}
         # nodemailerPw: ${{ secrets.NODEMAILER_PW }}
 
-      # run: 
-      #   touch .env.production
-      #   echo SSH_IP="$SSH_IP" >> .env.production
-      #   echo SSH_ID="$SSH_ID" >> .env.production
-      #   echo SSH_KEY="$SSH_KEY" >> .env.production
-      #   echo SSH_PORT="$SSH_PORT" >> .env.production
+      run: 
+        touch .env.production
+        echo SSH_IP="$SSH_IP" >> .env.production
+        echo SSH_ID="$SSH_ID" >> .env.production
+        echo SSH_KEY="$SSH_KEY" >> .env.production
+        echo SSH_PORT="$SSH_PORT" >> .env.production
 
 
         # echo PRIVATE_KEY="$AWS_PRIVATE_KEY" >> .env.production
