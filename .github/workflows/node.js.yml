@@ -51,36 +51,36 @@ jobs:
         SSH_ID: ${{ secrets.SSH_ID }}
         SSH_KEY: ${{ secrets.SSH_KEY }}
         SSH_PORT: ${{ secrets.SSH_PORT }}
-        # PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
-        # JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        # keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
-        # host: ${{ secrets.DATABASE_HOST }}
-        # port: ${{ secrets.DATABASE_PORT }}
-        # user: ${{ secrets.DATABASE_USERNAME }}
-        # password: ${{ secrets.DATABASE_PASSWORD }}
-        # database: ${{ secrets.DATABASE_NAME }}
-        # nodemailerUser: ${{ secrets.NODEMAILER_USER }}
-        # nodemailerPw: ${{ secrets.NODEMAILER_PW }}
+        PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
+        host: ${{ secrets.DATABASE_HOST }}
+        port: ${{ secrets.DATABASE_PORT }}
+        user: ${{ secrets.DATABASE_USERNAME }}
+        password: ${{ secrets.DATABASE_PASSWORD }}
+        database: ${{ secrets.DATABASE_NAME }}
+        nodemailerUser: ${{ secrets.NODEMAILER_USER }}
+        nodemailerPw: ${{ secrets.NODEMAILER_PW }}
 
       run: 
         touch .env.production
-        echo SSH_IP="$SSH_IP" >> .env.production
-        echo SSH_ID="$SSH_ID" >> .env.production
-        echo SSH_KEY="$SSH_KEY" >> .env.production
-        echo SSH_PORT="$SSH_PORT" >> .env.production
+        # echo SSH_IP="$SSH_IP" >> .env.production
+        # echo SSH_ID="$SSH_ID" >> .env.production
+        # echo SSH_KEY="$SSH_KEY" >> .env.production
+        # echo SSH_PORT="$SSH_PORT" >> .env.production
 
 
-        # echo PRIVATE_KEY="$AWS_PRIVATE_KEY" >> .env.production
-        # echo JWT_SECRET="$JWT_SECRET" >> .env.production
-        # echo keyForDecrypt="$KEY_DECRYPT" >> .env.production
-        # echo PORT="$PORT" >> .env.production
-        # echo host="$DATABASE_HOST" >> .env.production
-        # echo port="$DATABASE_PORT" >> .env.production
-        # echo user="$DATABASE_USERNAME" >> .env.production
-        # echo password="$DATABASE_PASSWORD" >> .env.production
-        # echo database="$DATABASE_NAME" >> .env.production
-        # echo nodemailerUser="$NODEMAILER_USER" >> .env.production
-        # echo nodemailerPw="$NODEMAILER_PW" >> .env.production
+        echo PRIVATE_KEY="$AWS_PRIVATE_KEY" >> .env.production
+        echo JWT_SECRET="$JWT_SECRET" >> .env.production
+        echo keyForDecrypt="$KEY_DECRYPT" >> .env.production
+        echo PORT="$PORT" >> .env.production
+        echo host="$DATABASE_HOST" >> .env.production
+        echo port="$DATABASE_PORT" >> .env.production
+        echo user="$DATABASE_USERNAME" >> .env.production
+        echo password="$DATABASE_PASSWORD" >> .env.production
+        echo database="$DATABASE_NAME" >> .env.production
+        echo nodemailerUser="$NODEMAILER_USER" >> .env.production
+        echo nodemailerPw="$NODEMAILER_PW" >> .env.production
         cat .env.production | head -n 1
 
 
