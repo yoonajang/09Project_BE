@@ -145,13 +145,14 @@ io.on('connection', socket => {
         const postId = postid.replace('p', '');
         const userName = param.newMessage.User_userName;
 
-        const sql = 'SELECT User_userId FROM Post WHERE and postId = ?;';
+        const sql = 'SELECT User_userId FROM Post WHERE postId = ?;';
         const sqls = mysql.format(sql, postId);
 
-        const sql_1 = 'SELECT User_userId FROM Post WHERE and postId = ?;';
+        const sql_1 = 'SELECT User_userId FROM JoinPost WHERE Post_postId = ?;';
         const sql_1s = mysql.format(sql_1, postId);
 
         db.query(sqls + sql_1s,  (err, rows) => {
+            if(err) console.log(err)
             console.log(rows)
             const chatAdmin = rows[0];
             const {users} = rows[1];
