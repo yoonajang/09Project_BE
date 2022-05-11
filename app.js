@@ -248,7 +248,9 @@ io.on('connection', socket => {
             res.status(201).send({ msg: 'success', data });
         });
 
+        console.log(socket.rooms, '나가기전')
         socket.leave(postId);
+        console.log(socket.rooms, '나가기후')
         io.to(postId).emit('onDisconnect', userName + ' 님이 퇴장했습니다.');
     })
 
