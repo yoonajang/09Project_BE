@@ -241,23 +241,23 @@ io.on('connection', socket => {
         });
     });
 
-    socket.on('disconnect', param => {
-        const postId = param.postid;
-        const { userId, userName } = param.loggedUser;
+    // socket.on('disconnect', param => {
+    //     const postId = param.postid;
+    //     const { userId, userName } = param.loggedUser;
 
-        const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
-        const params = [postId, userId];
+    //     const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
+    //     const params = [postId, userId];
 
-        db.query(sql, params, (err, data) => {
-            if (err) console.log(err);
-            res.status(201).send({ msg: 'success', data });
-        });
+    //     db.query(sql, params, (err, data) => {
+    //         if (err) console.log(err);
+    //         res.status(201).send({ msg: 'success', data });
+    //     });
 
-        console.log(socket.rooms, '나가기전')
-        socket.leave(postId);
-        console.log(socket.rooms, '나가기후')
-        io.to(postId).emit('onDisconnect', userName + ' 님이 퇴장했습니다.');
-    })
+    //     console.log(socket.rooms, '나가기전')
+    //     socket.leave(postId);
+    //     console.log(socket.rooms, '나가기후')
+    //     io.to(postId).emit('onDisconnect', userName + ' 님이 퇴장했습니다.');
+    // })
 
 
 });
