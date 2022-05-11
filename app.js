@@ -145,27 +145,34 @@ io.on('connection', socket => {
         const postId = postid.replace('p', '');
         const userName = param.newMessage.User_userName;
 
-        const sql = 'SELECT User_userId FROM Post WHERE postId = ?;';
+        const sql = 'SELECT title, User_userId FROM Post WHERE postId = ?;';
         const sqls = mysql.format(sql, postId);
 
         const sql_1 = 'SELECT User_userId FROM JoinPost WHERE Post_postId = ?;';
         const sql_1s = mysql.format(sql_1, postId);
 
         db.query(sqls + sql_1s,  (err, rows) => {
-            if(err) console.log(err)
             console.log(rows)
-            const chatAdmin = rows[0];
+            console.log(rows[0], '이것 방장~')
+            console.log(rows[1], '이것 사람이 여러명~')
+            console.log(!chatAdmin || !{users}, '사람이 있나?')
+            console.log(socket.rooms)
+
+
+
+            const chatAdmin = rows[0].User_userId;
+            const title = rows[0].title;
             const {users} = rows[1];
             // console.log(chatAdmin, users);
-            if (!chatAdmin && !{users}) {
-                socket.join(postid);
-                socket.to(chatAdmin).emit('pushalarm', userName + ' 님께서 새로운 채팅을 남겼습니다.');
-                socket.to({users}).emit('pushalarm', userName + ' 님께서 새로운 채팅을 남겼습니다.');
+            if (!chatAdmin || !{users}) {
+                // socket.join(postid);
+                socket.to(chatAdmin).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
+                socket.to({users}).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
             }
         });
     });
 
-
+    
 
     //찐참여자 선택
     socket.on('add_new_participant', param => {
