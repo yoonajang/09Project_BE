@@ -69,7 +69,10 @@ router.post('/postlist', (req, res) => {
     }
 });
 
-// 메인페이지 게시글 상세보기
+
+//----------------게시글-----------------//
+
+// 게시글 조회
 router.get('/:postId', (req, res) => {
     const postId = req.params.postId;
 
@@ -90,8 +93,6 @@ router.get('/:postId', (req, res) => {
         res.send({ msg: 'success', data });
     });
 });
-
-//----------------게시글-----------------//
 
 // 게시글 작성
 router.post(
@@ -174,8 +175,8 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
 });
 
 // 게시글 거래완료
-router.put('/:postid', authMiddleware, (req, res) => {
-    const postId = req.params.postid;
+router.put('/:postId', authMiddleware, (req, res) => {
+    const postId = req.params.postId;
     const userId = res.locals.user.userId;
 
     const sql =
@@ -193,6 +194,7 @@ router.put('/:postid', authMiddleware, (req, res) => {
 
     });
 });
+
 
 //----------------채팅-----------------//
 
@@ -265,6 +267,7 @@ router.get('/outchat/:postid', authMiddleware, (req, res) => {
     });
 });
 
+
 //----------------좋아요-----------------//
 
 // 좋아요 생성
@@ -312,5 +315,6 @@ router.delete('/like/:postId', authMiddleware, (req, res) => {
         }
     });
 });
+
 
 module.exports = router;
