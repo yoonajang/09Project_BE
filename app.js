@@ -17,6 +17,7 @@ const { Server } = require('socket.io'); //소켓 라이브러리 불러오기
 const mysql = require('mysql');
 const moment = require('moment'); //시간 표시를 위해 사용
 const db = require('./config');
+const { clearCache } = require('ejs');
 
 app.use(cors());
 
@@ -123,12 +124,11 @@ io.on('connection', socket => {
             if (err) {
                 console.log(err);
             } else {
-                console.log(rows)
-                // const find_sql = 'SELECT title FROM Post WHERE postId = ?'
+                const find_sql = 'SELECT title FROM Post WHERE postId = ?'
         
-                // db.query(find_sql, rows.insertId, (err, find) => {
-                //     if(err) console.log(err)
-                //     else {
+                db.query(find_sql, postId, (err, find) => {
+                    if(err) console.log(err)
+                    else {console.log(find)}})
                 //         const title = find.title
                 //         console.log(find, find.title, '무엇이 타이틀이냐.')
                 //         const status =  title + ' 게시물에 메시지가 도착했습니다.'
