@@ -134,6 +134,7 @@ io.on('connection', socket => {
     socket.on('stop typing', postid =>
         socket.to(postid).emit('stop typing'));
     
+
     //찐참여자 선택
     socket.on('add_new_participant', param => {
         console.log(param);
@@ -208,6 +209,12 @@ io.on('connection', socket => {
             }
         });
     });
+
+    
+
+
+
+
 });
 
 // //도메인
