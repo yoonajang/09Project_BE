@@ -105,8 +105,8 @@ io.on('connection', socket => {
         //     console.log(clients)
         // });
 
-        console.log(socket.client, '클 라 이 언 트')
-        console.log(socket, '---------1클 라 이 언 트')
+        console.log(socket.rooms, '클 라 이 언 트')
+
 
         //수찬님 테스트용
         socket.emit('connected', userName + ' 님이 입장했습니다.');
