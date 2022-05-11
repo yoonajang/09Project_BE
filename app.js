@@ -123,7 +123,25 @@ io.on('connection', socket => {
             if (err) {
                 console.log(err);
             } else {
-                socket.to(postid).emit('receive message', param.newMessage);
+                const find_sql = 'SELECT title FROM Post WHERE postId = ?'
+        
+                db.query(find_sql, postId, (err, title) => {
+                    if(err) console.log(err)
+                    else {
+                        const status =  title + ' 게시물에 메시지가 도착했습니다.'
+                        const param = [0, status, userEmail, userId, userName, userImage]
+
+                        const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
+
+                        db.query(sql, data, (err, data) => {
+                            db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
+                            (err, alarmInfo) => {
+                                    if (err) console.log(err)
+                                    socket.to(postid).emit('receive message', param.newMessage);
+                            });
+                        })        
+                    }
+                });    
             }
         });
     });
@@ -136,60 +154,68 @@ io.on('connection', socket => {
     
 
     // 알림기능
-    socket.on('pushalarm', param => {
-        console.log(param)
+    // socket.on('pushalarm', param => {
+    //     console.log(param)
 
-        const postid = param.newMessage.Post_postId;
-        const postId = postid.replace('p', '');
-        const userId = param.newMessage.User_userId;
-        const userName = param.newMessage.User_userName;
-        const userEmail = param.newMessage.User_userEmail;
-        const userImage = param.newMessage.userImage;
-        const status_num = param.status; //string
+    //     const postid = param.newMessage.Post_postId;
+    //     const postId = postid.replace('p', '');
+    //     const userId = param.newMessage.User_userId;
+    //     const userName = param.newMessage.User_userName;
+    //     const userEmail = param.newMessage.User_userEmail;
+    //     const userImage = param.newMessage.userImage;
+    //     // const status_num = param.status; //string
     
 
-        if (status_num === '1'){
-            const find_sql = 'SELECT title FROM Post WHERE postId = ?'
+    //     // if (status_num === '1'){
+    //         const find_sql = 'SELECT title FROM Post WHERE postId = ?'
         
-            db.query(find_sql, postId, (err, title) => {
-                if(err) console.log(err)
-                else {
-                    const status =  title + ' 게시물에 메시지가 도착했습니다.'
-                    const param = [0, status, userEmail, userId, userName, userImage]
+    //         db.query(find_sql, postId, (err, title) => {
+    //             if(err) console.log(err)
+    //             else {
+    //                 const status =  title + ' 게시물에 메시지가 도착했습니다.'
+    //                 const param = [0, status, userEmail, userId, userName, userImage]
 
-                    const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
+    //                 const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
 
-                    db.query(sql, data, (err, data) => {
-                        db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
-                        (err, alarmInfo) => {
-                                if (err) console.log(err)
-                                socket.to(postid).emit('pushalarm',alarmInfo)
-                        });
-                    })        
-                }
-            });
-        }
+    //                 db.query(sql, data, (err, data) => {
+    //                     db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
+    //                     (err, alarmInfo) => {
+    //                             if (err) console.log(err)
+    //                             socket.to(postid).emit('pushalarm',alarmInfo)
+    //                     });
+    //                 })        
+    //             }
+    //         });
+    //     }
 
-        if (status_num === '2'){
-            const find_sql = 'SELECT title FROM Post WHERE postId = ?'
+
+        // if (status_num === '2'){
+        //     const find_sql = 'SELECT title FROM Post WHERE postId = ?'
         
-            db.query(find_sql, postId, (err, title) => {
-                if(err) console.log(err)
-                else {
-                    const status =  title + ' 게시물에 메시지가 도착했습니다.'
-                    const param = [0, status, userEmail, userId, userName, userImage]
+        //     db.query(find_sql, postId, (err, title) => {
+        //         if(err) console.log(err)
+        //         else {
+        //             const status =  title + ' 게시물에 메시지가 도착했습니다.'
+        //             const param = [0, status, userEmail, userId, userName, userImage]
 
-                    const sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
-                }
-            });
-        }
+        //             const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
+
+        //             db.query(sql, data, (err, data) => {
+        //                 db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
+        //                 (err, alarmInfo) => {
+        //                         if (err) console.log(err)
+        //                         socket.to(postid).emit('pushalarm',alarmInfo)
+        //                 });
+        //             })        
+        //         }
+        //     });
+        // }
 
 
 
 
-
-        // DB 넣기 
-        const sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
+        // // DB 넣기 
+        // const sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
 
 
         // const sql = 'SELECT title, User_userId FROM Post WHERE postId = ?;';
