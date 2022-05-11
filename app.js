@@ -136,6 +136,7 @@ io.on('connection', socket => {
     
      //알림기능
      socket.on('pushalarm', param => {
+        console.log(param)
         const postid = param.postid;
         const postId = postid.replace('p', '');
         const userName = param.selectedUser.User_userName;
