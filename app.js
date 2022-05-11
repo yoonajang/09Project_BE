@@ -139,8 +139,6 @@ io.on('connection', socket => {
         console.log('알림기능>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',param)
        
 
-
-
         const postid = param.newMessage.Post_postId;
         const postId = postid.replace('p', '');
         const userName = param.newMessage.User_userName;
@@ -163,13 +161,14 @@ io.on('connection', socket => {
             const chatAdmin = rows[0].User_userId;
             const title = rows[0].title;
             const {users} = rows[1];
+            console.log(chatAdmin,title,users,'<<<<<<<<<<<<<<<<<<<<')
             // console.log(chatAdmin, users);
-            console.log(!chatAdmin || !{users}, '사람이 있나?')
-            if (!chatAdmin || !{users}) {
-                // socket.join(postid);
-                socket.to(chatAdmin).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
-                socket.to({users}).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
-            }
+            // console.log(!chatAdmin || !{users}, '사람이 있나?')
+            // if (!chatAdmin || !{users}) {
+            //     // socket.join(postid);
+            //     socket.to(chatAdmin).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
+            //     socket.to({users}).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
+            // }
         });
     });
 
