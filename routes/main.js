@@ -120,7 +120,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const sql_1s = mysql.format(sql_1, postId);
     //Chat table 데이터 가져오기
     const sql_2 =
-        'SELECT C.chatId, C.Post_postId, C.chat, date_format(C.createdAt, "%Y-%m-%d %T") createdAt, C.User_userId, C.User_userEmail, C.User_userName, C.userImage FROM Chat C WHERE Post_postId=? ORDER BY createdAt DESC LIMIT 5;';
+        'SELECT C.chatId, C.Post_postId, C.chat, date_format(C.createdAt, "%Y-%m-%d %T") createdAt, C.User_userId, C.User_userEmail, C.User_userName, C.userImage FROM Chat C WHERE Post_postId=? ORDER BY createdAt DESC LIMIT 200;';
     const sql_2s = mysql.format(sql_2, postId);
     //게시글 작성자 정보 가져오기
     const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
