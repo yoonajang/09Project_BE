@@ -87,7 +87,7 @@ io.on('connection', socket => {
     // 채팅시작 
     socket.on('startchat', param => {
         console.log('채팅시작');
-        console.log(param);
+        // console.log(param);
         const postId = param.postid;
         const { userId, userName } = param.loggedUser;
 
@@ -103,7 +103,7 @@ io.on('connection', socket => {
     // 메세지 주고 받기
     socket.on('sendmessage', param => {
         console.log('메세지');
-        console.log(param);
+        // console.log(param);
 
         const postid = param.newMessage.Post_postId;
         const postId = postid.replace('p', '');
