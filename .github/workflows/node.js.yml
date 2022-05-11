@@ -39,13 +39,11 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
+    branches:
+      - main 
 
 jobs:
     build:
-        # name: Build
         runs-on: ubuntu-latest
 
         steps:
@@ -87,8 +85,7 @@ jobs:
                   script: |
                       sudo -s
                       cd /home/ubuntu/09Project_BE
-                      sudo git pull origin main
-                      sudo npm install
+                      sudo git pull 
                       sudo pm2 reload app.js
 
 
