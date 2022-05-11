@@ -123,33 +123,34 @@ io.on('connection', socket => {
             if (err) {
                 console.log(err);
             } else {
-                const find_sql = 'SELECT title FROM Post WHERE postId = ?'
+                console.log(rows)
+                // const find_sql = 'SELECT title FROM Post WHERE postId = ?'
         
-                db.query(find_sql, rows.insertId, (err, find) => {
-                    if(err) console.log(err)
-                    else {
-                        const title = find.title
-                        console.log(find, find.title, '무엇이 타이틀이냐.')
-                        const status =  title + ' 게시물에 메시지가 도착했습니다.'
-                        const param = [0, status, userEmail, userId, userName, userImage]
+                // db.query(find_sql, rows.insertId, (err, find) => {
+                //     if(err) console.log(err)
+                //     else {
+                //         const title = find.title
+                //         console.log(find, find.title, '무엇이 타이틀이냐.')
+                //         const status =  title + ' 게시물에 메시지가 도착했습니다.'
+                //         const params = [0, status, userEmail, userId, userName, userImage]
 
-                        const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
+                //         const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
 
-                        db.query(sql, data, (err, data) => {
-                            if(err) console.log(err)
-                            else {
-                                console.log(data,'<<<<<<<<<<<<<<<<')
-                                db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
-                                (err, alarmInfo) => {
-                                        if (err) console.log(err)
-                                        console.log(param)
-                                        console.log(parma.newMessage,'메시지는 무엇이냐~~')
-                                        socket.to(postid).emit('receive message', param.newMessage, alarmInfo);
-                                })
-                            };
-                        })        
-                    }
-                });    
+                //         db.query(Insert_sql, params, (err, data) => {
+                //             if(err) console.log(err)
+                //             else {
+                //                 console.log(data,'<<<<<<<<<<<<<<<<')
+                //                 db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
+                //                 (err, alarmInfo) => {
+                //                         if (err) console.log(err)
+                //                         console.log(param)
+                //                         console.log(param.newMessage,'메시지는 무엇이냐~~')
+                //                         socket.to(postid).emit('receive message', param.newMessage, alarmInfo);
+                //                 })
+                //             };
+                //         })        
+                //     }
+                // });    
             }
         });
     });
