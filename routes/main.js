@@ -128,7 +128,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     
 
     db.query(sqls + sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
-        console.log(results)
+        // console.log(results)
         
         if (err) console.log(err);
         else {
@@ -136,7 +136,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
             const chatInfo = results[2];
             const chatAdmin = results[3];
             const headList = results[4];
-            console.log(headList)
+            console.log(chatInfo)
             return res.status(200).send({
                 data: { userInfo, chatInfo, chatAdmin, headList },
                 message: '채팅 참여자와 메세지 정보가 전달되었습니다',
