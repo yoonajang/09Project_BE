@@ -142,6 +142,8 @@ io.on('connection', socket => {
                                 db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
                                 (err, alarmInfo) => {
                                         if (err) console.log(err)
+                                        console.log(param)
+                                        console.log(parma.newMessage,'메시지는 무엇이냐~~')
                                         socket.to(postid).emit('receive message', param.newMessage, alarmInfo);
                                 })
                             };
