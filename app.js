@@ -103,8 +103,8 @@ io.on('connection', socket => {
     // 메세지 주고 받기
     socket.on('sendmessage', param => {
         console.log('메세지');
-        // console.log(param);
-
+        console.log(param);
+        return
         const postid = param.newMessage.Post_postId;
         const postId = postid.replace('p', '');
         const userId = param.newMessage.User_userId;
