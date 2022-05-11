@@ -136,7 +136,7 @@ io.on('connection', socket => {
     
      //알림기능
      socket.on('pushalarm', param => {
-        console.log(socket.rooms, '알림기능>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',param)
+        console.log('알림기능>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',param)
        
 
 
