@@ -104,7 +104,7 @@ io.on('connection', socket => {
         // io.in(postId).clients((err, clients) => {
         //     console.log(clients)
         // });
-
+        consoel.log(socket.id)
         console.log(socket.rooms, '클 라 이 언 트')
 
 
