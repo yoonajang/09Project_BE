@@ -104,7 +104,7 @@ io.on('connection', socket => {
     socket.on('sendmessage', param => {
         console.log('메세지');
         console.log(param);
-        return
+       
         const postid = param.newMessage.Post_postId;
         const postId = postid.replace('p', '');
         const userId = param.newMessage.User_userId;
@@ -125,10 +125,11 @@ io.on('connection', socket => {
             } else {
                 const find_sql = 'SELECT title FROM Post WHERE postId = ?'
         
-                db.query(find_sql, postId, (err, find) => {
+                db.query(find_sql, re_postId, (err, find) => {
                     if(err) console.log(err)
                     else {
                         const title = find.title
+                        console.log(find, find.title, '무엇이 타이틀이냐.')
                         const status =  title + ' 게시물에 메시지가 도착했습니다.'
                         const param = [0, status, userEmail, userId, userName, userImage]
 
