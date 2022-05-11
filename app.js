@@ -134,6 +134,32 @@ io.on('connection', socket => {
     socket.on('stop typing', postid =>
         socket.to(postid).emit('stop typing'));
     
+     //알림기능
+     socket.on('pushalarm', param => {
+        const postid = param.postid;
+        const postId = postid.replace('p', '');
+        const userName = param.selectedUser.User_userName;
+
+        const sql = 'SELECT User_userId FROM Post WHERE and postId = ?;';
+        const sqls = mysql.format(sql, postId);
+
+        const sql_1 = 'SELECT User_userId FROM Post WHERE and postId = ?;';
+        const sql_1s = mysql.format(sql_1, postId);
+
+        db.query(sqls + sql_1s,  (err, rows) => {
+            console.log(rows)
+            const chatAdmin = rows[0];
+            const {users} = rows[1];
+            // console.log(chatAdmin, users);
+            if (!chatAdmin && !{users}) {
+                socket.join(postId);
+                socket.to(chatAdmin).emit('pushalarm', userName + ' 님께서 새로운 채팅을 남겼습니다.');
+                socket.to({users}).emit('pushalarm', userName + ' 님께서 새로운 채팅을 남겼습니다.');
+            }
+        });
+    });
+
+
 
     //찐참여자 선택
     socket.on('add_new_participant', param => {
@@ -210,9 +236,21 @@ io.on('connection', socket => {
         });
     });
 
-    
+    socket.on('disconnect', param => {
+        const postId = param.postid;
+        const { userId, userName } = param.loggedUser;
 
+        const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
+        const params = [postId, userId];
 
+        db.query(sql, params, (err, data) => {
+            if (err) console.log(err);
+            res.status(201).send({ msg: 'success', data });
+        });
+
+        socket.leave(postId);
+        io.to(postId).emit('onDisconnect', userName + ' 님이 퇴장했습니다.');
+    })
 
 
 });
