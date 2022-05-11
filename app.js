@@ -128,7 +128,7 @@ io.on('connection', socket => {
         
                 db.query(find_sql, postId, (err, find) => {
                     if(err) console.log(err)
-                    else {console.log(find)}})
+                    else {console.log(find, find[0])}})
                 //         const title = find.title
                 //         console.log(find, find.title, '무엇이 타이틀이냐.')
                 //         const status =  title + ' 게시물에 메시지가 도착했습니다.'
