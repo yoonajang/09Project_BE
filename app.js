@@ -242,8 +242,8 @@ io.on('connection', socket => {
             //     socket.to(chatAdmin).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
             //     socket.to({users}).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
             // }
-        });
-    });
+    //     });
+    // });
 
     
     //찐참여자 선택
