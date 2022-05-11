@@ -125,20 +125,25 @@ io.on('connection', socket => {
             } else {
                 const find_sql = 'SELECT title FROM Post WHERE postId = ?'
         
-                db.query(find_sql, postId, (err, title) => {
+                db.query(find_sql, postId, (err, find) => {
                     if(err) console.log(err)
                     else {
+                        const title = find.title
                         const status =  title + ' 게시물에 메시지가 도착했습니다.'
                         const param = [0, status, userEmail, userId, userName, userImage]
 
                         const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
 
                         db.query(sql, data, (err, data) => {
-                            db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
-                            (err, alarmInfo) => {
-                                    if (err) console.log(err)
-                                    socket.to(postid).emit('receive message', param.newMessage, alarmInfo);
-                            });
+                            if(err) console.log(err)
+                            else {
+                                console.log(data,'<<<<<<<<<<<<<<<<')
+                                db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
+                                (err, alarmInfo) => {
+                                        if (err) console.log(err)
+                                        socket.to(postid).emit('receive message', param.newMessage, alarmInfo);
+                                })
+                            };
                         })        
                     }
                 });    
