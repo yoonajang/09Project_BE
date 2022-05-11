@@ -84,6 +84,13 @@ server.listen(httpsPort, () => {
 
 io.on('connection', socket => {
     console.log('연결성공');
+    
+
+    io.of('/').in(roomName).clients((err, clients) => {
+          console.log(clients)
+        });
+
+    
 
     socket.on("socket is connected", (loggedUser) => {
         console.log(loggedUser)
@@ -97,6 +104,10 @@ io.on('connection', socket => {
         // console.log(param);
         const postId = param.postid;
         const { userId, userName } = param.loggedUser;
+
+        socket.in(postId).clients((err, clients) => {
+            console.log(clients)
+        });
 
         socket.join(postId); // string ('p' + postId)
         socket.join(userId);
