@@ -137,7 +137,7 @@ io.on('connection', socket => {
                             db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
                             (err, alarmInfo) => {
                                     if (err) console.log(err)
-                                    socket.to(postid).emit('receive message', param.newMessage);
+                                    socket.to(postid).emit('receive message', param.newMessage, alarmInfo);
                             });
                         })        
                     }
