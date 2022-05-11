@@ -115,11 +115,32 @@ io.on('connection', socket => {
             if (err) {
                 console.log(err);
             } else {
-                const newMsg = rows[0].chat;
-                const msgName = rows[0].User_userName;
-                const msgTime = moment(new Date()).format('h:ss A');
-                console.log(newMsg, msgName, msgTime);
                 socket.to(postId).emit('receive message', param.newMessage);
+            }
+        });
+    });
+
+    //알림기능
+    socket.on('pushalarm', param => {
+        const postid = param.postid;
+        const postId = postid.replace('p', '');
+        const userName = param.selectedUser.User_userName;
+
+        const sql = 'SELECT User_userId FROM Post WHERE and postId = ?;';
+        const sqls = mysql.format(sql, postId);
+
+        const sql_1 = 'SELECT User_userId FROM Post WHERE and postId = ?;';
+        const sql_1s = mysql.format(sql_1, postId);
+
+        db.query(sqls + sql_1s,  (err, rows) => {
+            console.log(rows)
+            const chatAdmin = rows[0];
+            const {users} = rows[1];
+            // console.log(chatAdmin, users);
+            if (!chatAdmin && !{users}) {
+                socket.join(postId);
+                socket.to(chatAdmin).emit('pushalarm', userName + ' 님께서 새로운 채팅을 남겼습니다.');
+                socket.to({users}).emit('pushalarm', userName + ' 님께서 새로운 채팅을 남겼습니다.');
             }
         });
     });
@@ -152,7 +173,7 @@ io.on('connection', socket => {
                 const waitList = rows[2];
                 console.log(headList);
                 socket
-                    .to(postId)
+                    .to(posti   d)
                     .emit(
                         'receive_participant_list_after_added',
                         headList,
@@ -189,7 +210,7 @@ io.on('connection', socket => {
                 const waitList = rows[2];
                 console.log(headList);
                 socket
-                    .to(postId)
+                    .to(postid)
                     .emit(
                         'receive_participant_list_after_canceled',
                         headList,
@@ -198,6 +219,23 @@ io.on('connection', socket => {
             }
         });
     });
+
+    //채팅방 나가기
+    socket.on('disconnect', param => {
+        const postId = param.postid;
+        const { userId, userName } = param.loggedUser;
+
+        const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
+        const params = [postId, userId];
+
+        db.query(sql, params, (err, data) => {
+            if (err) console.log(err);
+            res.status(201).send({ msg: 'success', data });
+        });
+
+        socket.leave(postId);
+        io.to(postId).emit('onDisconnect', userName + ' 님이 퇴장했습니다.');
+    })
 });
 
 //도메인
