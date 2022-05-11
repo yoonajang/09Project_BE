@@ -125,7 +125,7 @@ io.on('connection', socket => {
             } else {
                 const find_sql = 'SELECT title FROM Post WHERE postId = ?'
         
-                db.query(find_sql, re_postId, (err, find) => {
+                db.query(find_sql, rows.insertId, (err, find) => {
                     if(err) console.log(err)
                     else {
                         const title = find.title
