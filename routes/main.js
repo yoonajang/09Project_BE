@@ -74,6 +74,7 @@ router.post(
 //게시글 삭제
 router.delete('/:postId', authMiddleware, (req, res, next) => {
     const postId = req.params.postId;
+    const userId = res.locals.user.userId;
     const sql = 'DELETE FROM Post WHERE postId=?';
 
     db.query(sql, postId, function (err, result) {
@@ -81,7 +82,11 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
             console.log(err);
             res.status(201).send({ msg: 'fail' });
         } else {
-            res.status(201).send({ msg: 'success' });
+            const sql = 'UPDATE User SET point = point-3 WHERE userId=?';
+            db.query(sql, userId, function (err, result) {
+                res.status(201).send({ msg: 'success' });
+            }); 
+
         }
     });
 });
@@ -115,7 +120,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const sql_1s = mysql.format(sql_1, postId);
     //Chat table 데이터 가져오기
     const sql_2 =
-        'SELECT C.chatId, C.Post_postId, C.chat, date_format(C.createdAt, "%Y-%m-%d %T") createdAt, C.User_userId, C.User_userEmail, C.User_userName, C.userImage FROM Chat C WHERE Post_postId=? ORDER BY createdAt ASC;';
+        'SELECT C.chatId, C.Post_postId, C.chat, date_format(C.createdAt, "%Y-%m-%d %T") createdAt, C.User_userId, C.User_userEmail, C.User_userName, C.userImage FROM Chat C WHERE Post_postId=? ORDER BY createdAt ASC LIMIT 200;';
     const sql_2s = mysql.format(sql_2, postId);
     //게시글 작성자 정보 가져오기
     const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
@@ -125,14 +130,13 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const sql_4s = mysql.format(sql_4, postId);
     
     
-
     db.query(sqls + sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
         // console.log(results)
         
         if (err) console.log(err);
         else {
             const userInfo = results[1];
-            const chatInfo = results[2];
+            const chatInfo = results[2].reverse();
             const chatAdmin = results[3];
             const headList = results[4];
             console.log(chatInfo)
