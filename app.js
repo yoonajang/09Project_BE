@@ -85,6 +85,11 @@ server.listen(httpsPort, () => {
 io.on('connection', socket => {
     console.log('연결성공');
 
+    socket.on("socket is connected", (loggedUser) => {
+        console.log(loggedUser)
+        socket.join(loggedUser.userId); 
+    });
+
     // 채팅시작 
     socket.on('startchat', param => {
         console.log('채팅시작');
@@ -92,10 +97,8 @@ io.on('connection', socket => {
         const postId = param.postid;
         const { userId, userName } = param.loggedUser;
 
-        console.log(socket.id);
         socket.join(postId); // string ('p' + postId)
         socket.join(userId);
-        console.log(socket.rooms);
 
         //수찬님 테스트용
         socket.emit('connected', userName + ' 님이 입장했습니다.');
@@ -130,7 +133,7 @@ io.on('connection', socket => {
                     if(err) console.log(err)
                     else {
                         const title = find[0].title
-                //         
+                         
                         const status =  title + ' 게시물에 메시지가 도착했습니다.'
                         const params = [0, status, userEmail, userId, userName, userImage]
 
@@ -142,8 +145,6 @@ io.on('connection', socket => {
                                 db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
                                 (err, alarmInfo) => {
                                         if (err) console.log(err)
-                                        // console.log(param)
-                                        // console.log(param.newMessage,'메시지는 무엇이냐~~')
                                         socket.to(postid).emit('receive message', param.newMessage, alarmInfo);
                                 })
                             };
