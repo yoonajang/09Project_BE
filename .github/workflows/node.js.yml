@@ -52,21 +52,6 @@ jobs:
 
 
         steps:
-            - name: executing remote ssh commands using password
-              uses: appleboy/ssh-action@master
-              with:
-                  host: ${{ secrets.SSH_IP }}
-                  username: ${{ secrets.SSH_ID }}
-                  KEY: ${{ secrets.SSH_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  script: |
-                      sudo -s
-                      cd /home/ubuntu/09Project_BE
-                      sudo git pull
-                      sudo npm install
-                      sudo pm2 reload app.js
-
-
             - name: Create env file
               env: 
                 JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -106,11 +91,14 @@ jobs:
                 CI: true   
 
             - name: Run Build
-              run: npm run build --if-present
+              run: 
+                npm start
+                npm run build --if-present
+                npm test
 
 
-            - name: Run Test
-              run: npm test 
+            # - name: Run Test
+            #   run: npm test 
                
 
             - name: Deploy
@@ -126,36 +114,36 @@ jobs:
 
 
 
-# deploy: 
-#   needs: [build]
-#   runs-on:  ubuntu-latest
-#   steps:
-  # deploy:
-  #   - name: Build, Deploy to S3 bucket 
-  #     uses: appleboy/ssh-action@master
-  #     with: 
-  #       SSH_IP: ${{ secrets.SSH_IP }}
-  #       SSH_ID: ${{ secrets.SSH_ID }}
-  #       SSH_KEY: ${{ secrets.SSH_KEY }}
-  #       SSH_PORT: ${{ secrets.SSH_PORT }}
-     
-        # JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        # keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
-        # host: ${{ secrets.DATABASE_HOST }}
-        # port: ${{ secrets.DATABASE_PORT }}
-        # user: ${{ secrets.DATABASE_USERNAME }}
-        # password: ${{ secrets.DATABASE_PASSWORD }}
-        # database: ${{ secrets.DATABASE_NAME }}
-        # nodemailerUser: ${{ secrets.NODEMAILER_USER }}
-        # nodemailerPw: ${{ secrets.NODEMAILER_PW }}
+    deploy: 
+      needs: [build]
+      runs-on:  ubuntu-latest
+      steps:
+      deploy:
+        - name: Build, Deploy to S3 bucket 
+          uses: appleboy/ssh-action@master
+          with: 
+            SSH_IP: ${{ secrets.SSH_IP }}
+            SSH_ID: ${{ secrets.SSH_ID }}
+            SSH_KEY: ${{ secrets.SSH_KEY }}
+            SSH_PORT: ${{ secrets.SSH_PORT }}
+        
+            JWT_SECRET: ${{ secrets.JWT_SECRET }}
+            keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
+            host: ${{ secrets.DATABASE_HOST }}
+            port: ${{ secrets.DATABASE_PORT }}
+            user: ${{ secrets.DATABASE_USERNAME }}
+            password: ${{ secrets.DATABASE_PASSWORD }}
+            database: ${{ secrets.DATABASE_NAME }}
+            nodemailerUser: ${{ secrets.NODEMAILER_USER }}
+            nodemailerPw: ${{ secrets.NODEMAILER_PW }}
 
-        # script: |
-        #   cd /home/ubuntu/09Project_BE
-        #   sudo git pull
-        #   sudo yarn
-        #   sudo yarn build
-        #   sudo pm2 reload all
-    
+            script: |
+              cd /home/ubuntu/09Project_BE
+              sudo git pull
+              sudo yarn
+              sudo yarn build
+              sudo pm2 reload all
+        
 
-# npm start
-# npm run build
+    # npm start
+    # npm run build
