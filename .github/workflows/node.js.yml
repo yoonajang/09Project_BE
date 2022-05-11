@@ -129,25 +129,16 @@ jobs:
           SSH_privateKey: ${{ secrets.SSH_KEY }}
           recursive: true
 
-    - name: ec2 update
+    - name: Deploy
       uses: appleboy/ssh-action@master
       with:
-          SSH_host: ${{ secrets.SSH_IP }}
-          SSH_username: ${{ secrets.SSH_ID }}
-          SSH_privateKey: ${{ secrets.SSH_KEY }}
-          script: pm2 restart 0 --update-env
-
-    - name: Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          SSH_host: ${{ secrets.SSH_IP }}
-          SSH_username: ${{ secrets.SSH_ID }}
-          SSH_key: ${{ secrets.REMOTE_SSH_KEY }}
-          SSH_port: ${{ secrets.REMOTE_SSH_PORT }}
-          script: |
-            # whoami
-            git pull origin master
-            sudo pm2 restart 0 --update-env
+        SSH_host: ${{ secrets.SSH_IP }}
+        SSH_username: ${{ secrets.SSH_ID }}
+        SSH_key: ${{ secrets.REMOTE_SSH_KEY }}
+        SSH_port: ${{ secrets.REMOTE_SSH_PORT }}
+        script: |
+          git pull origin master
+          sudo pm2 restart 0 --update-env
 
 
 
