@@ -88,7 +88,7 @@ io.on('connection', socket => {
 
         console.log(socket.id);
         socket.join(postId); // string ('p' + postId)
-        // socket.join(userId);
+        socket.join(userId);
         console.log(socket.rooms);
 
         socket.to(postId).emit('connected', userName + ' 님이 입장했습니다.');
@@ -139,11 +139,9 @@ io.on('connection', socket => {
             const title = rows[0].title;
             const {users} = rows[1];
             // console.log(chatAdmin, users);
-            if (!chatAdmin && !{users}) {
-                // socket.join(postid);
-                socket.to(chatAdmin).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
-                socket.to({users}).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
-            }
+            // socket.join(postid);
+            socket.to(chatAdmin).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
+            socket.to({users}).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
         });
     });
 
