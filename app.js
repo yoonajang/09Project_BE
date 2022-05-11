@@ -134,7 +134,7 @@ io.on('connection', socket => {
                         const status =  title + ' 게시물에 메시지가 도착했습니다.'
                         const params = [0, status, userEmail, userId, userName, userImage]
 
-                        const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
+                        const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)'
 
                         db.query(Insert_sql, params, (err, data) => {
                             if(err) console.log(err)
