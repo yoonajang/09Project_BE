@@ -98,12 +98,13 @@ io.on('connection', socket => {
         const postId = param.postid;
         const { userId, userName } = param.loggedUser;
 
-        io.of('/').in(postId).clients((err, clients) => {
+        socket.join(postId); // string ('p' + postId)
+        socket.join(userId);
+
+        io.in(postId).clients((err, clients) => {
             console.log(clients)
         });
 
-        socket.join(postId); // string ('p' + postId)
-        socket.join(userId);
 
         //수찬님 테스트용
         socket.emit('connected', userName + ' 님이 입장했습니다.');
