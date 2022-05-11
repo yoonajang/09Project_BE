@@ -134,34 +134,81 @@ io.on('connection', socket => {
     socket.on('stop typing', postid =>
         socket.to(postid).emit('stop typing'));
     
-     //알림기능
-     socket.on('pushalarm', param => {
-        console.log('알림기능>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',param)
-       
+
+    // 알림기능
+    socket.on('pushalarm', param => {
+        console.log(param)
 
         const postid = param.newMessage.Post_postId;
         const postId = postid.replace('p', '');
+        const userId = param.newMessage.User_userId;
         const userName = param.newMessage.User_userName;
+        const userEmail = param.newMessage.User_userEmail;
+        const userImage = param.newMessage.userImage;
+        const status_num = param.status; //string
+    
 
-        const sql = 'SELECT title, User_userId FROM Post WHERE postId = ?;';
-        const sqls = mysql.format(sql, postId);
+        if (status_num === '1'){
+            const find_sql = 'SELECT title FROM Post WHERE postId = ?'
+        
+            db.query(find_sql, postId, (err, title) => {
+                if(err) console.log(err)
+                else {
+                    const status =  title + ' 게시물에 메시지가 도착했습니다.'
+                    const param = [0, status, userEmail, userId, userName, userImage]
 
-        const sql_1 = 'SELECT User_userId FROM JoinPost WHERE Post_postId = ?;';
-        const sql_1s = mysql.format(sql_1, postId);
+                    const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
 
-        db.query(sqls + sql_1s,  (err, rows) => {
-            console.log(rows)
-            console.log(rows[0], '이것 방장~')
-            console.log(rows[1], '이것 사람이 여러명~')
+                    db.query(sql, data, (err, data) => {
+                        db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
+                        (err, alarmInfo) => {
+                                if (err) console.log(err)
+                                socket.to(postid).emit('pushalarm',alarmInfo)
+                        });
+                    })        
+                }
+            });
+        }
+
+        if (status_num === '2'){
+            const find_sql = 'SELECT title FROM Post WHERE postId = ?'
+        
+            db.query(find_sql, postId, (err, title) => {
+                if(err) console.log(err)
+                else {
+                    const status =  title + ' 게시물에 메시지가 도착했습니다.'
+                    const param = [0, status, userEmail, userId, userName, userImage]
+
+                    const sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
+                }
+            });
+        }
+
+
+
+
+
+        // DB 넣기 
+        const sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
+
+
+        // const sql = 'SELECT title, User_userId FROM Post WHERE postId = ?;';
+        // const sqls = mysql.format(sql, postId);
+
+        // const sql_1 = 'SELECT User_userId FROM JoinPost WHERE Post_postId = ?;';
+        // const sql_1s = mysql.format(sql_1, postId);
+
+        // db.query(sqls + sql_1s,  (err, rows) => {
+        //     console.log(rows)
+        //     console.log(rows[0], '이것 방장~')
+        //     console.log(rows[1], '이것 사람이 여러명~')
      
-            console.log(socket.rooms)
+        //     console.log(socket.rooms)
 
-
-
-            const chatAdmin = rows[0].User_userId;
-            const title = rows[0].title;
-            const {users} = rows[1];
-            console.log(chatAdmin,title,users,'<<<<<<<<<<<<<<<<<<<<')
+        //     const chatAdmin = rows[0].User_userId;
+        //     const title = rows[0].title;
+        //     const {users} = rows[1];
+        //     console.log(chatAdmin,title,users)
             // console.log(chatAdmin, users);
             // console.log(!chatAdmin || !{users}, '사람이 있나?')
             // if (!chatAdmin || !{users}) {
@@ -173,7 +220,6 @@ io.on('connection', socket => {
     });
 
     
-
     //찐참여자 선택
     socket.on('add_new_participant', param => {
         console.log(param);
