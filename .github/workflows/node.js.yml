@@ -106,9 +106,12 @@ jobs:
                 CI: true   
 
             - name: Run Build
-              run: 
-                npm run build --if-present
-                npm test 
+              run: npm run build --if-present
+
+
+            - name: Run Test
+              run: npm test 
+               
 
             - name: Deploy
               uses: appleboy/ssh-action@master
