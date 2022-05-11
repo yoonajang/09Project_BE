@@ -152,7 +152,7 @@ io.on('connection', socket => {
             const {users} = rows[1];
             // console.log(chatAdmin, users);
             if (!chatAdmin && !{users}) {
-                socket.join(postId);
+                socket.join(postid);
                 socket.to(chatAdmin).emit('pushalarm', userName + ' 님께서 새로운 채팅을 남겼습니다.');
                 socket.to({users}).emit('pushalarm', userName + ' 님께서 새로운 채팅을 남겼습니다.');
             }
