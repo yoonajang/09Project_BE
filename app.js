@@ -123,9 +123,9 @@ io.on('connection', socket => {
     //알림기능
     socket.on('pushalarm', param => {
         console.log(param)
-        const postid = param.postid;
+        const postid = param.newMessage.Post_postId;
         const postId = postid.replace('p', '');
-        const userName = param.selectedUser.User_userName;
+        const userName = param.newMessage.User_userName;
 
         const sql = 'SELECT User_userId FROM Post WHERE and postId = ?;';
         const sqls = mysql.format(sql, postId);
