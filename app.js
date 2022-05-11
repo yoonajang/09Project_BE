@@ -98,7 +98,7 @@ io.on('connection', socket => {
         const postId = param.postid;
         const { userId, userName } = param.loggedUser;
 
-        socket.in(postId).clients((err, clients) => {
+        io.of('/').in(postId).clients((err, clients) => {
             console.log(clients)
         });
 
