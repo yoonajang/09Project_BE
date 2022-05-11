@@ -7,147 +7,9 @@ require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
 
 const authMiddleware = require('../middlewares/auth');
-
 const upload = require('../S3/s3');
 
-//게시글 작성
-router.post(
-    '/postadd',
-    authMiddleware,
-    upload.single('image'),
-    (req, res, next) => {
-        const {
-            title,
-            content,
-            price,
-            headCount,
-            category,
-            endTime,
-            address,
-            lat,
-            lng,
-        } = req.body;
-
-        const writer = res.locals.user.userName;
-        const User_userId = res.locals.user.userId;
-
-        const image = req.file?.location;
-        const today = moment();
-        const endtime = today.add(endTime, 'days').format();
-
-        const datas = [
-            title,
-            content,
-            price,
-            headCount,
-            category,
-            endtime,
-            address,
-            lat,
-            lng,
-            writer,
-            User_userId,
-            image,
-        ];
-
-        const sql =
-            'INSERT INTO Post (`title`, `content`, `price`, `headCount`, `category`, `endTime`, `address`, `lat`, `lng`, `writer`, `User_userId`, `image`, `isDone`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,false)';
-
-        db.query(sql, datas, (err, rows) => {
-            if (err) {
-                console.log(err);
-                res.status(201).send({ msg: 'fail' });
-            } else {
-                console.log(rows.insertId);
-                db.query(
-                    'SELECT * FROM Post WHERE `postId`=?',
-                    rows.insertId,
-                    (err, row) => {
-                        res.status(201).send({ msg: 'success', row });
-                    },
-                );
-            }
-        });
-    },
-);
-
-//게시글 삭제
-router.delete('/:postId', authMiddleware, (req, res, next) => {
-    const postId = req.params.postId;
-    const userId = res.locals.user.userId;
-    const sql = 'DELETE FROM Post WHERE postId=?';
-
-    db.query(sql, postId, function (err, result) {
-        if (err) {
-            console.log(err);
-            res.status(201).send({ msg: 'fail' });
-        } else {
-            const sql = 'UPDATE User SET point = point-3 WHERE userId=?';
-            db.query(sql, userId, function (err, result) {
-                res.status(201).send({ msg: 'success' });
-            }); 
-
-        }
-    });
-});
-
-//채팅 시작하기
-router.get('/getchat/:postid', authMiddleware, (req, res) => {
-    const postId = req.params.postid;
-    const userEmail = res.locals.user.userEmail;
-    const userName = res.locals.user.userName;
-    const userImage = res.locals.user.userImage;
-    const userId = res.locals.user.userId;
-    
-
-    //waitingUser table 데이터 넣기
-    const sql =
-        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
-    const params = [
-        postId,
-        userEmail,
-        userName,
-        userImage,
-        userId,
-        'false',
-        userId,
-        postId,
-    ];
-    
-    const sqls = mysql.format(sql, params);
-    //waitingUser table 데이터 불러오기
-    const sql_1 = 'SELECT * FROM JoinPost WHERE Post_postId=?;';
-    const sql_1s = mysql.format(sql_1, postId);
-    //Chat table 데이터 가져오기
-    const sql_2 =
-        'SELECT C.chatId, C.Post_postId, C.chat, date_format(C.createdAt, "%Y-%m-%d %T") createdAt, C.User_userId, C.User_userEmail, C.User_userName, C.userImage FROM Chat C WHERE Post_postId=? ORDER BY createdAt DESC LIMIT 200;';
-    const sql_2s = mysql.format(sql_2, postId);
-    //게시글 작성자 정보 가져오기
-    const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
-    const sql_3s = mysql.format(sql_3, postId);
-    //찐참여자 목록 가져오기
-    const sql_4 = 'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
-    const sql_4s = mysql.format(sql_4, postId);
-    
-    
-    db.query(sqls + sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
-        // console.log(results)
-        
-        if (err) console.log(err);
-        else {
-            const userInfo = results[1];
-            const chatInfo = results[2].reverse();
-            const chatAdmin = results[3];
-            const headList = results[4];
-            console.log(chatInfo)
-            return res.status(200).send({
-                data: { userInfo, chatInfo, chatAdmin, headList },
-                message: '채팅 참여자와 메세지 정보가 전달되었습니다',
-            });
-        }
-    });
-});
-
+//----------------메인 게시글-----------------//
 
 // 메인페이지 게시글 불러오기
 router.post('/postlist', (req, res) => {
@@ -229,6 +91,176 @@ router.get('/:postId', (req, res) => {
     });
 });
 
+//----------------게시글-----------------//
+
+// 게시글 작성
+router.post(
+    '/postadd',
+    authMiddleware,
+    upload.single('image'),
+    (req, res, next) => {
+        const {
+            title,
+            content,
+            price,
+            headCount,
+            category,
+            endTime,
+            address,
+            lat,
+            lng,
+        } = req.body;
+
+        const writer = res.locals.user.userName;
+        const User_userId = res.locals.user.userId;
+
+        const image = req.file?.location;
+        const today = moment();
+        const endtime = today.add(endTime, 'days').format();
+
+        const datas = [
+            title,
+            content,
+            price,
+            headCount,
+            category,
+            endtime,
+            address,
+            lat,
+            lng,
+            writer,
+            User_userId,
+            image,
+        ];
+
+        const sql =
+            'INSERT INTO Post (`title`, `content`, `price`, `headCount`, `category`, `endTime`, `address`, `lat`, `lng`, `writer`, `User_userId`, `image`, `isDone`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,false)';
+
+        db.query(sql, datas, (err, rows) => {
+            if (err) {
+                console.log(err);
+                res.status(201).send({ msg: 'fail' });
+            } else {
+                console.log(rows.insertId);
+                db.query(
+                    'SELECT * FROM Post WHERE `postId`=?',
+                    rows.insertId,
+                    (err, row) => {
+                        res.status(201).send({ msg: 'success', row });
+                    },
+                );
+            }
+        });
+    },
+);
+
+// 게시글 삭제
+router.delete('/:postId', authMiddleware, (req, res, next) => {
+    const postId = req.params.postId;
+    const userId = res.locals.user.userId;
+    const sql = 'DELETE FROM Post WHERE postId=?';
+
+    db.query(sql, postId, function (err, result) {
+        if (err) {
+            console.log(err);
+            res.status(201).send({ msg: 'fail' });
+        } else {
+            const sql = 'UPDATE User SET point = point-3 WHERE userId=?';
+            db.query(sql, userId, function (err, result) {
+                res.status(201).send({ msg: 'success' });
+            });
+        }
+    });
+});
+
+// 게시글 거래완료
+router.put('/:postid', authMiddleware, (req, res) => {
+    const postId = req.params.postid;
+    const userId = res.locals.user.userId;
+
+    const sql =
+        'UPDATE `Post` SET `isDone`= 1 WHERE `postId`=? AND `User_userId`=?';
+    const param = [postId, userId];
+
+    db.query(sql, param, function (err, result) {
+        if (err) console.log(err);
+        res.send({ msg: 'success' });
+    });
+});
+
+//----------------채팅-----------------//
+
+// 채팅 시작하기
+router.get('/getchat/:postid', authMiddleware, (req, res) => {
+    const postId = req.params.postid;
+    const userEmail = res.locals.user.userEmail;
+    const userName = res.locals.user.userName;
+    const userImage = res.locals.user.userImage;
+    const userId = res.locals.user.userId;
+
+    //waitingUser table 데이터 넣기
+    const sql =
+        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
+    const params = [
+        postId,
+        userEmail,
+        userName,
+        userImage,
+        userId,
+        'false',
+        userId,
+        postId,
+    ];
+
+    const sqls = mysql.format(sql, params);
+    //waitingUser table 데이터 불러오기
+    const sql_1 = 'SELECT * FROM JoinPost WHERE Post_postId=?;';
+    const sql_1s = mysql.format(sql_1, postId);
+    //Chat table 데이터 가져오기
+    const sql_2 =
+        'SELECT C.chatId, C.Post_postId, C.chat, date_format(C.createdAt, "%Y-%m-%d %T") createdAt, C.User_userId, C.User_userEmail, C.User_userName, C.userImage FROM Chat C WHERE Post_postId=? ORDER BY createdAt DESC LIMIT 200;';
+    const sql_2s = mysql.format(sql_2, postId);
+    //게시글 작성자 정보 가져오기
+    const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
+    const sql_3s = mysql.format(sql_3, postId);
+    //찐참여자 목록 가져오기
+    const sql_4 =
+        'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+    const sql_4s = mysql.format(sql_4, postId);
+
+    db.query(sqls + sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
+        // console.log(results)
+
+        if (err) console.log(err);
+        else {
+            const userInfo = results[1];
+            const chatInfo = results[2].reverse();
+            const chatAdmin = results[3];
+            const headList = results[4];
+            console.log(chatInfo);
+            return res.status(200).send({
+                data: { userInfo, chatInfo, chatAdmin, headList },
+                message: '채팅 참여자와 메세지 정보가 전달되었습니다',
+            });
+        }
+    });
+});
+
+// 채팅 나가기
+router.get('/outchat/:postid', authMiddleware, (req, res) => {
+    const postId = req.params.postid;
+    const userId = res.locals.user.userId;
+    const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
+    const params = [postId, userId];
+
+    db.query(sql, params, (err, data) => {
+        if (err) console.log(err);
+        res.status(201).send({ msg: 'success', data });
+    });
+});
+
+//----------------좋아요-----------------//
+
 // 좋아요 생성
 router.get('/like/:postId', authMiddleware, (req, res) => {
     const userId = res.locals.user.userId;
@@ -272,19 +304,6 @@ router.delete('/like/:postId', authMiddleware, (req, res) => {
         } else {
             res.send({ msg: 'fail' });
         }
-    });
-});
-
-//채팅 나가기
-router.get('/outchat/:postid', authMiddleware, (req, res) => {
-    const postId = req.params.postid;
-    const userId = res.locals.user.userId;
-    const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
-    const params = [postId, userId];
-
-    db.query(sql, params, (err, data) => {
-        if (err) console.log(err);
-        res.status(201).send({ msg: 'success', data });
     });
 });
 
