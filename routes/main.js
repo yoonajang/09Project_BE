@@ -108,13 +108,15 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
         userId,
         postId,
     ];
+    
     const sqls = mysql.format(sql, params);
     //waitingUser table 데이터 불러오기
     const sql_1 = 'SELECT * FROM JoinPost WHERE Post_postId=?;';
     const sql_1s = mysql.format(sql_1, postId);
     //Chat table 데이터 가져오기
     const sql_2 =
-        'SELECT * FROM Chat WHERE Post_postId=? ORDER BY createdAt ASC;';
+        // 'SELECT * FROM Chat WHERE Post_postId=? ORDER BY createdAt ASC;';
+        'SELECT C.chatId, C.Post_postId, C.chat, date_format(C.createdAt, "%Y-%m-%d %T"), C.User_userId, C.User_userEmail, C.User_userName, C.userImage FROM Chat C WHERE Post_postId=? ORDER BY createdAt ASC;';
     const sql_2s = mysql.format(sql_2, postId);
     //게시글 작성자 정보 가져오기
     const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
