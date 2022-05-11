@@ -155,7 +155,7 @@ io.on('connection', socket => {
             console.log(rows)
             console.log(rows[0], '이것 방장~')
             console.log(rows[1], '이것 사람이 여러명~')
-            console.log(!chatAdmin || !{users}, '사람이 있나?')
+     
             console.log(socket.rooms)
 
 
@@ -164,6 +164,7 @@ io.on('connection', socket => {
             const title = rows[0].title;
             const {users} = rows[1];
             // console.log(chatAdmin, users);
+            console.log(!chatAdmin || !{users}, '사람이 있나?')
             if (!chatAdmin || !{users}) {
                 // socket.join(postid);
                 socket.to(chatAdmin).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
