@@ -35,61 +35,100 @@
 
 # 수정본(새로제작)
 
-name: Node.js CI
+# name: Node.js CI
 
-on:
-  push:
-    branches:
-      - main 
+# on:
+#   push:
+#     branches:
+#       - main 
 
-jobs:
-    build:
-        runs-on: ubuntu-latest
+# jobs:
+#     build:
+#         runs-on: ubuntu-latest
 
+#         steps:
+#             - name: Create env file
+#               env: 
+#                 JWT_SECRET: ${{ secrets.JWT_SECRET }}
+#                 keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
+#                 host: ${{ secrets.DATABASE_HOST }}
+#                 port: ${{ secrets.DATABASE_PORT }}
+#                 user: ${{ secrets.DATABASE_USERNAME }}
+#                 password: ${{ secrets.DATABASE_PASSWORD }}
+#                 database: ${{ secrets.DATABASE_NAME }}
+#                 nodemailerUser: ${{ secrets.NODEMAILER_USER }}
+#                 nodemailerPw: ${{ secrets.NODEMAILER_PW }}
+
+#               run: 
+#                 touch .env.production
+#                 echo JWT_SECRET="$JWT_SECRET" >> .env.production
+#                 echo keyForDecrypt="$KEY_DECRYPT" >> .env.production
+#                 echo PORT="$PORT" >> .env.production
+#                 echo host="$DATABASE_HOST" >> .env.production
+#                 echo port="$DATABASE_PORT" >> .env.production
+#                 echo user="$DATABASE_USERNAME" >> .env.production
+#                 echo password="$DATABASE_PASSWORD" >> .env.production
+#                 echo database="$DATABASE_NAME" >> .env.production
+#                 echo nodemailerUser="$NODEMAILER_USER" >> .env.production
+#                 echo nodemailerPw="$NODEMAILER_PW" >> .env.production
+#                 cat .env.production | head -n 1
+
+
+
+#             - name: executing remote ssh commands using password
+#               uses: appleboy/ssh-action@master
+#               with:
+#                   host: ${{ secrets.SSH_IP }}
+#                   username: ${{ secrets.SSH_ID }}
+#                   KEY: ${{ secrets.SSH_KEY }}
+#                   port: ${{ secrets.SSH_PORT }}
+#                   script: |
+#                       sudo -s
+#                       cd /home/ubuntu/09Project_BE
+#                       sudo git pull 
+#                       sudo pm2 reload app.js
+
+
+name: Deploy to Production
+    
+    on:
+      push:
+        branches:
+          - master
+    
+    jobs:
+      deploy:
+        name: Build, Deploy to S3 bucket
+        runs-on: [ubuntu-latest]
+    
+        strategy:
+          matrix:
+            node-version: [12.16.x]
+    
         steps:
-            - name: Create env file
-              env: 
-                JWT_SECRET: ${{ secrets.JWT_SECRET }}
-                keyForDecrypt: ${{ secrets.KEY_DECRYPT }}
-                host: ${{ secrets.DATABASE_HOST }}
-                port: ${{ secrets.DATABASE_PORT }}
-                user: ${{ secrets.DATABASE_USERNAME }}
-                password: ${{ secrets.DATABASE_PASSWORD }}
-                database: ${{ secrets.DATABASE_NAME }}
-                nodemailerUser: ${{ secrets.NODEMAILER_USER }}
-                nodemailerPw: ${{ secrets.NODEMAILER_PW }}
-
-              run: 
-                touch .env.production
-                echo JWT_SECRET="$JWT_SECRET" >> .env.production
-                echo keyForDecrypt="$KEY_DECRYPT" >> .env.production
-                echo PORT="$PORT" >> .env.production
-                echo host="$DATABASE_HOST" >> .env.production
-                echo port="$DATABASE_PORT" >> .env.production
-                echo user="$DATABASE_USERNAME" >> .env.production
-                echo password="$DATABASE_PASSWORD" >> .env.production
-                echo database="$DATABASE_NAME" >> .env.production
-                echo nodemailerUser="$NODEMAILER_USER" >> .env.production
-                echo nodemailerPw="$NODEMAILER_PW" >> .env.production
-                cat .env.production | head -n 1
-
-
-
-            - name: executing remote ssh commands using password
-              uses: appleboy/ssh-action@master
-              with:
-                  host: ${{ secrets.SSH_IP }}
-                  username: ${{ secrets.SSH_ID }}
-                  KEY: ${{ secrets.SSH_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  script: |
-                      sudo -s
-                      cd /home/ubuntu/09Project_BE
-                      sudo git pull 
-                      sudo pm2 reload app.js
-
-
-
+          - uses: actions/checkout@v2
+    
+          - name: Use Node.js ${{ matrix.node-version }}
+            uses: actions/setup-node@v1
+            with:
+              node-version: ${{ matrix.node-version }}
+    
+          - name: Npm install
+            run: npm install
+    
+          - name: Build
+            run: npm run build
+    
+          - name: Transfer to S3 for serving static
+            uses: jakejarvis/s3-sync-action@master
+            with:
+              args: --acl public-read --follow-symlinks --delete
+            env:
+              AWS_S3_BUCKET: sparta-real-bucket
+              AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              AWS_REGION:  ${{ secrets.AWS_REGION }}
+              SOURCE_DIR: 'dist'
 
 
 
