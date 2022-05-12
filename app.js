@@ -86,9 +86,9 @@ io.on('connection', socket => {
     console.log('연결성공');
 
     socket.on("socket is connected", (loggedUser) => {
-        console.log(loggedUser)
+        // console.log(loggedUser)
         socket.join(loggedUser.userId); 
-        console.log(socket.rooms)
+        // console.log(socket.rooms)
     });
 
     // 채팅시작 
