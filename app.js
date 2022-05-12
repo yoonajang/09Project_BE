@@ -104,7 +104,7 @@ io.on('connection', socket => {
         // io.in(postId).clients((err, clients) => {
         //     console.log(clients)
         // });
-        console.log(io.sockets.adapter.rooms.get(postId))
+        console.log(io.sockets.adapter.rooms.get(postId), '여려명이 있는지 확인할 수 있나?' )
 
         console.log(socket.id)
         console.log(socket.rooms, '클 라 이 언 트')
