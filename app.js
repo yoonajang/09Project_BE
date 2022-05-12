@@ -156,7 +156,7 @@ io.on('connection', socket => {
                     else {
                         socket.to(postid).emit('receive message', param.newMessage);
 
-                        // 오프라인 회원들에게 메시지.
+                        // 오프라인 회원들에게 메시지 (적용확인)
                         const find_user = 'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'
                         db.query(find_user, postId, (err, find_userIds) => {
 
@@ -267,8 +267,9 @@ io.on('connection', socket => {
     });
 
 
-    // //찐참여자 선택 취소 (본인)
-    // socket.on('leave chatroom', (postid, user) => {   
+    // //찐참여자 선택 취소 (본인) ______________보류
+    // socket.on('leave chatroom', (postid, user) => {
+    //     //방장만 안내가 가기.
     //     const delete_JP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
     //     db.query(delete_JP, [postid, user], (err, data) => {
     //         if(err) console.log(err)
@@ -297,7 +298,7 @@ io.on('connection', socket => {
     // })
 
 
-    // 강퇴 (by 방장)
+    // 강퇴 (by 방장, 적용확인 필요)
     socket.on('kickout chatroom', (postid, user) => {
         const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
         db.query(deleteJP, [postid, user], (err, deletedJP) => {
