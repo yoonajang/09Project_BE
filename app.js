@@ -110,7 +110,7 @@ io.on('connection', socket => {
      
 
         //수찬님 테스트용
-        socket.broadcast.to(postid).emit('connected', userName + ' 님이 입장했습니다.');
+        io.to(postid).emit('connected', userName + ' 님이 입장했습니다.');
     });
 
     // 메세지 주고 받기
