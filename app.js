@@ -94,24 +94,23 @@ io.on('connection', socket => {
     // 채팅시작 
     socket.on('startchat', param => {
         console.log('채팅시작');
-        // console.log(param);
-        const postId = param.postid;
+
+        const postid = param.postid;
         const { userId, userName } = param.loggedUser;
 
-        socket.join(postId); // string ('p' + postId)
+        socket.join(postid); // string ('p' + postId)
         // socket.join(userId);
 
-        // io.in(postId).clients((err, clients) => {
-        //     console.log(clients)
-        // });
-        console.log(io.sockets.adapter.rooms.get(postId), '여려명이 있는지 확인할 수 있나?' )
-
+        // 확인용
+        console.log(io.sockets.adapter.rooms.get(postid), '여려명이 있는지 확인할 수 있나?' )
         console.log(socket.id)
         console.log(socket.rooms, '클 라 이 언 트')
 
+        // islogin -> true
+     
 
         //수찬님 테스트용
-        socket.emit('connected', userName + ' 님이 입장했습니다.');
+        socket.broadcast.to(postid).emit('connected', userName + ' 님이 입장했습니다.');
     });
 
     // 메세지 주고 받기
@@ -155,7 +154,12 @@ io.on('connection', socket => {
                                 db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
                                 (err, alarmInfo) => {
                                         if (err) console.log(err)
-                                        socket.to(postid).emit('receive message', param.newMessage, alarmInfo);
+                                        socket.to(postid).emit('receive message', param.newMessage);
+                                        
+
+                                        // if (....alram...ischecked...1 )
+                                        // // 작업필요.
+                                        // socket.to(unloggedUserId).emit('send alarm', alarmInfo);
                                 })
                             };
                         })        
@@ -341,8 +345,6 @@ io.on('connection', socket => {
     });
 
     
-
-
     // socket.on('disconnect', (param) => {
     //     const postId = param.postid;
     //     const { userId, userName } = param.loggedUser;
