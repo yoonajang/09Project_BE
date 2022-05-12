@@ -107,6 +107,7 @@ io.on('connection', socket => {
         console.log(socket.rooms, '클 라 이 언 트')
 
         // islogin -> true
+        // db.query('UPDATE JoinPost SET isPick = 1 WHERE Post_postId=? and User_userId=?;', data, (err, rows) => {
      
 
         //수찬님 테스트용
@@ -279,15 +280,15 @@ io.on('connection', socket => {
         const sql_1 =
             'UPDATE JoinPost SET isPick = 1 WHERE Post_postId=? and User_userId=?;';
         const data = [postId, userId];
-        const sql_1s = mysql.format(sql, data);
+        const sql_1s = mysql.format(sql_1, data);
 
         const sql_2 =
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
-        const sql_2s = mysql.format(sql_1, postId);
+        const sql_2s = mysql.format(sql_2, postId);
 
         const sql_3 =
             'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
-        const sql_3s = mysql.format(sql_2, postId);
+        const sql_3s = mysql.format(sql_3, postId);
 
         db.query(sql_1s + sql_2s + sql_3s, (err, rows) => {
             if (err) {
@@ -316,15 +317,15 @@ io.on('connection', socket => {
         const sql_1 =
             'UPDATE JoinPost SET isPick = 0 WHERE Post_postId=? and User_userId=?;';
         const data = [postId, userId];
-        const sql_1s = mysql.format(sql, data);
+        const sql_1s = mysql.format(sql_1, data);
 
         const sql_2 =
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
-        const sql_2s = mysql.format(sql_1, postId);
+        const sql_2s = mysql.format(sql_2, postId);
 
         const sql_3 =
             'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
-        const sql_3s = mysql.format(sql_2, postId);
+        const sql_3s = mysql.format(sql_3, postId);
 
         db.query(sql_1s + sql_2s + sql_3s, (err, rows) => {
             if (err) {

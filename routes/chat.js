@@ -24,8 +24,8 @@ router.post('/deal/add/:userId', authMiddleware, (req, res, next) => {
 
             db.query(sql, [joinId, Number(postId)], (err, join) => {
                 if(join.length === 0) {
-                    const sql = "INSERT INTO `JoinPost` (`User_userId`, `Post_postId`) VALUES (?,?)";
-                    db.query(sql, [joinId, Number(postId)], (err, join) => {
+                    const sql = "INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,`isLogin`) VALUES (?,?)";
+                    db.query(sql, [joinId, Number(postId), 0], (err, join) => {
                         res.send({ msg: 'success'}); 
                     })
                 } else {
