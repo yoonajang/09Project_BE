@@ -159,10 +159,11 @@ io.on('connection', socket => {
                         // 오프라인 회원들에게 메시지 (적용확인)
                         const findUser = 'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'
                         db.query(findUser, postId, (err, foundUser) => {
-                            console.log(foundUser, '테스트')
+                            console.log(foundUser,foundUser[0].User_userId, '테스트')
 
                             const userIds = foundUser[0].User_userId
                             for ( user of userIds){
+                                console.log(user)
                                 const title = find[0].title
                                 const status =  title + ' 게시물에 메시지가 도착했습니다.'
                                 const params = [0, status, userEmail, userId, userName, userImage]
