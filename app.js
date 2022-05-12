@@ -172,10 +172,11 @@ io.on('connection', socket => {
                                     socket.to(postid).emit('receive message', param.newMessage);
                                     
                                     find_sql2 = 'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'
-                                    db.query(find_sql2, postId, (err, userIds) => {
-                                        console.log(userIds[0].User_userId, '메세지를 누구에게 보낼까요~~~??')
-                                        const unloggedUserId = userIds[0].User_userI
-                                        socket.to(unloggedUserId).emit('send alarm', alarmInfo);
+                                    db.query(find_sql2, postId, (err, find_userIds) => {
+                                        const userIds = find_userIds[0].User_userId
+                                        for (userId of userIds ){
+                                            socket.to(userId).emit('send alarm', alarmInfo);
+                                        }
                                     })
                                 })
                             };
@@ -402,10 +403,9 @@ io.on('connection', socket => {
         db.query('UPDATE JoinPost SET isLogin = 0 WHERE socketId = ?', 
         socketId, (err, rows) => {    
             if(err) console.log(err)
-            console.log(socketId, '이 친구 화면 껏구나!')
-            
+            socket.leave()
+            console.log(socketId, '브라우저 종료')            
         });
-        socket.leave()
     });
 
 })
