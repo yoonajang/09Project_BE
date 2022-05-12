@@ -112,7 +112,7 @@ router.post(
             lat,
             lng,
         } = req.body;
-        console.log(endTIme, 'endTime')
+        console.log(endTime, 'endTime')
         const writer = res.locals.user.userName;
         const User_userId = res.locals.user.userId;
 
