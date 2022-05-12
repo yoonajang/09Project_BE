@@ -366,6 +366,7 @@ io.on('connection', socket => {
    
         console.log(socket.rooms, '방 나감22222222')
         socket.leave(param)
+        console.log(socket.rooms, '방 나감2222222222222222222222222222222222')
         console.log(io.sockets.adapter.rooms.get(param), '나갔나여?' )
     });
 
