@@ -88,9 +88,7 @@ io.on('connection', socket => {
     console.log(socket.id, '이 친구 들어왔네!')
 
     socket.on("socket is connected", (loggedUser) => {
-        // console.log(loggedUser)
         socket.join(loggedUser.userId); 
-        // console.log(socket.rooms)
     });
 
 
@@ -156,139 +154,43 @@ io.on('connection', socket => {
                 db.query(find_sql, postId, (err, find) => {
                     if(err) console.log(err)
                     else {
-                        const title = find[0].title
-                         
-                        const status =  title + ' 게시물에 메시지가 도착했습니다.'
-                        const params = [0, status, userEmail, userId, userName, userImage]
+                        socket.to(postid).emit('receive message', param.newMessage);
 
-                        const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)'
+                        // 오프라인 회원들에게 메시지.
+                        const find_user = 'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'
+                        db.query(find_user, postId, (err, find_userIds) => {
 
-                        db.query(Insert_sql, params, (err, data) => {
-                            if(err) console.log(err)
-                            else {
-                                db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
-                                (err, alarmInfo) => {
-                                    if (err) console.log(err)
-                                    socket.to(postid).emit('receive message', param.newMessage);
-                                    
-                                    find_sql2 = 'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'
-                                    db.query(find_sql2, postId, (err, find_userIds) => {
-                                        const userIds = find_userIds[0].User_userId
-                                        for (userId of userIds ){
-                                            //DB에 메시넣기//////////////////////////////
-                                            socket.to(userId).emit('send alarm', alarmInfo);
-                                        }
-                                    })
+                            const userIds = find_userIds[0].User_userId
+                            for ( user of userIds){
+                                const title = find[0].title
+                                const status =  title + ' 게시물에 메시지가 도착했습니다.'
+                                const params = [0, status, userEmail, userId, userName, userImage]
+                                
+                                const Insert_alarm = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)'
+
+                                db.query(Insert_alarm, params, (err, data) => {
+                                    if(err) console.log(err)
+                                    console.log('오프라인 회원들에게 메시지 완료')
+
                                 })
-                            };
-                        })        
+                            } 
+                        })
                     }
                 });    
             }
         });
     });
 
+
+    // 상대방이 타자칠때 ...
     socket.on('typing', postid => 
         socket.to(postid).emit('typing'));
 
     socket.on('stop typing', postid =>
         socket.to(postid).emit('stop typing'));
-    
-
-    // 알림기능
-    // socket.on('pushalarm', param => {
-    //     console.log(param)
-
-    //     const postid = param.newMessage.Post_postId;
-    //     const postId = postid.replace('p', '');
-    //     const userId = param.newMessage.User_userId;
-    //     const userName = param.newMessage.User_userName;
-    //     const userEmail = param.newMessage.User_userEmail;
-    //     const userImage = param.newMessage.userImage;
-    //     // const status_num = param.status; //string
-    
-
-    //     // if (status_num === '1'){
-    //         const find_sql = 'SELECT title FROM Post WHERE postId = ?'
-        
-    //         db.query(find_sql, postId, (err, title) => {
-    //             if(err) console.log(err)
-    //             else {
-    //                 const status =  title + ' 게시물에 메시지가 도착했습니다.'
-    //                 const param = [0, status, userEmail, userId, userName, userImage]
-
-    //                 const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
-
-    //                 db.query(sql, data, (err, data) => {
-    //                     db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
-    //                     (err, alarmInfo) => {
-    //                             if (err) console.log(err)
-    //                             socket.to(postid).emit('pushalarm',alarmInfo)
-    //                     });
-    //                 })        
-    //             }
-    //         });
-    //     }
-
-
-        // if (status_num === '2'){
-        //     const find_sql = 'SELECT title FROM Post WHERE postId = ?'
-        
-        //     db.query(find_sql, postId, (err, title) => {
-        //         if(err) console.log(err)
-        //         else {
-        //             const status =  title + ' 게시물에 메시지가 도착했습니다.'
-        //             const param = [0, status, userEmail, userId, userName, userImage]
-
-        //             const Insert_sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
-
-        //             db.query(sql, data, (err, data) => {
-        //                 db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
-        //                 (err, alarmInfo) => {
-        //                         if (err) console.log(err)
-        //                         socket.to(postid).emit('pushalarm',alarmInfo)
-        //                 });
-        //             })        
-        //         }
-        //     });
-        // }
-
-
-
-
-        // // DB 넣기 
-        // const sql = 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userIamge`) VALUES (?,?,?,?,?,?)'
-
-
-        // const sql = 'SELECT title, User_userId FROM Post WHERE postId = ?;';
-        // const sqls = mysql.format(sql, postId);
-
-        // const sql_1 = 'SELECT User_userId FROM JoinPost WHERE Post_postId = ?;';
-        // const sql_1s = mysql.format(sql_1, postId);
-
-        // db.query(sqls + sql_1s,  (err, rows) => {
-        //     console.log(rows)
-        //     console.log(rows[0], '이것 방장~')
-        //     console.log(rows[1], '이것 사람이 여러명~')
-     
-        //     console.log(socket.rooms)
-
-        //     const chatAdmin = rows[0].User_userId;
-        //     const title = rows[0].title;
-        //     const {users} = rows[1];
-        //     console.log(chatAdmin,title,users)
-            // console.log(chatAdmin, users);
-            // console.log(!chatAdmin || !{users}, '사람이 있나?')
-            // if (!chatAdmin || !{users}) {
-            //     // socket.join(postid);
-            //     socket.to(chatAdmin).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
-            //     socket.to({users}).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
-            // }
-    //     });
-    // });
 
     
-    //찐참여자 선택
+    // 찐참여자 선택 (by 방장)
     socket.on('add_new_participant', param => {
         console.log(param);
         const postid = param.postid;
@@ -326,7 +228,8 @@ io.on('connection', socket => {
         });
     });
 
-    //찐참여자 선택 취소 (방장)
+
+    //찐참여자 선택 취소 (by 방장)
     socket.on('cancel_new_participant', param => {
         const postid = param.postid;
         const postId = postid.replace('p', '');
@@ -341,7 +244,6 @@ io.on('connection', socket => {
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
         const sql_2s = mysql.format(sql_2, postId);
 
-        //..
         const sql_3 =
             'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
         const sql_3s = mysql.format(sql_3, postId);
@@ -364,50 +266,94 @@ io.on('connection', socket => {
         });
     });
 
-    //찐참여자 선택 취소 (본인)
-    socket.on('leave chatroom', param => {
-        // postid, newMessage
 
-        // delete/
-        // 메세지
-        
-        //누가나가는지 메세지 전송
-        //io.emit.(...)
-    })
+    // //찐참여자 선택 취소 (본인)
+    // socket.on('leave chatroom', (postid, user) => {   
+    //     const delete_JP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
+    //     db.query(delete_JP, [postid, user], (err, data) => {
+    //         if(err) console.log(err)
+            
+    //         // 방장찾기
+    //         const find_roomowner = 'SELECT socketId FROM `JoinPost` WHERE `Post_postId`= ? and `isLogin`= 1 '
+    //         db.query(find_user, postid, (err, socketids) => {
+    //             socket.leave(postid)
+    //             io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');  
 
-    
-    // socket.on('disconnect', (param) => {
-    //     const postId = param.postid;
-    //     const { userId, userName } = param.loggedUser;
+    //             console.log(socketids, '이거 잘 찍히는지 확인좀...........ㅠㅠ')
+    //             const socketIds = socketids[0]
+    //             for (socketId of socketIds){
+    //                 io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.'); // 
+    //             }
+                
+    //         });
 
-    //     const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
-    //     const params = [postId, userId];
-
-    //     db.query(sql, params, (err, data) => {
-    //         if (err) console.log(err);
-    //         res.status(201).send({ msg: 'success', data });
     //     });
 
-    //     console.log(socket.rooms, '나가기전')
-    //     socket.leave(postId);
-    //     console.log(socket.rooms, '나가기후')
-    //     io.to(postId).emit('onDisconnect', userName + ' 님이 퇴장했습니다.');
+    //     // 메세지
+        
+    //     //누가나가는지 메세지 전송
+    //     socket.leave(postid)
+    //     io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
     // })
 
-    // 강퇴
-    socket.on('kickout chatroom', param => {
-        //jp 에서 삭제 
-        //notification 나오고
-        //로그인 한사람에게만 메시지 보내기
+
+    // 강퇴 (by 방장)
+    socket.on('kickout chatroom', (postid, user) => {
+        const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
+        db.query(deleteJP, [postid, user], (err, deletedJP) => {
+            if(err) console.log(err)
+            
+            const findTitle = 'SELECT title FROM `Post` WHERE `Post_postId`=?'
+            db.query(findTitle, [postid, user], (err, foundTitle) => {
+                if(err) console.log(err)
+
+                else { 
+                    const status = title + ' 게시물의 거래가 취소되었습니다.'
+
+                    const findIsLogin = 'SELECT isLogin, socketId FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
+                    db.query(findIsLogin, [postid, user], (err, foundIsLogin) => {
+                        const isLogin = foundIsLogin[0].isLogin
+                        const socketId = foundIsLogin[0].socketId
+                        if( isLogin === 1 ){
+                            socket.to(user).emit('kickedout chatroom', userName + ' 님이 나가셨습니다.'); //
+                        } else {
+                            const findUser = 'SELECT userEmail, userId, userName, userImage FROM `User` WHERE `User_userId`=?'
+
+                            db.query(findUser, params, (err, foundUser) => {
+                                if(err) console.log(err)
+                                console.log(foundUser, '이게 안나오면 안되지. 강퇴by 방장')
+                                const userEmail = foundUser[0].userEmail 
+                                const userId = foundUser[0].userId
+                                const userName = foundUser[0].userName
+                                const userImage = foundUser[0].userImage
+
+                                console.log('오프라인 회원에게 강퇴 메시지 완료')
+                                const InsertAlarm = 'INSERT INTO Alarm  (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)'
+                                const params = [0, status, userEmail, userId, userName, userImage ]
+
+                                db.query(InsertAlarm, params, (err, InsertedAlarm) => {
+                                    if(err) console.log(err)
+                                    console.log('오프라인 회원에게 강퇴 메시지 완료')
+
+                                })
+                            })
+                            
+                        }
+                    })
+                }
+            })
+        })
+
     })
 
-    // 채팅방 나가기
-    socket.on('close chatroom', (param, user) => {
-        const userName = user.userName
 
-        socket.leave(param)
-        io.to(param).emit('connected', userName + ' 님이 나가셨습니다.');
-    });
+    // 채팅방 나가기
+    // socket.on('close chatroom', (param, user) => {
+    //     const userName = user.userName
+
+    //     socket.leave(param)
+    //     io.to(param).emit('connected', userName + ' 님이 나가셨습니다.');
+    // });
 
     // 브라우저 종료
     socket.on('disconnect',() => {
@@ -420,7 +366,7 @@ io.on('connection', socket => {
         });
     });
 
-})
+});
 
 // //도메인
 // server.listen(port, () => {
