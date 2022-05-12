@@ -406,7 +406,7 @@ io.on('connection', socket => {
         const userName = user.userName
 
         socket.leave(param)
-        io.to(param).emit('connected', userName + ' 님이 입장했습니다.');
+        io.to(param).emit('connected', userName + ' 님이 나가셨습니다.');
     });
 
     // 브라우저 종료
