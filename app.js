@@ -401,6 +401,7 @@ io.on('connection', socket => {
         //로그인 한사람에게만 메시지 보내기
     })
 
+    // 채팅방 나가기
     socket.on('close chatroom', (param, user) => {
         const userName = user.userName
 
@@ -408,6 +409,7 @@ io.on('connection', socket => {
         io.to(param).emit('connected', userName + ' 님이 입장했습니다.');
     });
 
+    // 브라우저 종료
     socket.on('disconnect',() => {
         const socketId = socket.id
         db.query('UPDATE JoinPost SET isLogin = 0 WHERE socketId = ?', 
