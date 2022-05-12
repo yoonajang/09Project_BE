@@ -108,7 +108,7 @@ io.on('connection', socket => {
         // console.log(socket.id)
         // console.log(socket.rooms, '클 라 이 언 트')
 
-        console.log(socket.io,'<<<<<<<<<<<<<<<<<< 채팅 시작시 id')
+        console.log(socket.id,'<<<<<<<<<<<<<<<<<< 채팅 시작시 id')
 
         // const a = io.sockets.adapter.rooms.get(postid)
         // console.log(typeof a)
@@ -389,7 +389,7 @@ io.on('connection', socket => {
         // console.log(socket.rooms, '방 나감2222222222222222222222222222222222')
         // console.log(io.sockets.adapter.rooms.get(param), '나갔나여?' )
 
-        console.log(socket.io,'<<<<<<<<<<<<<<<<<< 채팅 나갈때 id')
+        console.log(socket.id,'<<<<<<<<<<<<<<<<<< 채팅 나갈때 id')
 
         // db.query('UPDATE JoinPost SET isLogin = 0 WHERE Post_postId=? and User_userId=?;', 
         // [postId, userId], (err, rows) => {
