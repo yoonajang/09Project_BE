@@ -113,11 +113,13 @@ router.post(
             lng,
         } = req.body;
         console.log(endTime, 'endTime')
+
         const writer = res.locals.user.userName;
         const User_userId = res.locals.user.userId;
 
         const image = req.file?.location;
-        const endTimeAdd = endTime.setMinutes(endTime.getMinutes() + 1439);
+        const endtime = new Date(endTime); 
+        const endTimeAdd = endtime.setMinutes(endtime.getMinutes() + 1439);
         console.log( endTimeAdd , endTime, '시간들 잘 나오나요??????????????')
 
         const datas = [
