@@ -175,6 +175,7 @@ io.on('connection', socket => {
                                     db.query(find_sql2, postId, (err, find_userIds) => {
                                         const userIds = find_userIds[0].User_userId
                                         for (userId of userIds ){
+                                            //DB에 메시넣기//////////////////////////////
                                             socket.to(userId).emit('send alarm', alarmInfo);
                                         }
                                     })
@@ -325,7 +326,7 @@ io.on('connection', socket => {
         });
     });
 
-    //찐참여자 선택 취소
+    //찐참여자 선택 취소 (방장)
     socket.on('cancel_new_participant', param => {
         const postid = param.postid;
         const postId = postid.replace('p', '');
@@ -340,6 +341,7 @@ io.on('connection', socket => {
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
         const sql_2s = mysql.format(sql_2, postId);
 
+        //..
         const sql_3 =
             'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
         const sql_3s = mysql.format(sql_3, postId);
@@ -362,6 +364,17 @@ io.on('connection', socket => {
         });
     });
 
+    //찐참여자 선택 취소 (본인)
+    socket.on('leave chatroom', param => {
+        // postid, newMessage
+
+        // delete/
+        // 메세지
+        
+        //누가나가는지 메세지 전송
+        //io.emit.(...)
+    })
+
     
     // socket.on('disconnect', (param) => {
     //     const postId = param.postid;
@@ -381,17 +394,22 @@ io.on('connection', socket => {
     //     io.to(postId).emit('onDisconnect', userName + ' 님이 퇴장했습니다.');
     // })
 
-    socket.on('leave chatroom', param => {
-        console.log(param, '방 나감')
-   
-        // console.log(socket.rooms, '방 나감22222222')
-        socket.leave(param)
-        // console.log(socket.rooms, '방 나감2222222222222222222222222222222222')
-        // console.log(io.sockets.adapter.rooms.get(param), '나갔나여?' )
-        const socketId = socket.id
-        console.log(socketId, '이 친구 화면은 아직 안껏고, 방만 나간거야!')
-    
+    // 강퇴
+    socket.on('kickout chatroom', param => {
+        //jp 에서 삭제 
+        //notification 나오고
+        //로그인 한사람에게만 메시지 보내기
+    })
 
+    socket.on('close chatroom', param => {
+        console.log(param)
+   
+        // socket.leave(postid)
+        
+        // const socketId = socket.id
+        // console.log(socketId, '이 친구 화면은 아직 안껏고, 방만 나간거야!')
+        // io.to(postid).emit('connected', userName + ' 님이 입장했습니다.');
+    
         // db.query('UPDATE JoinPost SET isLogin = 0 WHERE Post_postId=? and User_userId=?;', 
         // [postId, userId], (err, rows) => {
         //     if(err) console.log(err)
