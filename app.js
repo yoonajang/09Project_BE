@@ -85,6 +85,8 @@ server.listen(httpsPort, () => {
 io.on('connection', socket => {
     console.log('연결성공');
 
+    console.log(socket.id, '이 친구 들어왔네!')
+
     socket.on("socket is connected", (loggedUser) => {
         // console.log(loggedUser)
         socket.join(loggedUser.userId); 
@@ -109,7 +111,7 @@ io.on('connection', socket => {
         // console.log(socket.rooms, '클 라 이 언 트')
 
         console.log(socket.id,'<<<<<<<<<<<<<<<<<< 채팅 시작시 id')
-
+        const socketId = socket.id
         // const a = io.sockets.adapter.rooms.get(postid)
         // console.log(typeof a)
 
@@ -117,13 +119,10 @@ io.on('connection', socket => {
         // console.log(b, '있으면 true, 없으면 false')
         // console.log( socket.id in b)
 
-        db.query('UPDATE JoinPost SET isLogin = 1 WHERE Post_postId=? and User_userId=?;', 
-        [postId, userId], (err, rows) => {
+        db.query('UPDATE JoinPost SET isLogin = 1, socketId = ? WHERE User_userId=?;', 
+        [socketId, userId], (err, rows) => {
             if(err) console.log(err)
             io.to(postid).emit('connected', userName + ' 님이 입장했습니다.');
-
-
-            
         });
 
     });
@@ -388,8 +387,8 @@ io.on('connection', socket => {
         socket.leave(param)
         // console.log(socket.rooms, '방 나감2222222222222222222222222222222222')
         // console.log(io.sockets.adapter.rooms.get(param), '나갔나여?' )
-
-        console.log(socket.id,'<<<<<<<<<<<<<<<<<< 채팅 나갈때 id')
+        console.log(socketId, '이 친구 화면은 아직 안껏고, 방만 나간거야!')
+    
 
         // db.query('UPDATE JoinPost SET isLogin = 0 WHERE Post_postId=? and User_userId=?;', 
         // [postId, userId], (err, rows) => {
@@ -397,9 +396,14 @@ io.on('connection', socket => {
         // });
     });
 
-    socket.on('disconnect', param => {
-
-        socket.leave(param)
+    socket.on('disconnect',() => {
+        const socketId = socket.id
+        db.query('UPDATE JoinPost SET isLogin = 0, socketId = "0" WHERE socketId = ? ', 
+        socketId, (err, rows) => {    
+            console.log(socketId, '이 친구 화면 껏구나!')
+            
+        });
+        socket.leave()
     });
 
 })
