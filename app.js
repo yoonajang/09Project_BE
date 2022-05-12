@@ -110,13 +110,7 @@ io.on('connection', socket => {
 
         console.log(socket.id,'<<<<<<<<<<<<<<<<<< 채팅 시작시 id')
         const socketId = socket.id
-        // const a = io.sockets.adapter.rooms.get(postid)
-        // console.log(typeof a)
-
-        // const b = Object.key(a).includes(socket.id)
-        // console.log(b, '있으면 true, 없으면 false')
-        // console.log( socket.id in b)
-
+        
         db.query('UPDATE JoinPost SET isLogin = 1, socketId = ? WHERE User_userId=?;', 
         [socketId, userId], (err, rows) => {
             if(err) console.log(err)
@@ -161,8 +155,12 @@ io.on('connection', socket => {
                         db.query(findUser, postId, (err, foundUser) => {
                             console.log(foundUser,foundUser[0].User_userId, '테스트')
 
+                            // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
+                            // TypeError: userIds is not iterable
+                            
+
                             const userIds = foundUser[0].User_userId
-                            for ( user of userIds){
+                            for (user of userIds){
                                 console.log(user)
                                 const title = find[0].title
                                 const status =  title + ' 게시물에 메시지가 도착했습니다.'
