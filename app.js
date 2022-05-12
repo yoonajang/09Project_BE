@@ -365,8 +365,9 @@ io.on('connection', socket => {
         console.log(param, '방 나감')
         const postId = param.postid;
         console.log(socket.rooms, '방 나감22222222')
-        socket.leave()
-    })
+        socket.leave(postId)
+        console.log(socket.rooms, '방 나감2222222223344444444444')
+        
 
 
 });
