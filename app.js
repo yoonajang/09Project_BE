@@ -361,8 +361,10 @@ io.on('connection', socket => {
     //     io.to(postId).emit('onDisconnect', userName + ' 님이 퇴장했습니다.');
     // })
 
-    socket.on('disconnect', () => {
-        console.log(socket.rooms, '방 나감')
+    socket.on('disconnect', param => {
+        console.log(param, '방 나감')
+        const postId = param.postid;
+        console.log(socket.rooms, '방 나감22222222')
         socket.leave()
     })
 
