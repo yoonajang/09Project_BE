@@ -119,8 +119,9 @@ router.post(
 
         const image = req.file?.location;
         const endtime = new Date(endTime); 
-        const endTimeAdd = endtime.setMinutes(endtime.getMinutes() + 1439);
-        console.log( endTimeAdd , endTime, '시간들 잘 나오나요??????????????')
+        const endTimeAdd = moment(endtime.getTime()).add("1439","m").format("YYYY-MM-DD HH:mm:ss")
+    ;
+        console.log( endTimeAdd , endtime, '시간들 잘 나오나요??????????????')
 
         const datas = [
             title,
