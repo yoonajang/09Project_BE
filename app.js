@@ -91,6 +91,7 @@ io.on('connection', socket => {
         // console.log(socket.rooms)
     });
 
+
     // 채팅시작 
     socket.on('startchat', param => {
         console.log('채팅시작');
@@ -107,10 +108,21 @@ io.on('connection', socket => {
         // console.log(socket.id)
         // console.log(socket.rooms, '클 라 이 언 트')
 
+        console.log(socket.io,'<<<<<<<<<<<<<<<<<< 채팅 시작시 id')
+
+        // const a = io.sockets.adapter.rooms.get(postid)
+        // console.log(typeof a)
+
+        // const b = Object.key(a).includes(socket.id)
+        // console.log(b, '있으면 true, 없으면 false')
+        // console.log( socket.id in b)
+
         db.query('UPDATE JoinPost SET isLogin = 1 WHERE Post_postId=? and User_userId=?;', 
         [postId, userId], (err, rows) => {
             if(err) console.log(err)
             io.to(postid).emit('connected', userName + ' 님이 입장했습니다.');
+
+
             
         });
 
@@ -166,12 +178,6 @@ io.on('connection', socket => {
                                         const unloggedUserId = userIds[0].User_userI
                                         socket.to(unloggedUserId).emit('send alarm', alarmInfo);
                                     })
-                                        
-
-
-                                        // if (....alram...ischecked...1 )
-                                        // // 작업필요.
-                                        // socket.to(unloggedUserId).emit('send alarm', alarmInfo);
                                 })
                             };
                         })        
@@ -378,10 +384,22 @@ io.on('connection', socket => {
     socket.on('leave chatroom', param => {
         console.log(param, '방 나감')
    
-        console.log(socket.rooms, '방 나감22222222')
+        // console.log(socket.rooms, '방 나감22222222')
         socket.leave(param)
-        console.log(socket.rooms, '방 나감2222222222222222222222222222222222')
-        console.log(io.sockets.adapter.rooms.get(param), '나갔나여?' )
+        // console.log(socket.rooms, '방 나감2222222222222222222222222222222222')
+        // console.log(io.sockets.adapter.rooms.get(param), '나갔나여?' )
+
+        console.log(socket.io,'<<<<<<<<<<<<<<<<<< 채팅 나갈때 id')
+
+        // db.query('UPDATE JoinPost SET isLogin = 0 WHERE Post_postId=? and User_userId=?;', 
+        // [postId, userId], (err, rows) => {
+        //     if(err) console.log(err)
+        // });
+    });
+
+    socket.on('disconnect', param => {
+
+        socket.leave(param)
     });
 
 })
