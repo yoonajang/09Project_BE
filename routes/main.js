@@ -100,6 +100,7 @@ router.post(
     authMiddleware,
     upload.single('image'),
     (req, res, next) => {
+        
         const {
             title,
             content,
@@ -111,7 +112,7 @@ router.post(
             lat,
             lng,
         } = req.body;
-
+        console.log(endTIme, 'endTime')
         const writer = res.locals.user.userName;
         const User_userId = res.locals.user.userId;
 
