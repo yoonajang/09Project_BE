@@ -387,6 +387,7 @@ io.on('connection', socket => {
         socket.leave(param)
         // console.log(socket.rooms, '방 나감2222222222222222222222222222222222')
         // console.log(io.sockets.adapter.rooms.get(param), '나갔나여?' )
+        const socketId = socket.id
         console.log(socketId, '이 친구 화면은 아직 안껏고, 방만 나간거야!')
     
 
