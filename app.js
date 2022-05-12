@@ -157,10 +157,11 @@ io.on('connection', socket => {
                         socket.to(postid).emit('receive message', param.newMessage);
 
                         // 오프라인 회원들에게 메시지 (적용확인)
-                        const find_user = 'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'
-                        db.query(find_user, postId, (err, find_userIds) => {
+                        const findUser = 'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'
+                        db.query(findUser, postId, (err, foundUser) => {
+                            console.log(foundUser, '테스트')
 
-                            const userIds = find_userIds[0].User_userId
+                            const userIds = foundUser[0].User_userId
                             for ( user of userIds){
                                 const title = find[0].title
                                 const status =  title + ' 게시물에 메시지가 도착했습니다.'
