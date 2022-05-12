@@ -117,8 +117,8 @@ router.post(
         const User_userId = res.locals.user.userId;
 
         const image = req.file?.location;
-        const today = moment();
-        const endtime = today.add(endTime, 'days').format();
+        const endTimeAdd = endTime.setMinutes(endTime.getMinutes() + 1439);
+        console.log( endTimeAdd , endTime, '시간들 잘 나오나요??????????????')
 
         const datas = [
             title,
@@ -126,7 +126,7 @@ router.post(
             price,
             headCount,
             category,
-            endtime,
+            endTimeAdd,
             address,
             lat,
             lng,
