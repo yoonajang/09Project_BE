@@ -99,7 +99,7 @@ io.on('connection', socket => {
         const { userId, userName } = param.loggedUser;
 
         socket.join(postId); // string ('p' + postId)
-        socket.join(userId);
+        // socket.join(userId);
 
         // io.in(postId).clients((err, clients) => {
         //     console.log(clients)
