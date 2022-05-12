@@ -367,6 +367,8 @@ io.on('connection', socket => {
         });
     });
 
+    //socket.close()
+
 });
 
 // //도메인

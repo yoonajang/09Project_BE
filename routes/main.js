@@ -118,10 +118,7 @@ router.post(
         const User_userId = res.locals.user.userId;
 
         const image = req.file?.location;
-        // const endtime = moment(endTime); 
         const endTimeAdd = moment(endTime).add("1439","m").format("YYYY-MM-DD HH:mm:ss")
-    ;
-        console.log( endTimeAdd, '시간들 잘 나오나요??????????????')
 
         const datas = [
             title,
