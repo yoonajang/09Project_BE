@@ -401,11 +401,11 @@ io.on('connection', socket => {
         //로그인 한사람에게만 메시지 보내기
     })
 
-    socket.on('close chatroom', param => {
+    socket.on('close chatroom', ({param, user}) => {
         console.log(param)
    
         // socket.leave(postid)
-        
+
         // const socketId = socket.id
         // console.log(socketId, '이 친구 화면은 아직 안껏고, 방만 나간거야!')
         // io.to(postid).emit('connected', userName + ' 님이 입장했습니다.');
