@@ -401,19 +401,11 @@ io.on('connection', socket => {
         //로그인 한사람에게만 메시지 보내기
     })
 
-    socket.on('close chatroom', (param, a) => {
-        console.log(param, a)
-   
-        // socket.leave(postid)
+    socket.on('close chatroom', (param, user) => {
+        const userName = user.userName
 
-        // const socketId = socket.id
-        // console.log(socketId, '이 친구 화면은 아직 안껏고, 방만 나간거야!')
-        // io.to(postid).emit('connected', userName + ' 님이 입장했습니다.');
-    
-        // db.query('UPDATE JoinPost SET isLogin = 0 WHERE Post_postId=? and User_userId=?;', 
-        // [postId, userId], (err, rows) => {
-        //     if(err) console.log(err)
-        // });
+        socket.leave(param)
+        io.to(param).emit('connected', userName + ' 님이 입장했습니다.');
     });
 
     socket.on('disconnect',() => {
