@@ -96,6 +96,7 @@ io.on('connection', socket => {
         console.log('채팅시작');
 
         const postid = param.postid;
+        const postId = postid.replace('p', '');
         const { userId, userName } = param.loggedUser;
 
         socket.join(postid); // string ('p' + postId)
@@ -106,13 +107,15 @@ io.on('connection', socket => {
         console.log(socket.id)
         console.log(socket.rooms, '클 라 이 언 트')
 
-        // islogin -> true
-        // db.query('UPDATE JoinPost SET isPick = 1 WHERE Post_postId=? and User_userId=?;', data, (err, rows) => {
-     
+        db.query('UPDATE JoinPost SET isLogin = 1 WHERE Post_postId=? and User_userId=?;', 
+        [postId, userId], (err, rows) => {
+            if(err) console.log(err)
+            io.to(postid).emit('connected', userName + ' 님이 입장했습니다.');
+            
+        });
 
-        //수찬님 테스트용
-        io.to(postid).emit('connected', userName + ' 님이 입장했습니다.');
     });
+
 
     // 메세지 주고 받기
     socket.on('sendmessage', param => {
