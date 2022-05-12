@@ -367,10 +367,9 @@ io.on('connection', socket => {
         console.log(socket.rooms, '방 나감22222222')
         socket.leave(postId)
         console.log(socket.rooms, '방 나감2222222223344444444444')
-        
+    });
 
-
-});
+})
 
 // //도메인
 // server.listen(port, () => {
