@@ -162,8 +162,9 @@ io.on('connection', socket => {
                                     
                                     find_sql2 = 'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'
                                     db.query(find_sql2, postId, (err, userIds) => {
-                                        console.log(userIds, '메세지를 누구에게 보낼까요~~~??')
-                                        // socket.to(unloggedUserId).emit('send alarm', alarmInfo);
+                                        console.log(userIds[0].User_userId, '메세지를 누구에게 보낼까요~~~??')
+                                        const unloggedUserId = userIds[0].User_userI
+                                        socket.to(unloggedUserId).emit('send alarm', alarmInfo);
                                     })
                                         
 
