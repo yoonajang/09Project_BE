@@ -272,20 +272,20 @@ io.on('connection', socket => {
         const postId = postid.replace('p', '');
         const userId = param.selectedUser.User_userId;
 
-        const sql =
+        const sql_1 =
             'UPDATE JoinPost SET isPick = 1 WHERE Post_postId=? and User_userId=?;';
         const data = [postId, userId];
-        const sqls = mysql.format(sql, data);
-
-        const sql_1 =
-            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
-        const sql_1s = mysql.format(sql_1, postId);
+        const sql_1s = mysql.format(sql, data);
 
         const sql_2 =
-            'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
-        const sql_2s = mysql.format(sql_2, postId);
+            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+        const sql_2s = mysql.format(sql_1, postId);
 
-        db.query(sqls + sql_1s + sql_2s, (err, rows) => {
+        const sql_3 =
+            'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
+        const sql_3s = mysql.format(sql_2, postId);
+
+        db.query(sql_1s + sql_2s + sql_3s, (err, rows) => {
             if (err) {
                 console.log(err);
             } else {
@@ -309,20 +309,20 @@ io.on('connection', socket => {
         const postId = postid.replace('p', '');
         const userId = param.selectedUser.User_userId;
 
-        const sql =
+        const sql_1 =
             'UPDATE JoinPost SET isPick = 0 WHERE Post_postId=? and User_userId=?;';
         const data = [postId, userId];
-        const sqls = mysql.format(sql, data);
-
-        const sql_1 =
-            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
-        const sql_1s = mysql.format(sql_1, postId);
+        const sql_1s = mysql.format(sql, data);
 
         const sql_2 =
-            'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
-        const sql_2s = mysql.format(sql_2, postId);
+            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+        const sql_2s = mysql.format(sql_1, postId);
 
-        db.query(sqls + sql_1s + sql_2s, (err, rows) => {
+        const sql_3 =
+            'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
+        const sql_3s = mysql.format(sql_2, postId);
+
+        db.query(sql_1s + sql_2s + sql_3s, (err, rows) => {
             if (err) {
                 console.log(err);
             } else {
@@ -340,7 +340,10 @@ io.on('connection', socket => {
         });
     });
 
-    // socket.on('disconnect', param => {
+    
+
+
+    // socket.on('disconnect', (param) => {
     //     const postId = param.postid;
     //     const { userId, userName } = param.loggedUser;
 
@@ -357,6 +360,11 @@ io.on('connection', socket => {
     //     console.log(socket.rooms, '나가기후')
     //     io.to(postId).emit('onDisconnect', userName + ' 님이 퇴장했습니다.');
     // })
+
+    socket.on('disconnect', () => {
+        console.log(socket.rooms, '방 나감')
+        socket.leave()
+    })
 
 
 });
