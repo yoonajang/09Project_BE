@@ -401,8 +401,8 @@ io.on('connection', socket => {
         //로그인 한사람에게만 메시지 보내기
     })
 
-    socket.on('close chatroom', (param) => {
-        console.log(param)
+    socket.on('close chatroom', param, a => {
+        console.log(param, a)
    
         // socket.leave(postid)
 
