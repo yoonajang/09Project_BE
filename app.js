@@ -363,10 +363,10 @@ io.on('connection', socket => {
 
     socket.on('leave chatroom', param => {
         console.log(param, '방 나감')
-        const postId = param.postid;
+   
         console.log(socket.rooms, '방 나감22222222')
-        socket.leave(postId)
-        console.log(socket.rooms, '방 나감2222222223344444444444')
+        socket.leave(param)
+        console.log(io.sockets.adapter.rooms.get(param), '나갔나여?' )
     });
 
 })
