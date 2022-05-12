@@ -399,8 +399,9 @@ io.on('connection', socket => {
 
     socket.on('disconnect',() => {
         const socketId = socket.id
-        db.query('UPDATE JoinPost SET isLogin = 0, socketId = "0" WHERE socketId = ? ', 
+        db.query('UPDATE JoinPost SET isLogin = 0 WHERE socketId = ?', 
         socketId, (err, rows) => {    
+            if(err) console.log(err)
             console.log(socketId, '이 친구 화면 껏구나!')
             
         });
