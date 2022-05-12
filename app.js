@@ -103,9 +103,9 @@ io.on('connection', socket => {
         // socket.join(userId);
 
         // 확인용
-        console.log(io.sockets.adapter.rooms.get(postid), '여려명이 있는지 확인할 수 있나?' )
-        console.log(socket.id)
-        console.log(socket.rooms, '클 라 이 언 트')
+        // console.log(io.sockets.adapter.rooms.get(postid), '여려명이 있는지 확인할 수 있나?' )
+        // console.log(socket.id)
+        // console.log(socket.rooms, '클 라 이 언 트')
 
         db.query('UPDATE JoinPost SET isLogin = 1 WHERE Post_postId=? and User_userId=?;', 
         [postId, userId], (err, rows) => {
@@ -157,9 +157,16 @@ io.on('connection', socket => {
                             else {
                                 db.query('SELECT * FROM Alarm WHERE `alarmId`=?', data.insertId, 
                                 (err, alarmInfo) => {
-                                        if (err) console.log(err)
-                                        socket.to(postid).emit('receive message', param.newMessage);
+                                    if (err) console.log(err)
+                                    socket.to(postid).emit('receive message', param.newMessage);
+                                    
+                                    find_sql2 = 'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'
+                                    db.query(find_sql2, postId, (err, userIds) => {
+                                        console.log(userIds, '메세지를 누구에게 보낼까요~~~??')
+                                        // socket.to(unloggedUserId).emit('send alarm', alarmInfo);
+                                    })
                                         
+
 
                                         // if (....alram...ischecked...1 )
                                         // // 작업필요.
