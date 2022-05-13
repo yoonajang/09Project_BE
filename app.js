@@ -163,7 +163,7 @@ io.on('connection', socket => {
 
                         // 오프라인 회원들에게 메시지 ==================> 테스트 필요
                         const findUser =
-                            'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?';
+                            'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'; //InnerJoin
                         db.query(findUser, postId, (err, foundUser) => {
                             console.log(
                                 foundUser,
