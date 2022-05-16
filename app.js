@@ -231,7 +231,7 @@ io.on('connection', socket => {
 
                                         db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
                                             console.log(messageAlarm, sendUserId,'이것을 읽어달라!')
-                                            socket.to(sendUserId).emit('send message alarm',messageAlarm);
+                                            socket.to(sendUserIds).emit('send message alarm',messageAlarm);
                                         })
                                     });
                                 }
