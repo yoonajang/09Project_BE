@@ -203,7 +203,7 @@ io.on('connection', socket => {
                         const findunConnectedUser = 
                             'SELECT GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unConnectedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=1 AND isConnected=0 AND JP.Post_postId = ?'
 
-                        db.query(findunLoggedUser, postId, (err, foundUser) => {
+                        db.query(findunConnectedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
 
                             console.log(foundUser)
