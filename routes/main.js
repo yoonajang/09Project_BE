@@ -49,7 +49,7 @@ router.post('/postlist', (req, res) => {
                 }
                 console.log(head)
             }
-            // console.log(data)
+            console.log(data)
             res.send({ msg: 'success', data });
         });
     } else {
