@@ -208,7 +208,7 @@ io.on('connection', socket => {
                             if(err) console.log(err)
 
 
-                            console.log(foundUser[0].unConnectedIds,'진짜 널인가?')
+                            console.log(foundUser[0].unConnectedIds === null,'진짜 널인가?')
                             console.log(foundUser[0].unConnectedIds.includes(','),'진짜 널인가?')
                             // const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
                             // console.log(userIds)
