@@ -158,6 +158,7 @@ io.on('connection', socket => {
                 db.query(findTitle, postId, (err, foundTitle) => {
                     if (err) console.log(err);
                     else {
+                        const title = foundTitle[0].title
                         const findUser = 
                         'SELECT JP.User_userId, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unLoggedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=0 AND JP.Post_postId = ?'                   
                         db.query(findUser, postId, (err, foundUser) => {
@@ -172,37 +173,31 @@ io.on('connection', socket => {
 
                         const userIds = foundUser[0].unLoggedIds.split(',').map(Number)
                         for (user of userIds) {
-                            console.log(user, '여기입니다 !!');
-                            console.log(foundTitle[0])
+                            const status =  title + ' 게시물에 메시지가 도착했습니다.';
+                            const params = [
+                                            0,
+                                            status,
+                                            userEmail,
+                                            userId,
+                                            userName,
+                                            userImage,
+                                            ];
+                                            
+                            const Insert_alarm =
+                                    'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
 
+                            db.query(Insert_alarm, params, (err, data) => {
+                                if (err) console.log(err);
+                                console.log(
+                                    '오프라인 회원들에게 메시지 완료',
+                                );
+                            });
 
 
                         }
 
                         });
-                            //     const title = foundTitle[0].title;
-                            //     const status =
-                            //         title + ' 게시물에 메시지가 도착했습니다.';
-                            //     const params = [
-                            //         0,
-                            //         status,
-                            //         userEmail,
-                            //         userId,
-                            //         userName,
-                            //         userImage,
-                            //     ];
-
-                            //     const Insert_alarm =
-                            //         'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
-
-                            //     db.query(Insert_alarm, params, (err, data) => {
-                            //         if (err) console.log(err);
-                            //         console.log(
-                            //             '오프라인 회원들에게 메시지 완료',
-                            //         );
-                            //     });
-                        
-                        
+                                         
                     }
 
                     socket.to(postid).emit('receive message', param.newMessage);
