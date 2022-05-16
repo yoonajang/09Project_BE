@@ -159,8 +159,8 @@ router.post(
                             const userEmail = writerInfo.userEmail
                             const userImage = writerInfo.userImage   
                             
-                            const insertParam = [User_userId, postId, userEmail, writer, userImage]
-                            db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,User_userEmail, User_userName, userImage, `isPick`,) VALUES (?,?,?,?)', insertParam, (err, rows) => { 
+                            const insertParam = [User_userId, postId, userEmail, writer, userImage,1]
+                            db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,User_userEmail, User_userName, userImage, `isPick`) VALUES (?,?,?,?,?,?)', insertParam, (err, rows) => { 
                                 if(err) console.log(err)      
                                 console.log('게시물 생성 및 JoinPost완료')            
                             }) 
