@@ -167,7 +167,7 @@ io.on('connection', socket => {
                         db.query(findUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
                             console.log(foundUser,'여기를 보세요');
-                            console.log(foundUser[0],'여기를 보세요');
+                            console.log(foundUser[0].User_userId,'여기를 보세요');
                      
                             // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
                             // TypeError: userIds is not iterable
