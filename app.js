@@ -96,7 +96,18 @@ io.on('connection', socket => {
     console.log(socket.id, '연결성공');
 
     socket.on('socket is connected', loggedUser => {
-        socket.join(loggedUser.userId);
+        const socketId = socket.id
+        const userId = loggedUser.userId
+
+        db.query(
+            'UPDATE JoinPost SET isConnected = 0, isLogin = 1, socketId = ? WHERE User_userId=?;', 
+            [socketId, userId],
+            (err, rows) => {
+                if (err) console.log(err);
+            },
+        );
+
+        socket.join(userId);
     });
 
     // 채팅시작
@@ -117,16 +128,6 @@ io.on('connection', socket => {
         console.log(socket.id, '<<<<<<<<<<<<<<<<<< 채팅 시작시 id');
         const socketId = socket.id;
 
-
-        db.query(
-            'UPDATE JoinPost SET isConnected = 0, isLogin = 1, socketId = ? WHERE User_userId=?;', 
-            [socketId, userId],
-            (err, rows) => {
-                if (err) console.log(err);
-            },
-        );
-
-     
         db.query(
             'UPDATE JoinPost SET isConnected = 1 WHERE User_userId=? and Post_postId =?;', 
             [userId, postId],
