@@ -207,27 +207,41 @@ io.on('connection', socket => {
                         db.query(findunConnectedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
 
+                            if(foundUser[0].unConnectedIds === null){
+                                console.log('메세지 보낼 사람이 없음')
+                            } else if (foundUser[0].unConnectedIds.includes(',')) {
+                                const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
+                                console.log(userIds)
+                                for (user of userIds) {
+                                    console.log(user, '아니, 반복문이 안됨?')
 
-                            console.log(foundUser[0].unConnectedIds === null,'진짜 널인가?')
-                            console.log(foundUser[0].unConnectedIds.includes(','),'진짜 널인가?')
-                            // const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
-                            // console.log(userIds)
-                            // for (user of userIds) {
-                            //     console.log(user, '아니, 반복문이 안됨?')
-                            //     const Insert_alarm =
-                            //             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
-                                
-                            //     db.query(Insert_alarm, params, (err, Inserted) => {
-                            //         if (err) console.log(err);
-                            //         console.log(Inserted,'그래 찾아보자꾸나..')
+                                    const Insert_alarm =
+                                            'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                    
+                                    db.query(Insert_alarm, params, (err, Inserted) => {
+                                        if (err) console.log(err);
+                                        console.log(Inserted,'그래 찾아보자꾸나..')
 
-                            //         console.log(socket.rooms)
-                            //         db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
-                            //             console.log(messageAlarm, user,'이것을 읽어달라!')
-                            //             socket.to(user).emit('send message alarm',messageAlarm);
-                            //         })
-                            //     });
-                            // }
+                                        db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
+                                            console.log(messageAlarm, user,'이것을 읽어달라!')
+                                            socket.to(user).emit('send message alarm',messageAlarm);
+                                        })
+                                    });
+                                }
+                            } else {
+                                const Insert_alarm =
+                                            'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                    
+                                    db.query(Insert_alarm, params, (err, Inserted) => {
+                                        if (err) console.log(err);
+                                        console.log(Inserted,'그래 찾아보자꾸나..')
+
+                                        db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
+                                            const user = messageAlarm.User_userId
+                                            socket.to(user).emit('send message alarm',messageAlarm);
+                                    })
+                                });
+                            }
 
                         })
 
