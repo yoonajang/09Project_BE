@@ -172,9 +172,10 @@ io.on('connection', socket => {
                             // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
                             // TypeError: userIds is not iterable
 
-                            // const userIds = foundUser[0];
-                            // for (user of userIds) {
-                            //     console.log(user);
+                            const userIds = foundUser[0].User_userId;
+                            for (user of userIds) {
+                                console.log(user);
+                                console.log(foundTitle[0])
                             //     const title = foundTitle[0].title;
                             //     const status =
                             //         title + ' 게시물에 메시지가 도착했습니다.';
@@ -196,7 +197,7 @@ io.on('connection', socket => {
                             //             '오프라인 회원들에게 메시지 완료',
                             //         );
                             //     });
-                            // }
+                            }
                         });
                     }
 
