@@ -151,7 +151,7 @@ router.post(
                     (err, row) => {
                         if(err) console.log(err)
 
-                        db.query('SELECT userEmail, userImage FROM User WHERE userId = ?', insertParam, (err, writerInfo) => { 
+                        db.query('SELECT userEmail, userImage FROM User WHERE userId = ?', User_userId, (err, writerInfo) => { 
                             if(err) console.log(err)   
                             
                             console.log(writerInfo)
