@@ -158,9 +158,9 @@ io.on('connection', socket => {
                 db.query(findTitle, postId, (err, foundTitle) => {
                     if (err) console.log(err);
                     else {
-                        socket
-                            .to(postid)
-                            .emit('receive message', param.newMessage);
+                        // socket
+                        //     .to(postid)
+                        //     .emit('receive message', param.newMessage);
 
                         // 오프라인 회원들에게 메시지 ==================> 테스트 필요
 
@@ -169,6 +169,9 @@ io.on('connection', socket => {
                         db.query(findUser, postId, (err, foundUser) => {
                             console.log(foundUser,'여기를 보세요'
                             );
+                            socket
+                            .to(postid)
+                            .emit('receive message', param.newMessage);
                         });
                         //     // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
                         //     // TypeError: userIds is not iterable
