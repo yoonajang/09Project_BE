@@ -35,12 +35,12 @@ router.post('/postlist', (req, res) => {
                 let newList = [];
 
                 if (isNaN(Number(head))) {
-                    // newList.push(list.User_userId);
+                    newList.push(list.User_userId);
                     head.split(',').map(id => newList.push(Number(id)));
                     list.headList = newList;
                    
                 } else {
-                    // newList.push(list.User_userId);
+                    newList.push(list.User_userId);
                     list.headList = newList;
                     
                 }
