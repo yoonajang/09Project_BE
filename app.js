@@ -206,18 +206,19 @@ io.on('connection', socket => {
 
                         db.query(findunConnectedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
+                            const sendUser = foundUser[0].unConnectedIds
 
-                            console.log(foundUser[0].unConnectedIds=== null, 'null 임')
-                            console.log(foundUser[0].unConnectedIds.includes(','), '여러명임')
-                            console.log(foundUser[0].unConnectedIds, '인수 확인')
+                            console.log(sendUser=== null, 'null 임')
+                            console.log(sendUser.includes(','), '여러명임')
+                            console.log(sendUser, '인수 확인')
 
-                            if(foundUser[0].unConnectedIds === null){
+                            if(sendUser === null){
                                 console.log('메세지 보낼 사람이 없음')
-                            } else if (foundUser[0].unConnectedIds.includes(',')) {
-                                const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
-                                console.log(userIds)
-                                for (user of userIds) {
-                                    console.log(user, '아니, 반복문이 안됨?')
+                            } else if (sendUser.includes(',')) {
+                                const sendUserIds = sendUser.split(',').map(Number)
+                                console.log(sendUserIds)
+                                for (sendUserId of sendUserIds) {
+                                    console.log(sendUserId, '아니, 반복문이 안됨?')
 
                                     const Insert_alarm =
                                             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
@@ -227,8 +228,8 @@ io.on('connection', socket => {
                                         console.log(Inserted,'그래 찾아보자꾸나..')
 
                                         db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
-                                            console.log(messageAlarm, user,'이것을 읽어달라!')
-                                            socket.to(user).emit('send message alarm',messageAlarm);
+                                            console.log(messageAlarm, sendUserId,'이것을 읽어달라!')
+                                            socket.to(sendUserId).emit('send message alarm',messageAlarm);
                                         })
                                     });
                                 }
@@ -241,11 +242,7 @@ io.on('connection', socket => {
                                         console.log(Inserted,'그래 찾아보자꾸나..')
 
                                         db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
-
-                                            console.log(messageAlarm[0].User_userId,'이게 읽혀야함')
-
-                                            const user = messageAlarm[0].User_userId
-                                            socket.to(user).emit('send message alarm',messageAlarm);
+                                            socket.to(sendUser).emit('send message alarm',messageAlarm);
                                     })
                                 });
                             }
