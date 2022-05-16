@@ -219,12 +219,11 @@ io.on('connection', socket => {
                                     console.log(Inserted,'그래 찾아보자꾸나..')
 
                                     console.log(socket.rooms)
-                                    // db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
-                                    //     console.log(messageAlarm, user,'이것을 읽어달라!')
-                                    //     socket.to(user).emit('send message alarm',messageAlarm); // 이것 수정.
-                                    // })
+                                    db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
+                                        console.log(messageAlarm, user,'이것을 읽어달라!')
+                                        socket.to(user).emit('send message alarm',messageAlarm);
+                                    })
                                 });
-                                // socket.to(user).emit('send message alarm',messageAlarm); // 이것 
                             }
 
                         })
