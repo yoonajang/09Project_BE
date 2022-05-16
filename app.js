@@ -236,7 +236,7 @@ io.on('connection', socket => {
                                     });
                                 }
                             } else {
-                                console.log(3)
+                                console.log(3,sendUser)
                                 const Insert_alarm =
                                             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                                     
@@ -245,6 +245,8 @@ io.on('connection', socket => {
                                         console.log(Inserted,'그래 찾아보자꾸나..')
 
                                         db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
+                                            console.log(sendUser,'에게 감!')
+                                       
                                             socket.to(sendUser).emit('send message alarm',messageAlarm);
                                     })
                                 });
