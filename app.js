@@ -162,18 +162,22 @@ io.on('connection', socket => {
                         'SELECT JP.User_userId, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unLoggedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=0 AND JP.Post_postId = ?'                   
                         db.query(findUser, postId, (err, foundUser) => {
                         if(err) console.log(err)
-                        console.log(foundUser,'여기를 보세요');
-                        console.log(foundUser[0].unLoggedIds,'여기를 보세요');
-                        console.log(foundUser[0].unLoggedIds.split(','),'여기를 보세요2');
+
+                        // console.log(foundUser,'여기를 보세요');
+                        // console.log(foundUser[0].unLoggedIds,'여기를 보세요');
+                        // console.log(foundUser[0].unLoggedIds.split(',').map(Number),'여기를 보세요2');
                     
                         // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
                         // TypeError: userIds is not iterable
 
-                        // const userId = foundUser[0].unLoggedIds.split(',');
-                        // for (user of userIds) {
-                        //     console.log(user);
-                        //     console.log(foundTitle[0])
-                        // }
+                        const userIds = foundUser[0].unLoggedIds.split(',').map(Number)
+                        for (user of userIds) {
+                            console.log(user, '여기입니다 !!');
+                            console.log(foundTitle[0])
+
+
+
+                        }
 
                         });
                             //     const title = foundTitle[0].title;
