@@ -186,7 +186,7 @@ io.on('connection', socket => {
                         db.query(findunLoggedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
 
-                            if(foundUser === null){
+                            if(foundUser[0].User_userId === null){
                                 console.log(1)
                                 console.log('메세지 보낼 사람이 없음')
                             } else if (foundUser.includes(',')){
@@ -223,6 +223,8 @@ io.on('connection', socket => {
 
                         db.query(findunConnectedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
+
+                            console.log(foundUser, '문제점이 있나??')
                             const sendUser = foundUser[0].unConnectedIds
 
                             console.log(sendUser=== null, 'null 임')
