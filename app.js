@@ -224,7 +224,7 @@ io.on('connection', socket => {
                                     //     socket.to(user).emit('send message alarm',messageAlarm); // 이것 수정.
                                     // })
                                 });
-                                socket.to(user).emit('send message alarm',messageAlarm); // 이것 
+                                // socket.to(user).emit('send message alarm',messageAlarm); // 이것 
                             }
 
                         })
