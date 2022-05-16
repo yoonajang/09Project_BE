@@ -131,7 +131,7 @@ io.on('connection', socket => {
         );
     });
 
-    // 메세지 주고 받기
+    // 메세지 주고 받기 + 오프라인 사용자들에게 알림
     socket.on('sendmessage', param => {
         console.log('메세지');
         console.log(param);
@@ -162,52 +162,48 @@ io.on('connection', socket => {
                         const findUser = 
                         'SELECT JP.User_userId, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unLoggedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=0 AND JP.Post_postId = ?'                   
                         db.query(findUser, postId, (err, foundUser) => {
-                        if(err) console.log(err)
+                            if(err) console.log(err)
 
-                        // console.log(foundUser,'여기를 보세요');
-                        // console.log(foundUser[0].unLoggedIds,'여기를 보세요');
-                        // console.log(foundUser[0].unLoggedIds.split(',').map(Number),'여기를 보세요2');
-                    
-                        // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
-                        // TypeError: userIds is not iterable
-
-                        const userIds = foundUser[0].unLoggedIds.split(',').map(Number)
-                        for (user of userIds) {
-                            const status =  title + ' 게시물에 메시지가 도착했습니다.';
-                            const params = [
-                                            0,
-                                            status,
-                                            userEmail,
-                                            userId,
-                                            userName,
-                                            userImage,
-                                            ];
-                                            
-                            const Insert_alarm =
-                                    'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
-
-                            db.query(Insert_alarm, params, (err, data) => {
-                                if (err) console.log(err);
-                                console.log(
-                                    '오프라인 회원들에게 메시지 완료',
-                                );
-                            });
+                            const userIds = foundUser[0].unLoggedIds.split(',').map(Number)
+                            for (user of userIds) {
+                                const status =  title + ' 게시물에 메시지가 도착했습니다.';
+                                const params = [
+                                                0,
+                                                status,
+                                                userEmail,
+                                                userId,
+                                                userName,
+                                                userImage,
+                                                ];
+                                                
+                                const Insert_alarm =
+                                        'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                    
+                                db.query(Insert_alarm, params, (err, Inserted) => {
+                                    if (err) console.log(err);
+                                    console.log(
+                                        '오프라인 회원들에게 메시지 완료',
+                                    );
+                                    console.log(Inserted, 'inserId 알아보기')
+                                    db.query('SELECT * FROM Alarm WHERE alarmId = ?', Inserted.insertId, (err, info) => {
+                                        socket.send(info);
+                                    });
 
 
-                        }
 
-                        });
-                                         
+                                });
+                            }
+                        });                 
                     }
-
                     socket.to(postid).emit('receive message', param.newMessage);
                 });
             }    
         });
-
     });
 
-    // 상대방이 타자칠때
+
+    //+++++++최초부분만 전달이 되고, 나중에는 전달이 안됨+++++++//
+    // 상대방이 타자칠때 
     socket.on('typing', postid => {
         console.log(postid, '상대방이 타자칠때')
         socket.to(postid).emit('typing')}
