@@ -175,7 +175,7 @@ io.on('connection', socket => {
                         //     console.log(foundTitle[0])
                         // }
 
-                        // });
+                        });
                             //     const title = foundTitle[0].title;
                             //     const status =
                             //         title + ' 게시물에 메시지가 도착했습니다.';
