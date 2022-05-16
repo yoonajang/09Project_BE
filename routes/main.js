@@ -38,11 +38,14 @@ router.post('/postlist', (req, res) => {
                     newList.push(list.User_userId);
                     head.split(',').map(id => newList.push(Number(id)));
                     list.headList = newList;
+                   
                 } else {
                     newList.push(list.User_userId);
                     list.headList = newList;
+                    
                 }
             }
+            console.log(data)
             res.send({ msg: 'success', data });
         });
     } else {
@@ -153,21 +156,17 @@ router.post(
 
                         db.query('SELECT userEmail, userImage FROM User WHERE userId = ?', User_userId, (err, writerInfo) => { 
                             if(err) console.log(err)   
-                            
-                            console.log(writerInfo)
 
                             const userEmail = writerInfo[0].userEmail
                             const userImage = writerInfo[0].userImage   
                             
                             const insertParam = [User_userId, postId, userEmail, writer, userImage,1]
                             db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,User_userEmail, User_userName, userImage, `isPick`) VALUES (?,?,?,?,?,?)', insertParam, (err, rows) => { 
-                                if(err) console.log(err)      
-                                console.log('게시물 생성 및 JoinPost완료')            
+                                if(err) console.log(err)             
                             }) 
 
                         })
 
-                        console.log('게시물 생성 및 JoinPost완료2')
                         res.status(201).send({ msg: 'success', row });
                     },
                 );
