@@ -207,7 +207,8 @@ io.on('connection', socket => {
                         db.query(findunConnectedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
 
-                            console.log(foundUser[0].unConnectedIds,'진짜 널인가?')
+
+                            console.log(foundUser[0].unConnectedIds.includes(','),'진짜 널인가?')
                             // const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
                             // console.log(userIds)
                             // for (user of userIds) {
@@ -447,20 +448,6 @@ io.on('connection', socket => {
         socket.leave(postid)
         io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
 
-    });
-
-    // 브라우저 종료 직전
-    socket.on('disconnecting', (user) => {
-        console.log(user, socket.id,'1111')
-
-        db.query(
-            'UPDATE JoinPost SET isLogin = 0, isConnected = 0 WHERE User_userId = ?',
-            user,
-            (err, rows) => {
-                if (err) console.log(err);
-                console.log(user, '브라우저 종료 직전');
-            },
-        );
     });
 
     // 브라우저 종료
