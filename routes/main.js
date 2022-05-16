@@ -210,7 +210,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
 
     //waitingUser table 데이터 넣기
     // 유저인포 방장만 빼고 보내주면 됨. 
-    const sql =
+    const sql_1 =
         'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
     const params = [
         postId,
@@ -223,23 +223,27 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
         postId,
     ];
 
-    const sqls = mysql.format(sql, params);
+    const sql_1s = mysql.format(sql_1, params);
+
     //waitingUser table 데이터 불러오기
-    const sql_1 = 'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.Post_postId = ? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName;';
-    const sql_1s = mysql.format(sql_1, postId);
-    //Chat table 데이터 가져오기
-    const sql_2 =
-        'SELECT C.chatId, C.Post_postId, C.chat, date_format(C.createdAt, "%Y-%m-%d %T") createdAt, C.User_userId, C.User_userEmail, C.User_userName, C.userImage FROM Chat C WHERE Post_postId=? ORDER BY createdAt DESC LIMIT 200;';
+    const sql_2 = 'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.Post_postId = ? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName;';
     const sql_2s = mysql.format(sql_2, postId);
-    //게시글 작성자 정보 가져오기
-    const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
+
+    //Chat table 데이터 가져오기
+    const sql_3 =
+        'SELECT C.chatId, C.Post_postId, C.chat, date_format(C.createdAt, "%Y-%m-%d %T") createdAt, C.User_userId, C.User_userEmail, C.User_userName, C.userImage FROM Chat C WHERE Post_postId=? ORDER BY createdAt DESC LIMIT 200;';
     const sql_3s = mysql.format(sql_3, postId);
-    //찐참여자 목록 가져오기
-    const sql_4 =
-        'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+
+    //게시글 작성자 정보 가져오기
+    const sql_4 = 'SELECT User_userId FROM Post WHERE postId=?;';
     const sql_4s = mysql.format(sql_4, postId);
 
-    db.query(sqls + sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
+    //찐참여자 목록 가져오기
+    const sql_5 =
+        'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+    const sql_5s = mysql.format(sql_5, postId);
+
+    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, results) => {
         // console.log(results)
 
         if (err) console.log(err);
@@ -248,7 +252,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
             const chatInfo = results[2].reverse();
             const chatAdmin = results[3];
             const headList = results[4];
-            console.log(chatInfo);
+            // console.log(chatInfo);
             return res.status(200).send({
                 data: { userInfo, chatInfo, chatAdmin, headList },
                 message: '채팅 참여자와 메세지 정보가 전달되었습니다',

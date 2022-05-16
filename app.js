@@ -117,6 +117,7 @@ io.on('connection', socket => {
         console.log(socket.id, '<<<<<<<<<<<<<<<<<< 채팅 시작시 id');
         const socketId = socket.id;
 
+
         db.query(
             'UPDATE JoinPost SET isLogin = 1, socketId = ? WHERE User_userId=?;', 
             [socketId, userId],
