@@ -119,15 +119,25 @@ io.on('connection', socket => {
 
 
         db.query(
-            'UPDATE JoinPost SET isLogin = 1, socketId = ? WHERE User_userId=?;', 
+            'UPDATE JoinPost SET isConnected = 0, isLogin = 1, socketId = ? WHERE User_userId=?;', 
             [socketId, userId],
             (err, rows) => {
                 if (err) console.log(err);
-                io.to(postid).emit(
-                    'connected',
-                    userName + ' 님이 입장했습니다.',
-                );
             },
+        );
+
+     
+        db.query(
+            'UPDATE JoinPost SET isConnected = 1 WHERE User_userId=? and Post_postId =?;', 
+            [userId, postId],
+            (err, rows) => {
+                if (err) console.log(err);
+            },
+        );
+
+        io.to(postid).emit(
+            'connected',
+            userName + ' 님이 입장했습니다.',
         );
     });
 
@@ -184,12 +194,6 @@ io.on('connection', socket => {
                                     console.log(
                                         '오프라인 회원들에게 메시지 완료',
                                     );
-                                    console.log(Inserted, 'inserId 알아보기')
-                                    db.query('SELECT * FROM Alarm WHERE alarmId = ?', Inserted.insertId, (err, info) => {
-                                        console.log(info)
-                                        socket.sendto(info);
-                                    });
-
                                 });
                             }
                         });                 
