@@ -44,7 +44,8 @@ router.post('/postlist', (req, res) => {
                    
                 } else {
                     // newList.push(list.User_userId);
-                    list.headList = newList.push(list.headList);
+                    newList.push(list.headList)
+                    list.headList = newList;
                     
                 }
                 console.log(head)
