@@ -158,24 +158,24 @@ io.on('connection', socket => {
                 db.query(findTitle, postId, (err, foundTitle) => {
                     if (err) console.log(err);
                     else {
-                        // socket.to(postid).emit('receive message', param.newMessage);
-
-                        // 오프라인 회원들에게 메시지 ==================> 테스트 필요
-
-                        const findUser =
-                            'SELECT User_userId FROM JoinPost WHERE isLogin=0 AND Post_postId = ?'; //InnerJoin
+                        const findUser = 
+                        'SELECT JP.User_userId, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unLoggedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=0 AND JP.Post_postId = ?'                   
                         db.query(findUser, postId, (err, foundUser) => {
-                            if(err) console.log(err)
-                            console.log(foundUser,'여기를 보세요');
-                            console.log(foundUser[0].User_userId,'여기를 보세요');
-                     
-                            // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
-                            // TypeError: userIds is not iterable
+                        if(err) console.log(err)
+                        console.log(foundUser,'여기를 보세요');
+                        console.log(foundUser[0].unLoggedIds,'여기를 보세요');
+                        console.log(foundUser[0].unLoggedIds.split(','),'여기를 보세요2');
+                    
+                        // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
+                        // TypeError: userIds is not iterable
 
-                            const userIds = foundUser[0].User_userId;
-                            for (user of userIds) {
-                                console.log(user);
-                                console.log(foundTitle[0])
+                        // const userId = foundUser[0].unLoggedIds.split(',');
+                        // for (user of userIds) {
+                        //     console.log(user);
+                        //     console.log(foundTitle[0])
+                        // }
+
+                        // });
                             //     const title = foundTitle[0].title;
                             //     const status =
                             //         title + ' 게시물에 메시지가 도착했습니다.';
@@ -197,14 +197,13 @@ io.on('connection', socket => {
                             //             '오프라인 회원들에게 메시지 완료',
                             //         );
                             //     });
-                            }
-                        });
+                        
+                        
                     }
 
                     socket.to(postid).emit('receive message', param.newMessage);
                 });
-            }
-        });
+        }    
     });
 
     // 상대방이 타자칠때
