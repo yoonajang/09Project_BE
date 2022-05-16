@@ -203,7 +203,9 @@ io.on('connection', socket => {
 
                     socket.to(postid).emit('receive message', param.newMessage);
                 });
-        }    
+            }    
+        });
+
     });
 
     // 상대방이 타자칠때
