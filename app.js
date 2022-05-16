@@ -169,14 +169,7 @@ io.on('connection', socket => {
                     if (err) console.log(err);
                     else {
                         const title = foundTitle[0].title
-                        const findUser = 
-                        'SELECT JP.User_userId, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unLoggedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=0 AND JP.Post_postId = ?'                   
-                        db.query(findUser, postId, (err, foundUser) => {
-                            if(err) console.log(err)
-
-                            const userIds = foundUser[0].unLoggedIds.split(',').map(Number)
-                            for (user of userIds) {
-                                const status =  title + ' 게시물에 메시지가 도착했습니다.';
+                        const status =  title + ' 게시물에 메시지가 도착했습니다.';
                                 const params = [
                                                 0,
                                                 status,
@@ -185,7 +178,15 @@ io.on('connection', socket => {
                                                 userName,
                                                 userImage,
                                                 ];
-                                                
+                        
+                        //로그아웃된 회원들에게 메시지 보내기                            
+                        const findunLoggedUser = 
+                            'SELECT JP.User_userId, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unLoggedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=0 AND JP.Post_postId = ?'                   
+                        db.query(findunLoggedUser, postId, (err, foundUser) => {
+                            if(err) console.log(err)
+                            
+                            const userIds = foundUser[0].unLoggedIds.split(',').map(Number)
+                            for (user of userIds) {
                                 const Insert_alarm =
                                         'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                                     
@@ -196,7 +197,33 @@ io.on('connection', socket => {
                                     );
                                 });
                             }
-                        });                 
+                        });
+                        
+                        //로그인되었지만, 채팅을 이용하지 않는 회원들에게 메시지보내기
+                        const findunConnectedUser = 
+                            'SELECT GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unConnectedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=1 AND isConnected=0 AND JP.Post_postId = ?'
+
+                        db.query(findunLoggedUser, postId, (err, foundUser) => {
+                            if(err) console.log(err)
+                            
+                            const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
+                            for (user of userIds) {
+                                const Insert_alarm =
+                                        'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                    
+                                db.query(Insert_alarm, params, (err, Inserted) => {
+                                    if (err) console.log(err);
+
+                                    db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted[0].insertId, (err, Inserted) => {
+                                        socket.to(user).emit('send message alarm',Inserted); // 이것 수정.
+                                    })
+                                });
+                            }
+
+                        })
+
+
+
                     }
                     socket.to(postid).emit('receive message', param.newMessage);
                 });
