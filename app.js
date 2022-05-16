@@ -449,12 +449,26 @@ io.on('connection', socket => {
 
     });
 
+    // 브라우저 종료 직전
+    socket.on('disconnecting', (user) => {
+        
+        db.query(
+            'UPDATE JoinPost SET isLogin = 0, isConnected = 0 WHERE User_userId= ?',
+            socketId,
+            (err, rows) => {
+                if (err) console.log(err);
+                socket.leave();
+                console.log(socketId, '브라우저 종료');
+            },
+        );
+    });
+
     // 브라우저 종료
     socket.on('disconnect', () => {
         const socketId = socket.id;
 
         db.query(
-            'UPDATE JoinPost SET isLogin = 0 WHERE socketId = ?',
+            'UPDATE JoinPost SET isLogin = 0, isConnected = 0 WHERE socketId = ?',
             socketId,
             (err, rows) => {
                 if (err) console.log(err);
