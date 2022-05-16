@@ -240,7 +240,7 @@ io.on('connection', socket => {
 
                                             console.log(messageAlarm,'이게 읽혀야함')
 
-                                            const user = messageAlarm.User_userId
+                                            const user = messageAlarm[0].User_userId
                                             socket.to(user).emit('send message alarm',messageAlarm);
                                     })
                                 });
