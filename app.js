@@ -215,6 +215,7 @@ io.on('connection', socket => {
 
                             
                         });
+                    
                         
                         //로그인되었지만, 채팅을 이용하지 않는 회원들에게 메시지보내기
                         const findunConnectedUser = 
@@ -270,7 +271,7 @@ io.on('connection', socket => {
                                 });
                             }
 
-                        })
+                        });
                     }
                     socket.to(postid).emit('receive message', param.newMessage);
                 });
