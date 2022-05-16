@@ -208,10 +208,11 @@ io.on('connection', socket => {
 
                             
                             const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
+                            console.log(userIds)
                             for (user of userIds) {
                                 const Insert_alarm =
                                         'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
-                                    
+                                
                                 db.query(Insert_alarm, params, (err, Inserted) => {
                                     if (err) console.log(err);
                                     console.log(Inserted,'그래 찾아보자꾸나..')
