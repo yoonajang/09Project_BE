@@ -206,7 +206,7 @@ io.on('connection', socket => {
                         db.query(findunConnectedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
 
-                            console.log(foundUser[0].unConnectedIds)
+                            console.log(foundUser[0].unConnectedIds,'진짜 널인가?')
                             // const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
                             // console.log(userIds)
                             // for (user of userIds) {
