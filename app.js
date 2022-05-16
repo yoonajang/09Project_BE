@@ -205,22 +205,21 @@ io.on('connection', socket => {
 
                         db.query(findunConnectedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
-
-                            console.log(foundUser)
                             
-                            // const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
-                            // for (user of userIds) {
-                            //     const Insert_alarm =
-                            //             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                            
+                            const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
+                            for (user of userIds) {
+                                const Insert_alarm =
+                                        'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                                     
-                            //     db.query(Insert_alarm, params, (err, Inserted) => {
-                            //         if (err) console.log(err);
+                                db.query(Insert_alarm, params, (err, Inserted) => {
+                                    if (err) console.log(err);
 
-                            //         db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted[0].insertId, (err, Inserted) => {
-                            //             socket.to(user).emit('send message alarm',Inserted); // 이것 수정.
-                            //         })
-                            //     });
-                            // }
+                                    db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted[0].insertId, (err, Inserted) => {
+                                        socket.to(user).emit('send message alarm',Inserted); // 이것 수정.
+                                    })
+                                });
+                            }
 
                         })
 
