@@ -237,6 +237,9 @@ io.on('connection', socket => {
                                         console.log(Inserted,'그래 찾아보자꾸나..')
 
                                         db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
+
+                                            console.log(messageAlarm,'이게 읽혀야함')
+
                                             const user = messageAlarm.User_userId
                                             socket.to(user).emit('send message alarm',messageAlarm);
                                     })
