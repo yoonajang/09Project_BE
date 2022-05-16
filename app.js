@@ -118,7 +118,7 @@ io.on('connection', socket => {
         const socketId = socket.id;
 
         db.query(
-            'UPDATE JoinPost SET isLogin = 1, socketId = ? WHERE User_userId=?;',
+            'UPDATE JoinPost SET isLogin = 1, socketId = ? WHERE User_userId=?;', 
             [socketId, userId],
             (err, rows) => {
                 if (err) console.log(err);
@@ -166,7 +166,7 @@ io.on('connection', socket => {
                             'SELECT User_userId FROM JoinPost WHERE isLogin=0 and Post_postId = ?'; //InnerJoin
                         db.query(findUser, postId, (err, foundUser) => {
                             console.log(
-                                foundUser,
+                                foundUser,'이것 보시라요~~~~~',
                                 foundUser[0].User_userId,
                                 '테스트',
                             );
