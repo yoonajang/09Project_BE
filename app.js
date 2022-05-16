@@ -164,12 +164,12 @@ io.on('connection', socket => {
 
                         // 오프라인 회원들에게 메시지 ==================> 테스트 필요
 
-                        // const findUser =
-                        //     'SELECT User_userId FROM JoinPost WHERE isLogin=0 AND Post_postId = ?'; //InnerJoin
-                        // db.query(findUser, postId, (err, foundUser) => {
-                        //     console.log(foundUser,'여기를 보세요'
-                        //     );
-
+                        const findUser =
+                            'SELECT User_userId FROM JoinPost WHERE isLogin=0 AND Post_postId = ?'; //InnerJoin
+                        db.query(findUser, postId, (err, foundUser) => {
+                            console.log(foundUser,'여기를 보세요'
+                            );
+                        });
                         //     // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
                         //     // TypeError: userIds is not iterable
 
