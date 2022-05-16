@@ -146,7 +146,7 @@ router.post(
             } else {
                 const postId = rows.insertId;
                 
-                db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,`isLogin`) VALUES (?,?)', [User_userId, postId], (err, rows) => {       
+                db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,`isLogin`) VALUES (?,?,?)', [User_userId, postId,0], (err, rows) => {       
                     console.log('게시물 생성 및 JoinPost완료')            
                 })
 
