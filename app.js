@@ -237,25 +237,24 @@ io.on('connection', socket => {
                             } else if (sendUser.includes(',')) {
                                 console.log('2-1')
                                 const sendUserIds = sendUser.split(',').map(Number)
-                                console.log(sendUserIds)
                                 
                                 // for (sendUserId of sendUserIds) {
                                 //     console.log(sendUserId, '아니, 반복문이 안됨?')
-                                console.log(socket.rooms)
-                                sendUserIds.forEach((user) => socket.to(user).emit('send message alarm', user))
+                                sendUserIds.forEach((user) => {
+                                    const Insert_alarm =
+                                        'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                    
+                                    db.query(Insert_alarm, params, (err, Inserted) => {
+                                        if (err) console.log(err);
+                                        console.log(Inserted,'그래 찾아보자꾸나..')
 
-                                // const Insert_alarm =
-                                //         'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
-                                
-                                // db.query(Insert_alarm, params, (err, Inserted) => {
-                                //     if (err) console.log(err);
-                                //     console.log(Inserted,'그래 찾아보자꾸나..')
+                                        db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
+                                            console.log(messageAlarm, sendUserIds,'이것을 읽어달라!')
+                                            socket.to(user).emit('send message alarm',messageAlarm); // 이거 다시 테스트!!!!
+                                        })
+                                    });
 
-                                //     db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
-                                //         console.log(messageAlarm, sendUserIds,'이것을 읽어달라!')
-                                //         socket.to(sendUserIds).emit('send message alarm',messageAlarm); // 이거 다시 테스트!!!!
-                                //     })
-                                // });
+                                })
                             } else { 
                                 console.log('3-1',sendUser)
                                 const Insert_alarm =
