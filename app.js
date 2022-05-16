@@ -221,7 +221,7 @@ io.on('connection', socket => {
                                 console.log(sendUserIds)
                                 // for (sendUserId of sendUserIds) {
                                 //     console.log(sendUserId, '아니, 반복문이 안됨?')
-
+                                
                                     const Insert_alarm =
                                             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                                     
@@ -231,7 +231,7 @@ io.on('connection', socket => {
 
                                         db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
                                             console.log(messageAlarm, sendUserId,'이것을 읽어달라!')
-                                            socket.to(sendUserIds).emit('send message alarm',messageAlarm);
+                                            socket.to(sendUserIds).emit('send message alarm',messageAlarm); // 이거 다시 테스트!!!!
                                         })
                                     });
                                 // }
