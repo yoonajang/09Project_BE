@@ -206,7 +206,7 @@ io.on('connection', socket => {
                         db.query(findunConnectedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
 
-                            console.log(userIds)
+                            console.log(foundUser[0].unConnectedIds)
                             // const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
                             // console.log(userIds)
                             // for (user of userIds) {
@@ -223,8 +223,8 @@ io.on('connection', socket => {
                             //             console.log(messageAlarm, user,'이것을 읽어달라!')
                             //             socket.to(user).emit('send message alarm',messageAlarm);
                             //         })
-                                });
-                            }
+                            //     });
+                            // }
 
                         })
 
