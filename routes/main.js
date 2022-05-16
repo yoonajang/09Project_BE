@@ -30,7 +30,10 @@ router.post('/postlist', (req, res) => {
 
         db.query(sql, [userId, findAddr + '%'], (err, data) => {
             if (err) console.log(err);
+
+            // console.log(data)
             for (list of data) {
+                console.log(list.postId, list.headList)
                 let head = list.headList;
                 let newList = [];
 
@@ -45,7 +48,7 @@ router.post('/postlist', (req, res) => {
                     
                 }
             }
-            console.log(data)
+            // console.log(data)
             res.send({ msg: 'success', data });
         });
     } else {
