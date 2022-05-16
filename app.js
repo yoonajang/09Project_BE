@@ -209,7 +209,7 @@ io.on('connection', socket => {
                                     
                                 db.query(Insert_alarm, params, (err, Inserted) => {
                                     if (err) console.log(err);
-                                    console.log('오프라인 회원에게 메시지 완료')
+                                    console.log('오프라인 회원에게 메시지 완료-!')
                                 });    
                             }
 
@@ -235,9 +235,10 @@ io.on('connection', socket => {
                                 console.log('2-1')
                                 const sendUserIds = sendUser.split(',').map(Number)
                                 console.log(sendUserIds)
-
+                                
                                 // for (sendUserId of sendUserIds) {
                                 //     console.log(sendUserId, '아니, 반복문이 안됨?')
+                                console.log(socket.rooms)
                                 sendUserIds.forEach((user) => socket.to(user).emit('send message alarm', user))
 
                                 // const Insert_alarm =
