@@ -229,10 +229,10 @@ io.on('connection', socket => {
                             console.log(sendUser, '인수 확인')
 
                             if(sendUser === null){
-                                console.log(1)
+                                console.log('1-1')
                                 console.log('메세지 보낼 사람이 없음')
                             } else if (sendUser.includes(',')) {
-                                console.log(2)
+                                console.log('2-1')
                                 const sendUserIds = sendUser.split(',').map(Number)
                                 console.log(sendUserIds)
 
@@ -253,7 +253,7 @@ io.on('connection', socket => {
                                 //     })
                                 // });
                             } else { 
-                                console.log(3,sendUser)
+                                console.log('3-1',sendUser)
                                 const Insert_alarm =
                                             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                                     
