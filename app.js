@@ -158,9 +158,7 @@ io.on('connection', socket => {
                 db.query(findTitle, postId, (err, foundTitle) => {
                     if (err) console.log(err);
                     else {
-                        socket
-                            .to(postid)
-                            .emit('receive message', param.newMessage);
+                        // socket.to(postid).emit('receive message', param.newMessage);
 
                         // 오프라인 회원들에게 메시지 ==================> 테스트 필요
 
@@ -169,38 +167,39 @@ io.on('connection', socket => {
                         db.query(findUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
                             console.log(foundUser,'여기를 보세요');
-                            
+                     
+                            // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
+                            // TypeError: userIds is not iterable
+
+                            const userIds = foundUser[0].User_userId;
+                            for (user of userIds) {
+                                console.log(user);
+                                const title = foundTitle[0].title;
+                                const status =
+                                    title + ' 게시물에 메시지가 도착했습니다.';
+                                const params = [
+                                    0,
+                                    status,
+                                    userEmail,
+                                    userId,
+                                    userName,
+                                    userImage,
+                                ];
+
+                                const Insert_alarm =
+                                    'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+
+                                db.query(Insert_alarm, params, (err, data) => {
+                                    if (err) console.log(err);
+                                    console.log(
+                                        '오프라인 회원들에게 메시지 완료',
+                                    );
+                                });
+                            }
                         });
-                        //     // [ RowDataPacket { User_userId: 6 }, RowDataPacket { User_userId: 15 } ] 6 테스트
-                        //     // TypeError: userIds is not iterable
-
-                        //     const userIds = foundUser[0].User_userId;
-                        //     for (user of userIds) {
-                        //         console.log(user);
-                        //         const title = foundTitle[0].title;
-                        //         const status =
-                        //             title + ' 게시물에 메시지가 도착했습니다.';
-                        //         const params = [
-                        //             0,
-                        //             status,
-                        //             userEmail,
-                        //             userId,
-                        //             userName,
-                        //             userImage,
-                        //         ];
-
-                        //         const Insert_alarm =
-                        //             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
-
-                        //         db.query(Insert_alarm, params, (err, data) => {
-                        //             if (err) console.log(err);
-                        //             console.log(
-                        //                 '오프라인 회원들에게 메시지 완료',
-                        //             );
-                        //         });
-                        //     }
-                        // });
                     }
+
+                    socket.to(postid).emit('receive message', param.newMessage);
                 });
             }
         });
