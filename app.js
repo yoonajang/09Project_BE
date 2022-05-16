@@ -187,7 +187,7 @@ io.on('connection', socket => {
                                     console.log(Inserted, 'inserId 알아보기')
                                     db.query('SELECT * FROM Alarm WHERE alarmId = ?', Inserted.insertId, (err, info) => {
                                         console.log(info)
-                                        socket.send(info);
+                                        socket.sendto(info);
                                     });
 
                                 });
