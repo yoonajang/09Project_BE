@@ -205,7 +205,7 @@ io.on('connection', socket => {
 
                         db.query(findunConnectedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
-                            
+
                             
                             const userIds = foundUser[0].unConnectedIds.split(',').map(Number)
                             for (user of userIds) {
@@ -214,6 +214,7 @@ io.on('connection', socket => {
                                     
                                 db.query(Insert_alarm, params, (err, Inserted) => {
                                     if (err) console.log(err);
+                                    console.log(Inserted,'그래 찾아보자꾸나..')
 
                                     db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted[0].insertId, (err, Inserted) => {
                                         socket.to(user).emit('send message alarm',Inserted); // 이것 수정.
