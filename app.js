@@ -208,7 +208,10 @@ io.on('connection', socket => {
     });
 
     // 상대방이 타자칠때
-    socket.on('typing', postid => socket.to(postid).emit('typing'));
+    socket.on('typing', postid => {
+        console.log(postid, '상대방이 타자칠때')
+        socket.to(postid).emit('typing')}
+   );
 
     socket.on('stop typing', postid => socket.to(postid).emit('stop typing'));
 

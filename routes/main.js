@@ -211,14 +211,15 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     //waitingUser table 데이터 넣기
     // 유저인포 방장만 빼고 보내주면 됨. 
     const sql_1 =
-        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
+        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick, isLogin) SELECT ?,?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
     const params = [
         postId,
         userEmail,
         userName,
         userImage,
         userId,
-        'false',
+        0,
+        0,
         userId,
         postId,
     ];
