@@ -216,9 +216,9 @@ io.on('connection', socket => {
                                     if (err) console.log(err);
                                     console.log(Inserted,'그래 찾아보자꾸나..')
 
-                                    db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted[0].insertId, (err, Inserted) => {
-                                        socket.to(user).emit('send message alarm',Inserted); // 이것 수정.
-                                    })
+                                    // db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted[0].insertId, (err, Inserted) => {
+                                    //     socket.to(user).emit('send message alarm',Inserted); // 이것 수정.
+                                    // })
                                 });
                             }
 
