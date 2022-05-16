@@ -451,14 +451,14 @@ io.on('connection', socket => {
 
     // 브라우저 종료 직전
     socket.on('disconnecting', (user) => {
-        
+        console.log(user,'1111')
+
         db.query(
-            'UPDATE JoinPost SET isLogin = 0, isConnected = 0 WHERE User_userId= ?',
-            socketId,
+            'UPDATE JoinPost SET isLogin = 0, isConnected = 0 WHERE User_userId = ?',
+            user,
             (err, rows) => {
                 if (err) console.log(err);
-                socket.leave();
-                console.log(socketId, '브라우저 종료');
+                console.log(user, '브라우저 종료 직전');
             },
         );
     });
