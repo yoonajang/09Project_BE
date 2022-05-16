@@ -75,9 +75,10 @@ router.post('/postlist', (req, res) => {
 // 게시글 조회
 router.get('/:postId', (req, res) => {
     const postId = req.params.postId;
+    
 
     const sql =
-        "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList, U.userName, U.userImage FROM `Post` P JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId LEFT OUTER JOIN `User` U2 ON JP.User_userId = U2.userId WHERE `postId`= ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, U.userName, U.userImage";
+        "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U1.userId SEPARATOR ',') headList, U.userName, U.userImage FROM `Post` P  JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and JP.isPick = 1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId LEFT OUTER JOIN `User` U2 ON P.User_userId = U2.userId WHERE `postId`= ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, U.userName, U.userImage";
 
     db.query(sql, postId, (err, data) => {
         if (err) console.log(err);
@@ -208,6 +209,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const userId = res.locals.user.userId;
 
     //waitingUser table 데이터 넣기
+    // 유저인포 방장만 빼고 보내주면 됨. 
     const sql =
         'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
     const params = [
@@ -223,7 +225,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
 
     const sqls = mysql.format(sql, params);
     //waitingUser table 데이터 불러오기
-    const sql_1 = 'SELECT * FROM JoinPost WHERE Post_postId=?;';
+    const sql_1 = 'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.Post_postId = ? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName;';
     const sql_1s = mysql.format(sql_1, postId);
     //Chat table 데이터 가져오기
     const sql_2 =
