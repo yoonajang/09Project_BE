@@ -396,12 +396,23 @@ io.on('connection', socket => {
     });
 
     // 채팅방 나가기
-    // socket.on('close chatroom', (param, user) => {
-    //     const userName = user.userName
+    socket.on('close chatroom', (postid, user) => {
+        const userId = user.userId
+        const userName = user.userName
+        const postId = postid.replace('p', '');
 
-    //     socket.leave(param)
-    //     io.to(param).emit('connected', userName + ' 님이 나가셨습니다.');
-    // });
+        db.query(
+            'UPDATE JoinPost SET isConnected = 0 WHERE User_userId=? and Post_postId =?;', 
+            [userId, postId],
+            (err, rows) => {
+                if (err) console.log(err);
+            },
+        );
+
+        socket.leave(postid)
+        io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
+
+    });
 
     // 브라우저 종료
     socket.on('disconnect', () => {
