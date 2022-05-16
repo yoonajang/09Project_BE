@@ -211,9 +211,7 @@ io.on('connection', socket => {
                                     if (err) console.log(err);
                                     console.log('오프라인 회원에게 메시지 완료-!')
                                 });    
-                            }
-
-                            
+                            } 
                         });
                     
                         
@@ -223,23 +221,13 @@ io.on('connection', socket => {
 
                         db.query(findunConnectedUser, postId, (err, foundUser) => {
                             if(err) console.log(err)
-
-                            console.log(foundUser, '문제점이 있나??')
                             const sendUser = foundUser[0].unConnectedIds
 
-                            console.log(sendUser=== null, 'null 임')
-                            console.log(sendUser.includes(','), '여러명임')
-                            console.log(sendUser, '인수 확인')
-
                             if(sendUser === null){
-                                console.log('1-1')
                                 console.log('메세지 보낼 사람이 없음')
                             } else if (sendUser.includes(',')) {
-                                console.log('2-1')
                                 const sendUserIds = sendUser.split(',').map(Number)
                                 
-                                // for (sendUserId of sendUserIds) {
-                                //     console.log(sendUserId, '아니, 반복문이 안됨?')
                                 sendUserIds.forEach((user) => {
                                     const Insert_alarm =
                                         'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
@@ -250,19 +238,17 @@ io.on('connection', socket => {
 
                                         db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
                                             console.log(messageAlarm, sendUserIds,'이것을 읽어달라!')
-                                            socket.to(user).emit('send message alarm',messageAlarm); // 이거 다시 테스트!!!!
+                                            socket.to(user).emit('send message alarm',messageAlarm);
                                         })
                                     });
 
                                 })
                             } else { 
-                                console.log('3-1',sendUser)
                                 const Insert_alarm =
                                             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                                     
                                     db.query(Insert_alarm, params, (err, Inserted) => {
                                         if (err) console.log(err);
-                                        console.log(Inserted,'그래 찾아보자꾸나..')
 
                                         db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
                                             console.log(sendUser,'에게 감!')
@@ -290,7 +276,8 @@ io.on('connection', socket => {
 
     socket.on('stop typing', postid => socket.to(postid).emit('stop typing'));
 
-    // 찐참여자 선택 (by 방장)
+
+    // 찐참여자 선택 (by 방장) 
     socket.on('add_new_participant', param => {
         console.log(param);
         const postid = param.postid;
@@ -353,7 +340,6 @@ io.on('connection', socket => {
             } else {
                 const headList = rows[1];
                 const waitList = rows[2];
-                console.log(headList);
                 socket
                     .to(postid)
                     .emit(
@@ -365,37 +351,37 @@ io.on('connection', socket => {
         });
     });
 
-    // //찐참여자 선택 취소 (본인) ______________보류
+    //찐참여자 선택 취소 (by 본인) //
     // socket.on('leave chatroom', (postid, user) => {
+    //     //param 콘솔로 찍어보기....
+    //     console.log(postid, user)
+    //     const postid = postid;
+    //     const postId = postid.replace('p', '');
+    //     const userId = user.User_userId;
+
     //     //방장만 안내가 가기.
-    //     const delete_JP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
-    //     db.query(delete_JP, [postid, user], (err, data) => {
+    //     const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
+    //     db.query(deleteJP, [postId, user], (err, deletedJP) => {
     //         if(err) console.log(err)
 
     //         // 방장찾기
-    //         const find_roomowner = 'SELECT socketId FROM `JoinPost` WHERE `Post_postId`= ? and `isLogin`= 1 '
-    //         db.query(find_user, postid, (err, socketids) => {
-    //             socket.leave(postid)
-    //             io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
+    //         const findBoss = 'SELECT P.postId, P.User_userId, P.title, JP.User_userName unjoined FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, JP.User_userName'
 
-    //             console.log(socketids, '이거 잘 찍히는지 확인좀...........ㅠㅠ')
-    //             const socketIds = socketids[0]
-    //             for (socketId of socketIds){
-    //                 io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.'); //
-    //             }
+    //         db.query(find_user, [postid, userId], (err, foundBoss) => {
+    //             const bossId = foundBoss[0].User_userId
+    //             const unjoinedNickname = foundBoss[0].unjoined
+    //             const title = foundBoss[0].title
+
+    //             socket.leave(postid)
+    //             socket.to(bossId).emit('connected', unjoinedNickname + ' 님이 나가셨습니다.');
 
     //         });
 
     //     });
 
-    //     // 메세지
-
-    //     //누가나가는지 메세지 전송
-    //     socket.leave(postid)
-    //     io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
     // })
 
-    // 강퇴 (by 방장, 적용확인 필요)
+    // 강퇴 (by 방장, 적용확인 필요=====> 수정필요)
     socket.on('kickout chatroom', (postid, user) => {
         const deleteJP =
             'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?';
@@ -416,6 +402,7 @@ io.on('connection', socket => {
                         (err, foundIsLogin) => {
                             const isLogin = foundIsLogin[0].isLogin;
                             const socketId = foundIsLogin[0].socketId;
+
                             if (isLogin === 1) {
                                 socket
                                     .to(user)
