@@ -24,6 +24,7 @@ router.post('/postlist', (req, res) => {
 
     const kmRange = [10, 5, 1.5]
     // kmRange[range-1]
+    console.log(kmRange[range-1], range, '<<<<<<<<<<<<<<')
 
     let findAddr = '';
     for (let i = 0; i < range; i++) {
