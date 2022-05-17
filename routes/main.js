@@ -240,7 +240,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     //waitingUser table 데이터 넣기
     const sql_1 =
         'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick, isLogin, isConnected) SELECT ?,?,?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
-    const params = [
+    const param_1 = [
         postId,
         userEmail,
         userName,
@@ -253,7 +253,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
         postId,
     ];
 
-    const sql_1s = mysql.format(sql_1, params);
+    const sql_1s = mysql.format(sql_1, param_1);
 
     //waitingUser table 데이터 불러오기
     const sql_2 = 'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.Post_postId = ? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName;';
@@ -268,12 +268,12 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const sql_4 = 'SELECT User_userId FROM Post WHERE postId=?;';
     const sql_4s = mysql.format(sql_4, postId);
 
-    //찐참여자 목록 가져오기
-    const sql_5 =
-        'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
-    const sql_5s = mysql.format(sql_5, postId);
+    // //찐참여자 목록 가져오기
+    // const sql_5 =
+    //     'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ? AND User_userId NOT IN(?)';
+    // const sql_5s = mysql.format(sql_5, postId);
 
-    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, results) => {
+    db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
         // console.log(results)
 
         if (err) console.log(err);
@@ -281,8 +281,16 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
             const userInfo = results[1];
             const chatInfo = results[2].reverse();
             const chatAdmin = results[3];
-            const headList = results[4];
-            // console.log(chatInfo);
+
+            let headList = [];
+            //찐참여자 목록 가져오기
+            const sql_5 =
+            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ? AND User_userId NOT IN(?)';
+            const param_5 = [postId, results[3].User_userId]
+            db.query(sql_5, param_5, (err, results) => {
+                headList.push(results)
+            })
+
             return res.status(200).send({
                 data: { userInfo, chatInfo, chatAdmin, headList },
                 message: '채팅 참여자와 메세지 정보가 전달되었습니다',
