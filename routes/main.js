@@ -281,7 +281,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
             const chatInfo = results[2].reverse();
             const chatAdmin = results[3];
             console.log(results[3])
-            console.log(chatAdmin[0].User_userId, '이게 방장이여야되니깐 3')
+            console.log(chatAdmin[0].User_userId, '111이게 방장이여야되니깐 3')
             let headList = [];
             //찐참여자 목록 가져오기
             const sql_5 =
