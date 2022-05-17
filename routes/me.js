@@ -56,14 +56,14 @@ router.get('/:userId', authMiddleware, (req, res) => {
             if (isNaN(Number(mine))) {
                 console.log(1,mine)
                 mine.split(',').map(id => mynewList.push(Number(id)));
-                my[0].headList = mynewList;
+                my.headList = mynewList;
             } else if (mine === null) {
                 console.log(2,mine)
-                my[0].headList = mynewList;
+                my.headList = mynewList;
             } else if (mine !== null){
-                console.log(3, typeof mine ,mine,my[0].headList )
+                console.log(3, typeof mine ,mine,my.headList )
                 mynewList.push(Number(mine))
-                my[0].headList = mynewList;
+                my.headList = mynewList;
             }
         }
 
