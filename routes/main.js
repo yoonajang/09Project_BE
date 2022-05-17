@@ -48,6 +48,7 @@ router.post('/postlist', (req, res) => {
                     list.headList = newList;
                 }
             }
+            console.log(data)
             res.send({ msg: 'success', data });
         });
     } else {
