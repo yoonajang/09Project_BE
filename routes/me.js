@@ -75,17 +75,30 @@ router.get('/:userId', authMiddleware, (req, res) => {
     db.query(joinlist, [userId, userId], (err, joinList) => {
         console.log(joinList)
         if (err) console.log(err);
-        for (list of joinList) {
-            let head = list.headList;
-            let newList = [];
+        for (join of joinList) {
+            let joined = join.headList;
+            let joinnewList = [];
 
-            if (list.headList !== null) {
-                newList.push(list.userId);
-                head.split(',').map(id => newList.push(Number(id)));
-                list.headList = newList;
-            } else {
-                newList.push(list.userId);
-                list.headList = newList;
+            // if (list.headList !== null) {
+            //     newList.push(list.userId);
+            //     head.split(',').map(id => newList.push(Number(id)));
+            //     list.headList = newList;
+            // } else {
+            //     newList.push(list.userId);
+            //     list.headList = newList;
+            // }
+
+            if (isNaN(Number(joined))) {
+                console.log(1,joined)
+                joined.split(',').map(id => joinnewList.push(Number(id)));
+                join.headList = joinnewList;
+            } else if (joined === null) {
+                console.log(2,joined)
+                join.headList = joinnewList;
+            } else if (joined !== null){
+                console.log(3, typeof joined ,joined,join.headList )
+                joinnewList.push(Number(joined))
+                join.headList = joinnewList;
             }
 
         }
