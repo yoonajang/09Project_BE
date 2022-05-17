@@ -171,14 +171,14 @@ io.on('connection', socket => {
                     else {
                         const title = foundTitle[0].title
                         const status =  title + ' 게시물에 메시지가 도착했습니다.';
-                                const params = [
-                                                0,
-                                                status,
-                                                userEmail,
-                                                userId,
-                                                userName,
-                                                userImage,
-                                                ];
+                        const params = [
+                                        0,
+                                        status,
+                                        userEmail,
+                                        userId,
+                                        userName,
+                                        userImage,
+                                      ];
                         
                         //로그아웃된 회원들에게 메시지 보내기                            
                         const findunLoggedUser = 
@@ -275,7 +275,7 @@ io.on('connection', socket => {
     socket.on('stop typing', postid => socket.to(postid).emit('stop typing'));
 
 
-    // 찐참여자 선택 (by 방장 >>>>>> 제가 혼자 작업해보죠. ) 
+    // 찐참여자 선택 (by 방장) 
     socket.on('add_new_participant', param => {
         console.log(param);
         const postid = param.postid;
@@ -316,19 +316,15 @@ io.on('connection', socket => {
         });
 
         const findPost =
-            'SELECT P.User_userId, P.title, JP.isLogin joinedLogin FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId =? AND JP.User_userId = ? GROUP BY P.User_userId, P.title, JP.isLogin';
+            'SELECT P.User_userId, P.title, JP.isLogin joinedLogin FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId =? AND JP.User_userId = ? GROUP BY P.User_userId, P.title, JP.isLogin ';
 
         db.query(findPost, [Number(postId), userId], (err, foundPost) => {
             const title = foundPost[0].title
             const joinedLogin = foundPost[0].joinedLogin
 
-            const status = title + '게시물에 거래가 확정되었습니다.'
-
-            console.log(foundPost)
-            console.log(joinedLogin === 1)
+            const status = title + ' 게시물에 거래가 확정되었습니다.'
 
             if (joinedLogin === 1){
-                console.log('지금은 가야할 때')
                 socket.to(userId).emit('added_new_participant',status);
             } else {
                 const insertAlarm =
