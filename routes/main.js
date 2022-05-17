@@ -65,18 +65,18 @@ router.post('/postlist', (req, res) => {
         });
     } else {
         const sql =
-            // "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
-        
             "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList,(6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) distance FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE (`address` like ? OR (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) < ? ) AND isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
-        console.log(lat, typeof lat, km, '잘들어오는지 확인')
+
         const params = [lat, lng, lat, findAddr + '%', lat, lng, lat, km];
-        // const params = [findAddr + '%'];
+
         db.query(sql, params, (err, data) => {
             if (err) console.log(err);
-            console.log(data)
+
             for (list of data) {
                 let head = list.headList;
                 let newList = [];
+
+                console.log(Number(head))
 
                 if (isNaN(Number(head))) {
                     head.split(',').map(id => newList.push(Number(id)));
@@ -84,7 +84,7 @@ router.post('/postlist', (req, res) => {
                 } else if (head === null) {
                     list.headList = newList;
                 } else if (head !== null){
-                    newList.push(Number(list.headList))
+                    newList.push(Number(head))
                     list.headList = newList;
                 }
             }
