@@ -353,63 +353,64 @@ io.on('connection', socket => {
     socket.on('leave chatroom', (postid, user) => {
         //param 콘솔로 찍어보기....
         console.log(postid, user)
-        const postid = postid;
-        const postId = postid.replace('p', '');
-        const userId = user.User_userId;
+        // const postid = postid;
+        // const postId = postid.replace('p', '');
+        // const userId = user.User_userId;
 
-        //방장만 안내가 가기.
-        const selectJP = 'SELECT isPick FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
-        db.query(selectJP, [postId, user], (err, selectedJP) => {
-            if(err) console.log(err)
-            const selectedStatus = selectedJP[0].isPick
+        // //방장만 안내가 가기.
+        // const selectJP = 'SELECT isPick FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
+        // db.query(selectJP, [postId, user], (err, selectedJP) => {
+           
+        //     if(err) console.log(err)
+        //     const selectedStatus = selectedJP[0].isPick
             
-            if (selectedStatus === 1) {
-                const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
-                db.query(deleteJP, [postId, user], (err, deletedJP) => {
-                    if(err) console.log(err)
+        //     if (selectedStatus === 1) {
+        //         const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
+        //         db.query(deleteJP, [postId, user], (err, deletedJP) => {
+        //             if(err) console.log(err)
 
-                    // 방장찾기
-                    const findBoss = 'SELECT P.postId, P.User_userId, P.title, JP.User_userName unjoinedName, JP.User_userId unjoinedId, JP.User_userEmail unjoinedEmail, JP.User_userImage unjoinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title, JP.User_userId, JP.User_userName, JP.User_userEmail, JP.User_userImage'
+        //             // 방장찾기
+        //             const findBoss = 'SELECT P.postId, P.User_userId, P.title, JP.User_userName unjoinedName, JP.User_userId unjoinedId, JP.User_userEmail unjoinedEmail, JP.User_userImage unjoinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title, JP.User_userId, JP.User_userName, JP.User_userEmail, JP.User_userImage'
 
-                    db.query(find_user, [postid, userId], (err, foundBoss) => {
-                        const bossId = foundBoss[0].User_userId
-                        const unjoinedId = foundBoss[0].unjoinedId
-                        const unjoinedName = foundBoss[0].unjoinedName
-                        const unjoinedEmail = foundBoss[0].unjoinedEmail
-                        const unjoinedImage = foundBoss[0].unjoinedImage
-                        const title = foundBoss[0].title
+        //             db.query(find_user, [postid, userId], (err, foundBoss) => {
+        //                 const bossId = foundBoss[0].User_userId
+        //                 const unjoinedId = foundBoss[0].unjoinedId
+        //                 const unjoinedName = foundBoss[0].unjoinedName
+        //                 const unjoinedEmail = foundBoss[0].unjoinedEmail
+        //                 const unjoinedImage = foundBoss[0].unjoinedImage
+        //                 const title = foundBoss[0].title
 
-                        // 방장 로그인상태 찾기
-                        db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? User_userId=?', [postid, userId], (err, bossIsLogin) => {
-                            const bossStatus = bossIsLogin[0].isLogin
-                            const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
+        //                 // 방장 로그인상태 찾기
+        //                 db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? User_userId=?', [postid, userId], (err, bossIsLogin) => {
+        //                     const bossStatus = bossIsLogin[0].isLogin
+        //                     const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
 
-                            socket.leave(postid)
-                            socket.to(postid).emit('connected', unjoinedNickname + '님이 퇴장하셨습니다.');
+        //                     socket.leave(postid)
+        //                     socket.to(postid).emit('connected', unjoinedNickname + '님이 퇴장하셨습니다.');
 
-                            const insertParam = [0,status, unjoinedEmail, unjoinedId, unjoinedName, unjoinedImage]
-                            const insertAlarm =
-                                    'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+        //                     const insertParam = [0,status, unjoinedEmail, unjoinedId, unjoinedName, unjoinedImage]
+        //                     const insertAlarm =
+        //                             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
 
-                            // 방장 로그아웃 상태시 저장
-                            if (bossStatus === 0){         
-                                db.query(insertAlarm, insertParam, (err, Inserted) => {
-                                    if (err) console.log(err);
-                                    console.log(
-                                        '오프라인 회원들에게 메시지 완료',
-                                    );
-                                });
+        //                     // 방장 로그아웃 상태시 저장
+        //                     if (bossStatus === 0){         
+        //                         db.query(insertAlarm, insertParam, (err, Inserted) => {
+        //                             if (err) console.log(err);
+        //                             console.log(
+        //                                 '오프라인 회원들에게 메시지 완료',
+        //                             );
+        //                         });
 
-                            } else {
-                                socket.to(bossId).emit('leaved chatroom', status);                        
-                            }
+        //                     } else {
+        //                         socket.to(bossId).emit('leaved chatroom', status);                        
+        //                     }
 
-                        });
-                    });
+        //                 });
+        //             });
             
-                })
-            }
-        });
+        //         })
+        //     }
+        // });
 
     })
 
