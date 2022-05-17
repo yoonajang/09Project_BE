@@ -368,53 +368,58 @@ io.on('connection', socket => {
             const selectedStatus = selectedJP[0].isPick
             
             if (selectedStatus === 1) {
-                const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
-                db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
-                    if(err) console.log(err)
-                    console.log(3)
-                    // 방장찾기
-                    const findBoss = 'SELECT P.postId, P.User_userId, P.title, JP.User_userName unjoinedName, JP.User_userId unjoinedId, JP.User_userEmail unjoinedEmail, JP.userImage unjoinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title, JP.User_userName, JP.User_userId, JP.User_userEmail, JP.userImage'
 
-                    db.query(findBoss, [Number(postId), userId], (err, foundBoss) => {
-                        console.log(foundBoss)
-                        const bossId = foundBoss[0].User_userId
-                        const unjoinedId = foundBoss[0].unjoinedId
-                        const unjoinedName = foundBoss[0].unjoinedName
-                        const unjoinedEmail = foundBoss[0].unjoinedEmail
-                        const unjoinedImage = foundBoss[0].unjoinedImage
-                        const title = foundBoss[0].title
+                
+                // 방장찾기
+                const findBoss = 'SELECT P.postId, P.User_userId, P.title, JP.User_userName unjoinedName, JP.User_userId unjoinedId, JP.User_userEmail unjoinedEmail, JP.userImage unjoinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title, JP.User_userName, JP.User_userId, JP.User_userEmail, JP.userImage'
 
-                        // 방장 로그인상태 찾기
-                        db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? User_userId=?', [postId, userId], (err, bossIsLogin) => {
-                            console.log(4)
-                            const bossStatus = bossIsLogin[0].isLogin
-                            const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
+                db.query(findBoss, [Number(postId), userId], (err, foundBoss) => {
+                    console.log(foundBoss)
+                    const bossId = foundBoss[0].User_userId
+                    const unjoinedId = foundBoss[0].unjoinedId
+                    const unjoinedName = foundBoss[0].unjoinedName
+                    const unjoinedEmail = foundBoss[0].unjoinedEmail
+                    const unjoinedImage = foundBoss[0].unjoinedImage
+                    const title = foundBoss[0].title
 
-                            socket.leave(postid)
-                            socket.to(postid).emit('connected', unjoinedNickname + '님이 퇴장하셨습니다.');
+                    // 방장 로그인상태 찾기
+                    db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? User_userId=?', [postId, userId], (err, bossIsLogin) => {
+                        console.log(4)
+                        const bossStatus = bossIsLogin[0].isLogin
+                        const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
 
-                            const insertParam = [0,status, unjoinedEmail, unjoinedId, unjoinedName, unjoinedImage]
-                            const insertAlarm =
-                                    'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                        socket.leave(postid)
+                        socket.to(postid).emit('connected', unjoinedNickname + '님이 퇴장하셨습니다.');
 
-                            // 방장 로그아웃 상태시 저장
-                            if (bossStatus === 0){         
-                                db.query(insertAlarm, insertParam, (err, Inserted) => {
-                                    if (err) console.log(err);
-                                    console.log(
-                                        '오프라인 회원들에게 메시지 완료',
-                                    );
-                                });
+                        const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
+                        db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
+                            if(err) console.log(err)
+                            console.log('삭제됨')
+                        })
 
-                            } else {
-                                console.log(2,status)
-                                socket.to(bossId).emit('leaved chatroom', status);                        
-                            }
+                        const insertParam = [0,status, unjoinedEmail, unjoinedId, unjoinedName, unjoinedImage]
+                        const insertAlarm =
+                                'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
 
-                        });
+                        // 방장 로그아웃 상태시 저장
+                        if (bossStatus === 0){         
+                            db.query(insertAlarm, insertParam, (err, Inserted) => {
+                                if (err) console.log(err);
+                                console.log(
+                                    '오프라인 회원들에게 메시지 완료',
+                                );
+                            });
+
+                        } else {
+                            
+                            console.log(2,status)
+                            socket.to(bossId).emit('leaved chatroom', status);                        
+                        }
+
                     });
+                });
             
-                })
+                
             } else {
                 console.log(selectedStatus)
                 console.log('거래자가 아니야?')
