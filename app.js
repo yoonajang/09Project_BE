@@ -408,6 +408,7 @@ io.on('connection', socket => {
     //     });
 
     // })
+    
 
     // 강퇴 (by 방장, 적용확인 필요=====> 수정필요)
     socket.on('kickout chatroom', (postid, user) => {

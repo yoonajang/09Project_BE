@@ -289,10 +289,11 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ? AND User_userId NOT IN(?)';
             const param_5 = [postId, chatAdmin[0].User_userId]
             db.query(sql_5, param_5, (err, results) => {
+                
                 console.log(results,'이것 확인')
                 // console.log(Number(results))
                 // // console.log(results.split(',').map(Number))
-                headList = results;
+                headList.push(results)
                 
             })
       
