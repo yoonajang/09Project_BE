@@ -91,15 +91,18 @@ router.get('/:postId', (req, res) => {
         let newList =[];
 
         console.log(data)
-        console.log(Number(head))
+        console.log(Number(head),head <<<<<<<<<<<<<<)
         
         if (isNaN(Number(head))) {
+            console.log(1)
             data[0].headList = head.split(',').filter(id => id = Number(id) !== bossId);
         } else {
             if (Number(head) === bossId) {
+                console.log(2)
                 data[0].headList = newList;
             } 
-            else if (head === 0){
+            else if (head === null){
+                console.log(3)
                 data[0].headList = newList;
             }      
         } 
