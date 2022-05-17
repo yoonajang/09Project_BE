@@ -28,18 +28,18 @@ router.get('/:userId', authMiddleware, (req, res) => {
     const userId = req.params.userId;
 
     // 유저 정보
-    const userinfo =
+    const userInfos =
         'SELECT U.userId, U.userEmail, U.userName, U.userImage, U.tradeCount FROM `User` U WHERE `userId`=?';
-    db.query(userinfo, userId, (err, userInfo) => {
+    db.query(userInfos, userId, (err, userInfo) => {
         if (err) console.log(err);
 
     // 유저가 작성한 리스트
-    const mylist =
+    const myLists =
         "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE P.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime ORDER BY P.endTime DESC";
 
-    db.query(mylist, userId, (err, myList) => {
+    db.query(myLists, userId, (err, myList) => {
         if (err) console.log(err);
-        for (list of myList) {
+        for (list of myLists) {
             let head = list.headList;
             let newList = [];
 
@@ -58,21 +58,25 @@ router.get('/:userId', authMiddleware, (req, res) => {
         }
 
     // 유저의 참여한 리스트
-    const joinlist =
+    const joinLists =
         "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE P.User_userId = ? OR JP.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime ORDER BY P.endTime DESC";
 
-    db.query(joinlist, [userId, userId], (err, joinList) => {
+    db.query(joinLists, [userId, userId], (err, joinList) => {
         console.log(joinList)
         if (err) console.log(err);
         for (list of joinList) {
             let head = list.headList;
             let newList = [];
 
+            console.log(head, Number(head), head.includes(','),'<<<<<<<<2')
+
             if (list.headList !== null) {
+                console.log(1, head)
                 newList.push(list.userId);
                 head.split(',').map(id => newList.push(Number(id)));
                 list.headList = newList;
             } else {
+                console.log(2, head)
                 newList.push(list.userId);
                 list.headList = newList;
             }
@@ -80,10 +84,10 @@ router.get('/:userId', authMiddleware, (req, res) => {
     console.log(joinList)
 
     // 유저의 좋아요 리스트
-    const likelist =
+    const likeLists =
         "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId  LEFT OUTER JOIN `Like` L ON P.postId = L.Post_postId WHERE L.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime ORDER BY P.endTime DESC";
 
-    db.query(likelist, userId, (err, likeList) => {
+    db.query(likeLists, userId, (err, likeList) => {
         if (err) console.log(err);
         for (list of likeList) {
             let head = list.headList;
