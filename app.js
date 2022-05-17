@@ -329,12 +329,12 @@ io.on('connection', socket => {
             const status = title + ' 게시물에 거래가 확정되었습니다.'
 
             if (joinedLogin === 1){
-                const Insert_alarm =
+                const insertAlarm =
                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                 
                 const insertParam = [1, status, userEmail, userId, userName, userImage]
             
-                db.query(Insert_alarm, params, (err, Inserted) => {
+                db.query(insertAlarm, insertParam, (err, Inserted) => {
                     if (err) console.log(err);
 
                     db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
