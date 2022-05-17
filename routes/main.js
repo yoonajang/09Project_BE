@@ -289,7 +289,8 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
             const param_5 = [postId, results[3].User_userId]
             db.query(sql_5, param_5, (err, results) => {
                 console.log(results)
-                console.log(results.split(',').map(Number))
+                console.log(Number(results))
+                // console.log(results.split(',').map(Number))
                 headList.push(results)
                 
             })
