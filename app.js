@@ -353,9 +353,9 @@ io.on('connection', socket => {
     socket.on('leave chatroom', (postid, user) => {
         //param 콘솔로 찍어보기....
         console.log(1)
-        console.log(post, user)
+        console.log(user)
         
-        const postid = post
+     
         const postId = postid.replace('p', '');
         const userId = user;
 
@@ -375,7 +375,7 @@ io.on('connection', socket => {
                     // 방장찾기
                     const findBoss = 'SELECT P.postId, P.User_userId, P.title, JP.User_userName unjoinedName, JP.User_userId unjoinedId, JP.User_userEmail unjoinedEmail, JP.User_userImage unjoinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title, JP.User_userId, JP.User_userName, JP.User_userEmail, JP.User_userImage'
 
-                    db.query(findBoss, [postid, userId], (err, foundBoss) => {
+                    db.query(findBoss, [postId, userId], (err, foundBoss) => {
                         console.log(foundBoss)
                         const bossId = foundBoss[0].User_userId
                         const unjoinedId = foundBoss[0].unjoinedId
@@ -385,7 +385,7 @@ io.on('connection', socket => {
                         const title = foundBoss[0].title
 
                         // 방장 로그인상태 찾기
-                        db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? User_userId=?', [postid, userId], (err, bossIsLogin) => {
+                        db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? User_userId=?', [postId, userId], (err, bossIsLogin) => {
                             console.log(4)
                             const bossStatus = bossIsLogin[0].isLogin
                             const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
