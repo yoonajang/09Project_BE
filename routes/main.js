@@ -91,7 +91,7 @@ router.get('/:postId', (req, res) => {
         let newList =[];
 
         console.log(data)
-        console.log(Number(head),head <<<<<<<<<<<<<<)
+        console.log(Number(head),head, '<<<<<<<<<<<<<<')
         
         if (isNaN(Number(head))) {
             console.log(1)
