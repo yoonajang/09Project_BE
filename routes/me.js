@@ -102,7 +102,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
             }
 
         }
-    console.log(joinList)
+    console.log(joinList,'!!!!!!!!!!!!!!')
 
     // 유저의 좋아요 리스트
     const likelist =
