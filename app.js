@@ -319,8 +319,8 @@ io.on('connection', socket => {
             'SELECT P.User_userId, P.title, JP.isLogin joinedLogin FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId =? AND JP.User_userId = ? GROUP BY P.User_userId, P.title, JP.isLogin';
 
         db.query(findPost, [Number(postId), userId], (err, foundPost) => {
-            const title = findPost[0].title
-            const joinedLogin = findPost[0].joinedLogin
+            const title = foundPost[0].title
+            const joinedLogin = foundPost[0].joinedLogin
 
             const status = title + '게시물에 거래가 확정되었습니다.'
 
