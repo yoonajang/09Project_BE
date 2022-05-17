@@ -248,11 +248,12 @@ io.on('connection', socket => {
                                     db.query(Insert_alarm, params, (err, Inserted) => {
                                         if (err) console.log(err);
 
-                                        db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
+                                        db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
+                                            
                                             console.log(sendUser,'에게 감!')
                                             socket.send(`${sendUser}`, '에게 감')
 
-                                            //////////////////이거이거이거ㅣㅇ거??????? createdAT????
+                                            console.log(messageAlarm)
                                             socket.to(sendUser).emit('send message alarm',messageAlarm);
                                     })
                                 });
