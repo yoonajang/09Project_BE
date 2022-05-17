@@ -275,7 +275,7 @@ io.on('connection', socket => {
     socket.on('stop typing', postid => socket.to(postid).emit('stop typing'));
 
 
-    // 찐참여자 선택 (by 방장) 
+    // 찐참여자 선택 (by 방장 >>>>>> 제가 혼자 작업해보죠. ) 
     socket.on('add_new_participant', param => {
         console.log(param);
         const postid = param.postid;
@@ -311,6 +311,34 @@ io.on('connection', socket => {
                     );
             }
         });
+
+        const findPost =
+            'SELECT P.User_userId, P.title, JP.isLogin joinedLogin, JP.User_userId joinedId, JP.User_userEmail joinedEmail, JP.User_userName joinedName, JP.userImage joinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId =? AND JP.User_userId = ? GROUP BY P.User_userId, P.title, JP.isLogin, JP.User_userId, JP.User_userEmail , JP.User_userName, JP.userImage;';
+            
+        db.query(findPost, [Number(postId), user], (err, foundPost) => {
+            const title = findPost[0].title
+            const joinedLogin = findPost[0].joinedLogin
+            const joinedEmail = findPost[0].joinedEmail
+            const joinedName = findPost[0].joinedName
+            const joinedImage = findPost[0].joinedImage
+
+            const status = title + '게시물에 거래가 확정되었습니다.'
+
+            if (joinedLogin === 1){
+                socket.to(userId).emit('send message alarm',messageAlarm);
+            } else {
+                const insertAlarm =
+                    'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                
+                const insertParam = [0, status, joinedEmail, userId, joinedName, joinedImage]
+                db.query(insertAlarm, insertParam , (err, Inserted) => {
+                    if (err) console.log(err);
+                    console.log('오프라인시 저장')
+                });
+            }
+        });
+
+
     });
 
     //찐참여자 선택 취소 (by 방장)
@@ -349,27 +377,18 @@ io.on('connection', socket => {
         });
     });
 
-    // 찐참여자 선택 취소 (by 본인) //
+    // 찐참여자 선택 취소 (by 본인)
     socket.on('leave chatroom', (postid, user) => {
-        //param 콘솔로 찍어보기....
-        console.log(1)
-        console.log(user)
-        
-     
         const postId = postid.replace('p', '');
         const userId = user;
 
         //방장만 안내가 가기.
         const selectJP = 'SELECT isPick FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
         db.query(selectJP, [Number(postId), user], (err, selectedJP) => {
-            console.log(2)
-            console.log(selectedJP)
             if(err) console.log(err)
             const selectedStatus = selectedJP[0].isPick
             
             if (selectedStatus === 1) {
-
-                
                 // 방장찾기
                 const findBoss = 'SELECT P.postId, P.User_userId, P.title, JP.User_userName unjoinedName, JP.User_userId unjoinedId, JP.User_userEmail unjoinedEmail, JP.userImage unjoinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title, JP.User_userName, JP.User_userId, JP.User_userEmail, JP.userImage'
 
@@ -384,8 +403,6 @@ io.on('connection', socket => {
 
                     // 방장 로그인상태 찾기
                     db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [Number(postId), bossId], (err, bossIsLogin) => {
-                        console.log(4)
-                        console.log(bossIsLogin[0].isLogin)
                         const bossStatus = bossIsLogin[0].isLogin
                         const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
 
@@ -395,7 +412,7 @@ io.on('connection', socket => {
                         const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
                         db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
                             if(err) console.log(err)
-                            console.log('삭제됨')
+                            console.log('삭제')
                         })
 
                         const insertParam = [0,status, unjoinedEmail, unjoinedId, unjoinedName, unjoinedImage]
@@ -412,25 +429,20 @@ io.on('connection', socket => {
                             });
 
                         } else {
-                            
-                            console.log(2,status)
                             socket.to(bossId).emit('leaved chatroom', status);                        
                         }
 
                     });
-                });
-            
-                
+                });     
             } else {
-                console.log(selectedStatus)
-                console.log('거래자가 아니야?')
+                console.log('거래자는 아님!')
             }
         });
 
     })
 
 
-    // 강퇴 (by 방장, 적용확인 필요=====> 수정필요)
+    // 강퇴 (by 방장 > 작업필요)
     socket.on('kickout chatroom', (postid, user) => {
         const deleteJP =
             'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?';
