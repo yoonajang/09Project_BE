@@ -89,8 +89,7 @@ router.post('/mail', async (req, res) => {
         (err, data) => {
             console.log( data)
 
-            if (data.length === 0 || timeDiff > 5 ) {
-                const timeDiff = data[0].timeDiff
+            if (data.length === 0 ) {
                 db.query(
                     'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
                     [authNum, userEmail, 1],
@@ -98,7 +97,16 @@ router.post('/mail', async (req, res) => {
                         res.send({ msg: 'success' });
                     },
                 );
-            } else if (data[0].count < 3 && timeDiff <= 5) {
+            } else if (data[0].timeDiff > 5) {
+                db.query(
+                    'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
+                    [authNum, userEmail, 1],
+                    (err, data) => {
+                        res.send({ msg: 'success' });
+                    },
+                );
+
+            } else if (data[0].count < 3 && data[0].timeDiff <= 5) {
                 db.query(
                     'UPDATE AuthNum SET authNum=?, updatedAt(WHERE userEmail=?',
                     [authNum, userEmail],
@@ -106,7 +114,7 @@ router.post('/mail', async (req, res) => {
                         res.send({ msg: 'success' });
                     },
                 );
-            } else if (data[0].count === 3 && timeDiff <= 5) {
+            } else if (data[0].count === 3 && data[0].timeDiff <= 5) {
                 res.send({ msg: 'fail' });
             }
         },
