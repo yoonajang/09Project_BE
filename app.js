@@ -413,6 +413,9 @@ io.on('connection', socket => {
                     });
             
                 })
+            } else {
+                console.log(selectedStatus)
+                console.log('거래자가 아니야?')
             }
         });
 
