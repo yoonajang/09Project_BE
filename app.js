@@ -90,7 +90,7 @@ server.listen(httpsPort, () => {
     console.log('https서버가 켜졌어요!');
 });
 
-//----------------소켓-----------------//
+//-----------------소켓------------------//
 
 io.on('connection', socket => {
     console.log(socket.id, '연결성공');
