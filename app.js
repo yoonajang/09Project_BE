@@ -314,8 +314,8 @@ io.on('connection', socket => {
 
         const findPost =
             'SELECT P.User_userId, P.title, JP.isLogin joinedLogin, JP.User_userId joinedId, JP.User_userEmail joinedEmail, JP.User_userName joinedName, JP.userImage joinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId =? AND JP.User_userId = ? GROUP BY P.User_userId, P.title, JP.isLogin, JP.User_userId, JP.User_userEmail , JP.User_userName, JP.userImage;';
-            
-        db.query(findPost, [Number(postId), user], (err, foundPost) => {
+
+        db.query(findPost, [Number(postId), userId], (err, foundPost) => {
             const title = findPost[0].title
             const joinedLogin = findPost[0].joinedLogin
             const joinedEmail = findPost[0].joinedEmail
