@@ -35,16 +35,19 @@ router.post('/postlist', (req, res) => {
 
     if (userId) {
         const sql =
-            // "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike, (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) distance FROM `Post` P LEFT OUTER JOIN JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE (`address` like ? OR (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) < ? ) AND isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
-            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
+            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike, (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) distance FROM `Post` P LEFT OUTER JOIN JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE (`address` like ? OR (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) < ? ) AND isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
 
-        const params = [userId, findAddr + '%'];
+            // "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
+
+        // const params = [userId, findAddr + '%'];
+        const params = [lat, lng, lat, userId, findAddr + '%', lat, lng, lat, km];
         console.log(params)
 
         db.query(sql, params, (err, data) => {
             if (err) console.log(err);
 
-            console.log(data)
+            console.log(data, '>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+
             for (list of data) {
                 let head = list.headList;
                 let newList = [];
@@ -54,8 +57,8 @@ router.post('/postlist', (req, res) => {
                     list.headList = newList;
                 } else if (head === null) {
                     list.headList = newList;
-                } else {
-                    newList.push(Number(list.headList))
+                } else if (head !== null){
+                    newList.push(Number(head))
                     list.headList = newList;
                 }
             }
@@ -76,25 +79,17 @@ router.post('/postlist', (req, res) => {
                 let head = list.headList;
                 let newList = [];
 
-                console.log(Number(head), head)
-
                 if (isNaN(Number(head))) {
-                    console.log(1)
                     head.split(',').map(id => newList.push(Number(id)));
                     list.headList = newList;
-                    console.log(Number(head), head, list.headList)
                 } else if (head === null) {
-                    console.log(2)
                     list.headList = newList;
-                    console.log(Number(head), head, list.headList)
                 } else if (head !== null){
-                    console.log(3)
                     newList.push(Number(head))
                     list.headList = newList;
-                    console.log(Number(head), head, list.headList)
                 }
             }
-            console.log(data)
+
             res.send({ msg: 'success', data });
         });
     }
