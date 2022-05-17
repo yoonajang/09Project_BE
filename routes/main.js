@@ -294,6 +294,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
                 // // console.log(Number(results))
                 // // // console.log(results.split(',').map(Number))
                 // headList.push(results)
+                console.log(headList,'ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ')
                 return res.status(200).send({
                     data: { userInfo, chatInfo, chatAdmin, headList },
                     message: '채팅 참여자와 메세지 정보가 전달되었습니다',
