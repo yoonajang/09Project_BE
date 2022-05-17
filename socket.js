@@ -1,4 +1,7 @@
 const { Server } = require('socket.io');
+const db = require('./config');
+const mysql = require('mysql');
+
 
 module.exports = (server) => {
     const io = new Server(server, {
