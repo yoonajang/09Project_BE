@@ -87,7 +87,9 @@ router.post('/mail', async (req, res) => {
         'SELECT *, timestampdiff(minute, createdAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
         userEmail,
         (err, data) => {
+            console.log( data)
             const timeDiff = data[0].timeDiff
+
 
             if (data.length === 0 || timeDiff > 5 ) {
                 db.query(
