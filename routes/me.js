@@ -68,7 +68,10 @@ router.get('/:userId', authMiddleware, (req, res) => {
             let head = list.headList;
             let newList = [];
 
-            console.log(head, Number(head), head.includes(','),'<<<<<<<<2')
+            console.log(head, Number(head),'<<<<<<<<2')
+            if ( head.includes(',')){
+                console.log(head, Number(head),head.includes(','), '<<<<<<<<2')
+            }
 
             if (list.headList !== null) {
                 console.log(1, head)
