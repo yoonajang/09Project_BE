@@ -360,7 +360,7 @@ io.on('connection', socket => {
 
         //방장만 안내가 가기.
         const selectJP = 'SELECT isPick FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
-        db.query(selectJP, [postId, user], (err, selectedJP) => {
+        db.query(selectJP, [Number(postId), user], (err, selectedJP) => {
             console.log(2)
             console.log(selectedJP)
             if(err) console.log(err)
@@ -368,7 +368,7 @@ io.on('connection', socket => {
             
             if (selectedStatus === 1) {
                 const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
-                db.query(deleteJP, [postId, user], (err, deletedJP) => {
+                db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
                     if(err) console.log(err)
                     console.log(3)
                     // 방장찾기
