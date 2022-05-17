@@ -361,6 +361,7 @@ io.on('connection', socket => {
         const selectJP = 'SELECT isPick FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
         db.query(selectJP, [postId, user], (err, selectedJP) => {
             console.log(2)
+            console.log(selectedJP)
             if(err) console.log(err)
             const selectedStatus = selectedJP[0].isPick
             
