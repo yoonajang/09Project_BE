@@ -84,27 +84,29 @@ router.post('/mail', async (req, res) => {
 
     //authNum 저장
     db.query(
-        'SELECT * FROM AuthNum WHERE userEmail=?',
+        'SELECT *, timestampdiff(minute, createdAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
         userEmail,
         (err, data) => {
-            // if(err) console.log(err)
-            console.log(data.length === 0);
-            if (data.length === 0) {
+            const timeDiff = data[0].timeDiff
+
+            if (data.length === 0 || timeDiff > 5 ) {
                 db.query(
-                    'INSERT AuthNum(`authNum`, `userEmail`) VALUES (?,?)',
+                    'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
+                    [authNum, userEmail, 1],
+                    (err, data) => {
+                        res.send({ msg: 'success' });
+                    },
+                );
+            } else if (data[0].count < 3 && timeDiff <= 5) {
+                db.query(
+                    'UPDATE AuthNum SET authNum=?, updatedAt(WHERE userEmail=?',
                     [authNum, userEmail],
                     (err, data) => {
                         res.send({ msg: 'success' });
                     },
                 );
-            } else {
-                db.query(
-                    'UPDATE AuthNum SET authNum=? WHERE userEmail=?',
-                    [authNum, userEmail],
-                    (err, data) => {
-                        res.send({ msg: 'success' });
-                    },
-                );
+            } else if (data[0].count === 3 && timeDiff <= 5) {
+                res.send({ msg: 'fail' });
             }
         },
     );
