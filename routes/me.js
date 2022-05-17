@@ -43,7 +43,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
         if (err) console.log(err);
         for (list of myList) {
             let head = list.headList;
-            let newList = [];
+            let mynewList = [];
 
             // if (list.headList !== null) {
             //     newList.push(list.userId);
@@ -54,13 +54,13 @@ router.get('/:userId', authMiddleware, (req, res) => {
             //     list.headList = newList;
             // }
             if (isNaN(Number(head))) {
-                head.split(',').map(id => newList.push(Number(id)));
-                list.headList = newList;
+                head.split(',').map(id => mynewList.push(Number(id)));
+                list.headList = mynewList;
             } else if (head === null) {
-                list.headList = newList;
+                list.headList = mynewList;
             } else if (head !== null){
-                newList.push(Number(head))
-                list.headList = newList;
+                mynewList.push(Number(head))
+                list.headList = mynewList;
             }
         }
 
