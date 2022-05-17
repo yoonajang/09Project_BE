@@ -291,8 +291,10 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
             
                 // console.log(result, '<<<<<<<<<<<<<<<<<<<<<')
                 headList.push(results)
-                headList.map(str => Number(str))
+                
             })
+      
+            headList.map(str => Number(str))
             console.log(headList)
             return res.status(200).send({
                 data: { userInfo, chatInfo, chatAdmin, headList },
