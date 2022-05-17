@@ -43,7 +43,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
             let head = list.headList;
             let newList = [];
 
-            console.log(head, Number(head), '<<<<<<<<')
+            console.log(head, Number(head), head.includes(','),'<<<<<<<<')
 
             if (list.headList !== null) {
                 console.log(1, head)
