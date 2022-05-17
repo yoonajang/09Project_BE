@@ -76,7 +76,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
         console.log(joinList)
         if (err) console.log(err);
         for (list of joinList) {
-            let head = join.headList;
+            let head = list.headList;
             let newList = [];
 
             if (list.headList !== null) {
