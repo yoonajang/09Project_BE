@@ -373,7 +373,7 @@ io.on('connection', socket => {
                     // 방장찾기
                     const findBoss = 'SELECT P.postId, P.User_userId, P.title, JP.User_userName unjoinedName, JP.User_userId unjoinedId, JP.User_userEmail unjoinedEmail, JP.User_userImage unjoinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title, JP.User_userId, JP.User_userName, JP.User_userEmail, JP.User_userImage'
 
-                    db.query(find_user, [postid, userId], (err, foundBoss) => {
+                    db.query(findBoss, [postid, userId], (err, foundBoss) => {
                         console.log(foundBoss,foundBoss[0].User_userId)
                         const bossId = foundBoss[0].User_userId
                         const unjoinedId = foundBoss[0].unjoinedId
