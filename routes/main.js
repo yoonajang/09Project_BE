@@ -99,7 +99,7 @@ router.get('/:postId', (req, res) => {
             if (Number(head) === bossId) {
                 data[0].headList = newList;
             } 
-            else if (head === null){
+            else if (head === 0){
                 data[0].headList = newList;
             }      
         } 
