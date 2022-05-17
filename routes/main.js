@@ -280,13 +280,14 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
             const userInfo = results[1];
             const chatInfo = results[2].reverse();
             const chatAdmin = results[3];
+
             console.log(results[3])
             console.log(chatAdmin[0].User_userId, '111이게 방장이여야되니깐 3')
             let headList = [];
             //찐참여자 목록 가져오기
             const sql_5 =
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ? AND User_userId NOT IN(?)';
-            const param_5 = [postId, results[3].User_userId]
+            const param_5 = [postId, chatAdmin[0].User_userId]
             db.query(sql_5, param_5, (err, results) => {
                 console.log(results,'이것 확인')
                 // console.log(Number(results))
