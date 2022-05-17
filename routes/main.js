@@ -82,15 +82,19 @@ router.post('/postlist', (req, res) => {
                     console.log(1)
                     head.split(',').map(id => newList.push(Number(id)));
                     list.headList = newList;
+                    console.log(Number(head), head, list.headList)
                 } else if (head === null) {
                     console.log(2)
                     list.headList = newList;
+                    console.log(Number(head), head, list.headList)
                 } else if (head !== null){
                     console.log(3)
                     newList.push(Number(head))
                     list.headList = newList;
+                    console.log(Number(head), head, list.headList)
                 }
             }
+            console.log(data)
             res.send({ msg: 'success', data });
         });
     }
