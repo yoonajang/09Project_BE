@@ -93,7 +93,7 @@ router.get('/:postId', (req, res) => {
         
         if (isNaN(Number(head))) {
             console.log(1)
-            data[0].headList = head.split(',').map.filter (id => id !== bossId);
+            data[0].headList = head.split(',').map(Number).filter (id => id !== bossId);
         } else {
             if (Number(head) === bossId) {
                 console.log(2)
