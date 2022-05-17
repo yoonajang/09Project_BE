@@ -267,11 +267,6 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const sql_4 = 'SELECT User_userId FROM Post WHERE postId=?;';
     const sql_4s = mysql.format(sql_4, postId);
 
-    // //찐참여자 목록 가져오기
-    // const sql_5 =
-    //     'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ? AND User_userId NOT IN(?)';
-    // const sql_5s = mysql.format(sql_5, postId);
-
     db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
         // console.log(results)
 
@@ -281,33 +276,16 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
             const chatInfo = results[2].reverse();
             const chatAdmin = results[3];
 
-            console.log(results[3])
-            console.log(chatAdmin[0].User_userId, '111이게 방장이여야되니깐 3')
-            // let headList = [];
             //찐참여자 목록 가져오기
             const sql_5 =
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ? AND User_userId NOT IN(?)';
             const param_5 = [postId, chatAdmin[0].User_userId]
             db.query(sql_5, param_5, (err, headList) => {
-                
-                // console.log(results,'이것 확인')
-                // // console.log(Number(results))
-                // // // console.log(results.split(',').map(Number))
-                // headList.push(results)
-                console.log(headList,'ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ')
                 return res.status(200).send({
                     data: { userInfo, chatInfo, chatAdmin, headList },
                     message: '채팅 참여자와 메세지 정보가 전달되었습니다',
-                });
-                
+                });           
             })
-      
-            // console.log(headList,'ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ')
-
-            // return res.status(200).send({
-            //     data: { userInfo, chatInfo, chatAdmin, headList },
-            //     message: '채팅 참여자와 메세지 정보가 전달되었습니다',
-            // });
         }
     });
 });
