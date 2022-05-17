@@ -353,8 +353,9 @@ io.on('connection', socket => {
     socket.on('leave chatroom', (postid, user) => {
         //param 콘솔로 찍어보기....
         console.log(1)
-        console.log(postid, user)
-     
+        console.log(post, user)
+        
+        const postid = post
         const postId = postid.replace('p', '');
         const userId = user;
 
