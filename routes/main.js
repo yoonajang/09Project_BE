@@ -34,21 +34,18 @@ router.post('/postlist', (req, res) => {
             for (list of data) {
                 let head = list.headList;
                 let newList = [];
-                console.log(head, '<<<<<<<<<<<<')
 
                 if (isNaN(Number(head))) {
                     head.split(',').map(id => newList.push(Number(id)));
                     list.headList = newList;
-                   
                 } else if (head === null) {
                     list.headList = newList;
-                    
                 } else {
                     newList.push(Number(list.headList))
                     list.headList = newList;
                 }
             }
-            console.log(data)
+
             res.send({ msg: 'success', data });
         });
     } else {
@@ -63,6 +60,8 @@ router.post('/postlist', (req, res) => {
 
                 if (isNaN(Number(head))) {
                     head.split(',').map(id => newList.push(Number(id)));
+                    list.headList = newList;
+                } else if (head === null) {
                     list.headList = newList;
                 } else {
                     newList.push(Number(list.headList))
@@ -88,14 +87,14 @@ router.get('/:postId', (req, res) => {
     db.query(sql, postId, (err, data) => {
         if (err) console.log(err);
         let head = data[0].headList;
+        const bossId = data[0].User_userId
+        let newList =[];
+        
         if (isNaN(Number(head))) {
-            data[0].headList = head.split(',').map(id => Number(id));
+            data[0].headList = head.split(',').filter(id => id = Number(id) !== bossId);
         } else {
-            let newList = [];
-            newList.push(Number(head));
-            data[0].headList = newList;
+            if (Number(head) === bossId) data[0].headList = newList;       
         }
-
         res.send({ msg: 'success', data });
     });
 });
