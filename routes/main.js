@@ -104,6 +104,7 @@ router.get('/:postId', (req, res) => {
                 data[0].headList = newList;
             }      
         } 
+        console.log(data)
         res.send({ msg: 'success', data });
     });
 });
