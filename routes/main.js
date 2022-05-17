@@ -16,6 +16,8 @@ router.post('/postlist', (req, res) => {
     const address = req.body.address.split(' ');
     const userId = req.body.userId;
     const range = req.body.range;
+    const lat = req.body.lat;
+    const lng = req.body.lng;
     console.log(range, 'range', userId, 'userId');
 
     let findAddr = '';
