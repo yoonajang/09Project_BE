@@ -41,8 +41,8 @@ router.get('/:userId', authMiddleware, (req, res) => {
 
     db.query(mylist, userId, (err, myList) => {
         if (err) console.log(err);
-        for (list of myList) {
-            let head = list.headList;
+        for (my of myList) {
+            let mine = my.headList;
             let mynewList = [];
 
             // if (list.headList !== null) {
@@ -53,14 +53,17 @@ router.get('/:userId', authMiddleware, (req, res) => {
             //     newList.push(list.userId);
             //     list.headList = newList;
             // }
-            if (isNaN(Number(head))) {
-                head.split(',').map(id => mynewList.push(Number(id)));
-                list.headList = mynewList;
-            } else if (head === null) {
-                list.headList = mynewList;
-            } else if (head !== null){
-                mynewList.push(Number(head))
-                list.headList = mynewList;
+            if (isNaN(Number(mine))) {
+                console.log(1)
+                mine.split(',').map(id => mynewList.push(Number(id)));
+                my.headList = mynewList;
+            } else if (mine === null) {
+                console.log(2)
+                my.headList = mynewList;
+            } else if (mine !== null){
+                console.log(3)
+                mynewList.push(Number(mine))
+                my.headList = mynewList;
             }
         }
 
