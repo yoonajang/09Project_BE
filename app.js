@@ -385,12 +385,12 @@ io.on('connection', socket => {
                     // 방장 로그인상태 찾기
                     db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [Number(postId), bossId], (err, bossIsLogin) => {
                         console.log(4)
-                        console.log(bossIsLogin)
+                        console.log(bossIsLogin[0].isLogin)
                         const bossStatus = bossIsLogin[0].isLogin
                         const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
 
                         socket.leave(postid)
-                        socket.to(postid).emit('connected', unjoinedNickname + '님이 퇴장하셨습니다.');
+                        socket.to(postid).emit('connected', unjoinedName + '님이 퇴장하셨습니다.');
 
                         const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
                         db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
