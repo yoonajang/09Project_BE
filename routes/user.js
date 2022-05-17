@@ -88,10 +88,9 @@ router.post('/mail', async (req, res) => {
         userEmail,
         (err, data) => {
             console.log( data)
-            const timeDiff = data[0].timeDiff
-
 
             if (data.length === 0 || timeDiff > 5 ) {
+                const timeDiff = data[0].timeDiff
                 db.query(
                     'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
                     [authNum, userEmail, 1],
