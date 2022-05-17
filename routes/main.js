@@ -73,6 +73,7 @@ router.post('/postlist', (req, res) => {
         // const params = [findAddr + '%'];
         db.query(sql, params, (err, data) => {
             if (err) console.log(err);
+            console.log(data)
             for (list of data) {
                 let head = list.headList;
                 let newList = [];
