@@ -383,7 +383,7 @@ io.on('connection', socket => {
                     const title = foundBoss[0].title
 
                     // 방장 로그인상태 찾기
-                    db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? User_userId=?', [[Number(postId), bossId], (err, bossIsLogin) => {
+                    db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? User_userId=?', [Number(postId), bossId], (err, bossIsLogin) => {
                         console.log(4)
                         const bossStatus = bossIsLogin[0].isLogin
                         const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
