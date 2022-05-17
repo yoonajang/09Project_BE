@@ -61,7 +61,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
                 console.log(2,mine)
                 my.headList = mynewList;
             } else if (mine !== null){
-                console.log(3,mine)
+                console.log(3, typeof mine ,mine)
                 mynewList.push(Number(mine))
                 my.headList = mynewList;
             }
