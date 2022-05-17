@@ -54,14 +54,14 @@ router.get('/:userId', authMiddleware, (req, res) => {
             //     list.headList = newList;
             // }
             if (isNaN(Number(mine))) {
-                console.log(1)
+                console.log(1,mine)
                 mine.split(',').map(id => mynewList.push(Number(id)));
                 my.headList = mynewList;
             } else if (mine === null) {
-                console.log(2)
+                console.log(2,mine)
                 my.headList = mynewList;
             } else if (mine !== null){
-                console.log(3)
+                console.log(3,mine)
                 mynewList.push(Number(mine))
                 my.headList = mynewList;
             }
@@ -74,18 +74,31 @@ router.get('/:userId', authMiddleware, (req, res) => {
     db.query(joinlist, [userId, userId], (err, joinList) => {
         console.log(joinList)
         if (err) console.log(err);
-        for (list of joinList) {
-            let head = list.headList;
+        for (join of joinList) {
+            let head = join.headList;
             let newList = [];
 
-            if (list.headList !== null) {
-                newList.push(list.userId);
-                head.split(',').map(id => newList.push(Number(id)));
-                list.headList = newList;
-            } else {
-                newList.push(list.userId);
-                list.headList = newList;
-            }
+            // if (join.headList !== null) {
+            //     newList.push(list.userId);
+            //     head.split(',').map(id => newList.push(Number(id)));
+            //     join.headList = newList;
+            // } else {
+            //     newList.push(join.userId);
+            //     join.headList = newList;
+            // }
+
+            // if (isNaN(Number(mine))) {
+            //     console.log(1)
+            //     mine.split(',').map(id => mynewList.push(Number(id)));
+            //     my.headList = mynewList;
+            // } else if (mine === null) {
+            //     console.log(2)
+            //     my.headList = mynewList;
+            // } else if (mine !== null){
+            //     console.log(3)
+            //     mynewList.push(Number(mine))
+            //     my.headList = mynewList;
+            // }
         }
     console.log(joinList)
 
