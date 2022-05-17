@@ -401,7 +401,7 @@ io.on('connection', socket => {
                                 });
 
                             } else {
-                                socket.to(bossId).emit('leave chatroom', status);                        
+                                socket.to(bossId).emit('leaved chatroom', status);                        
                             }
 
                         });
