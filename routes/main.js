@@ -89,9 +89,7 @@ router.get('/:postId', (req, res) => {
         let head = data[0].headList;
         const bossId = data[0].User_userId
         let newList =[];
-
-        console.log(data)
-        console.log(Number(head),head, '<<<<<<<<<<<<<<')
+        console.log(head)
         
         if (isNaN(Number(head))) {
             console.log(1)
@@ -106,7 +104,6 @@ router.get('/:postId', (req, res) => {
                 data[0].headList = newList;
             }      
         } 
-        console.log(data)
         res.send({ msg: 'success', data });
     });
 });
@@ -240,7 +237,6 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const userId = res.locals.user.userId;
 
     //waitingUser table 데이터 넣기
-    // 유저인포 방장만 빼고 보내주면 됨. 
     const sql_1 =
         'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick, isLogin, isConnected) SELECT ?,?,?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
     const params = [
