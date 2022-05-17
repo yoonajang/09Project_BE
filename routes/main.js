@@ -48,7 +48,7 @@ router.post('/postlist', (req, res) => {
                     list.headList = newList;
                 } else if (head === null) {
                     list.headList = newList;
-                } else {
+                } else if (head !== null){
                     newList.push(Number(list.headList))
                     list.headList = newList;
                 }
@@ -73,7 +73,7 @@ router.post('/postlist', (req, res) => {
                     list.headList = newList;
                 } else if (head === null) {
                     list.headList = newList;
-                } else {
+                } else if (head !== null){
                     newList.push(Number(list.headList))
                     list.headList = newList;
                 }
