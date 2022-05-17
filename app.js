@@ -325,9 +325,10 @@ io.on('connection', socket => {
             const status = title + '게시물에 거래가 확정되었습니다.'
 
             console.log(foundPost)
-            console.log(joinedLogin)
+            console.log(joinedLogin === 1)
 
             if (joinedLogin === 1){
+                console.log('지금은 가야할 때')
                 socket.to(userId).emit('added_new_participant',status);
             } else {
                 const insertAlarm =
