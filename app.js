@@ -224,6 +224,7 @@ io.on('connection', socket => {
                             const sendUser = foundUser[0].unConnectedIds
 
                             if(sendUser === null){
+                                console.log(sendUser)
                                 console.log('메세지 보낼 사람이 없음')
                             } else if (sendUser.includes(',')) {
                                 const sendUserIds = sendUser.split(',').map(Number)
@@ -235,7 +236,7 @@ io.on('connection', socket => {
                                     db.query(Insert_alarm, params, (err, Inserted) => {
                                         if (err) console.log(err);
 
-                                        db.query('SELECT * FROM Alarm WHERE alarmId=?', Inserted.insertId, (err, messageAlarm) => {
+                                        db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
                                             socket.to(user).emit('send message alarm',messageAlarm);
                                         })
                                     });
