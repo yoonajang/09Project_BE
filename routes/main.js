@@ -18,7 +18,7 @@ router.post('/postlist', (req, res) => {
     const range = req.body.range;
     const lat = req.body.lat;
     const lng = req.body.lng;
-    console.log(lat,lng)
+    console.log(lat,lng, '아니 안옴?')
     console.log(range, 'range', userId, 'userId');
 
     let findAddr = '';
