@@ -53,7 +53,7 @@ router.post('/postlist', (req, res) => {
                     list.headList = newList;
                 } else if (head === null) {
                     list.headList = newList;
-                } else if (head !== null){
+                } else {
                     newList.push(Number(list.headList))
                     list.headList = newList;
                 }
