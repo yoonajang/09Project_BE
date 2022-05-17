@@ -46,10 +46,12 @@ router.get('/:userId', authMiddleware, (req, res) => {
             console.log(head, Number(head), '<<<<<<<<')
 
             if (list.headList !== null) {
+                console.log(1, head)
                 newList.push(list.userId);
                 head.split(',').map(id => newList.push(Number(id)));
                 list.headList = newList;
             } else {
+                console.log(2, head)
                 newList.push(list.userId);
                 list.headList = newList;
             }
