@@ -2,10 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config');
 const authMiddleware = require('../middlewares/auth');
-const path = require('path');
-let appDir = path.dirname(require.main.filename);
 const upload = require('../S3/s3');
-const { PollyCustomizations } = require('aws-sdk/lib/services/polly');
+
 
 // 유저 프로필 수정
 router.post('/me',upload.single('userImage'), authMiddleware, async (req, res) => {
@@ -44,6 +42,8 @@ router.get('/:userId', authMiddleware, (req, res) => {
         for (list of myList) {
             let head = list.headList;
             let newList = [];
+
+            console.log(head, Number(head), '<<<<<<<<')
 
             if (list.headList !== null) {
                 newList.push(list.userId);
