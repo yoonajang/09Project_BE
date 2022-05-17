@@ -18,7 +18,7 @@ router.post('/postlist', (req, res) => {
     const range = req.body.range;
     const lat = req.body.lat;
     const lng = req.body.lng;
-    console.log(lat,lng, typeof range ,'아니 안옴?')
+    console.log(lat,lng,'올때가 됫는데', typeof range ,'아니 안옴?')
     // 37.5291904 126.877696 
     console.log(range, 'range', userId, 'userId');
 
