@@ -70,7 +70,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
         console.log(myList,'<<<<<<<<<<<<')
     // 유저의 참여한 리스트
     const joinlist =
-        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE P.User_userId = ? OR JP.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime ORDER BY P.endTime DESC";
+        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE JP.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime ORDER BY P.endTime DESC";
 
     db.query(joinlist, [userId, userId], (err, joinList) => {
         console.log(joinList)
@@ -78,15 +78,6 @@ router.get('/:userId', authMiddleware, (req, res) => {
         for (join of joinList) {
             let joined = join.headList;
             let joinnewList = [];
-
-            // if (list.headList !== null) {
-            //     newList.push(list.userId);
-            //     head.split(',').map(id => newList.push(Number(id)));
-            //     list.headList = newList;
-            // } else {
-            //     newList.push(list.userId);
-            //     list.headList = newList;
-            // }
 
             if (isNaN(Number(joined))) {
                 console.log(1,joined)
