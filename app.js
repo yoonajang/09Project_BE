@@ -281,6 +281,9 @@ io.on('connection', socket => {
         const postid = param.postid;
         const postId = postid.replace('p', '');
         const userId = param.selectedUser.User_userId;
+        const userEmail = param.selectedUser.User_userEmail;
+        const userName = param.selectedUser.User_userName;
+        const userImage = param.selectedUser.userImage;
 
         const sql_1 =
             'UPDATE JoinPost SET isPick = 1 WHERE Post_postId=? and User_userId=?;';
@@ -313,24 +316,22 @@ io.on('connection', socket => {
         });
 
         const findPost =
-            'SELECT P.User_userId, P.title, JP.isLogin joinedLogin, JP.User_userId joinedId, JP.User_userEmail joinedEmail, JP.User_userName joinedName, JP.userImage joinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId =? AND JP.User_userId = ? GROUP BY P.User_userId, P.title, JP.isLogin, JP.User_userId, JP.User_userEmail , JP.User_userName, JP.userImage;';
+            'SELECT P.User_userId, P.title, JP.isLogin joinedLogin FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId =? AND JP.User_userId = ? GROUP BY P.User_userId, P.title, JP.isLogin';
 
         db.query(findPost, [Number(postId), userId], (err, foundPost) => {
             const title = findPost[0].title
             const joinedLogin = findPost[0].joinedLogin
-            const joinedEmail = findPost[0].joinedEmail
-            const joinedName = findPost[0].joinedName
-            const joinedImage = findPost[0].joinedImage
 
             const status = title + '게시물에 거래가 확정되었습니다.'
 
             if (joinedLogin === 1){
-                socket.to(userId).emit('send message alarm',messageAlarm);
+                socket.to(userId).emit('added_new_participant',status);
             } else {
                 const insertAlarm =
                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                 
-                const insertParam = [0, status, joinedEmail, userId, joinedName, joinedImage]
+                const insertParam = [0, status, userEmail, userId, userName, userImage]
+
                 db.query(insertAlarm, insertParam , (err, Inserted) => {
                     if (err) console.log(err);
                     console.log('오프라인시 저장')
