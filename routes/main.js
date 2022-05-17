@@ -288,6 +288,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ? AND User_userId NOT IN(?)';
             const param_5 = [postId, results[3].User_userId]
             db.query(sql_5, param_5, (err, results) => {
+                console.log(result, '<<<<<<<<<<<<<<<<<<<<<')
                 headList.push(results)
             })
             console.log(headList)
