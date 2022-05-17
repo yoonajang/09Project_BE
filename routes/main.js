@@ -89,12 +89,15 @@ router.get('/:postId', (req, res) => {
         let head = data[0].headList;
         const bossId = data[0].User_userId
         let newList =[];
+
+        console.log(data)
+        console.log(Number(head))
         
-        if (isNaN(Number(head))) {
-            data[0].headList = head.split(',').filter(id => id = Number(id) !== bossId);
-        } else {
-            if (Number(head) === bossId) data[0].headList = newList;       
-        }
+        // if (isNaN(Number(head))) {
+        //     data[0].headList = head.split(',').filter(id => id = Number(id) !== bossId);
+        // } else {
+        //     if (Number(head) === bossId) data[0].headList = newList;       
+        // }
         res.send({ msg: 'success', data });
     });
 });
