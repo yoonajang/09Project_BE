@@ -31,26 +31,23 @@ router.post('/postlist', (req, res) => {
         db.query(sql, [userId, findAddr + '%'], (err, data) => {
             if (err) console.log(err);
 
-            // console.log(data)
             for (list of data) {
-                console.log(list.postId, list.headList)
                 let head = list.headList;
                 let newList = [];
+                console.log(head, '<<<<<<<<<<<<')
 
                 if (isNaN(Number(head))) {
-                    // newList.push(list.User_userId);
                     head.split(',').map(id => newList.push(Number(id)));
                     list.headList = newList;
                    
-                } else {
-                    // newList.push(list.User_userId);
-                    newList.push(Number(list.headList))
+                } else if (head = null) {
                     list.headList = newList;
                     
+                } else {
+                    newList.push(Number(list.headList))
+                    list.headList = newList;
                 }
-                console.log(head)
             }
-            console.log(data)
             res.send({ msg: 'success', data });
         });
     } else {
@@ -64,11 +61,10 @@ router.post('/postlist', (req, res) => {
                 let newList = [];
 
                 if (isNaN(Number(head))) {
-                    newList.push(list.User_userId);
                     head.split(',').map(id => newList.push(Number(id)));
                     list.headList = newList;
                 } else {
-                    newList.push(list.User_userId);
+                    newList.push(Number(list.headList))
                     list.headList = newList;
                 }
             }
@@ -286,18 +282,18 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     });
 });
 
-// 채팅 나가기
-router.get('/outchat/:postid', authMiddleware, (req, res) => {
-    const postId = req.params.postid;
-    const userId = res.locals.user.userId;
-    const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
-    const params = [postId, userId];
+// // 채팅 나가기
+// router.get('/outchat/:postid', authMiddleware, (req, res) => {
+//     const postId = req.params.postid;
+//     const userId = res.locals.user.userId;
+//     const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
+//     const params = [postId, userId];
 
-    db.query(sql, params, (err, data) => {
-        if (err) console.log(err);
-        res.status(201).send({ msg: 'success', data });
-    });
-});
+//     db.query(sql, params, (err, data) => {
+//         if (err) console.log(err);
+//         res.status(201).send({ msg: 'success', data });
+//     });
+// });
 
 
 //----------------좋아요-----------------//
