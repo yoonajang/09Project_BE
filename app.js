@@ -352,7 +352,7 @@ io.on('connection', socket => {
     // 찐참여자 선택 취소 (by 본인) //
     socket.on('leave chatroom', (postid, user) => {
         //param 콘솔로 찍어보기....
-        // console.log(postid, user)
+        console.log(1)
      
         const postId = postid.replace('p', '');
         const userId = user;
@@ -360,7 +360,7 @@ io.on('connection', socket => {
         //방장만 안내가 가기.
         const selectJP = 'SELECT isPick FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
         db.query(selectJP, [postId, user], (err, selectedJP) => {
-           
+            console.log(2)
             if(err) console.log(err)
             const selectedStatus = selectedJP[0].isPick
             
@@ -368,7 +368,7 @@ io.on('connection', socket => {
                 const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
                 db.query(deleteJP, [postId, user], (err, deletedJP) => {
                     if(err) console.log(err)
-
+                    console.log(3)
                     // 방장찾기
                     const findBoss = 'SELECT P.postId, P.User_userId, P.title, JP.User_userName unjoinedName, JP.User_userId unjoinedId, JP.User_userEmail unjoinedEmail, JP.User_userImage unjoinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title, JP.User_userId, JP.User_userName, JP.User_userEmail, JP.User_userImage'
 
@@ -383,6 +383,7 @@ io.on('connection', socket => {
 
                         // 방장 로그인상태 찾기
                         db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? User_userId=?', [postid, userId], (err, bossIsLogin) => {
+                            console.log(4)
                             const bossStatus = bossIsLogin[0].isLogin
                             const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
 
