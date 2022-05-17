@@ -40,7 +40,7 @@ router.post('/postlist', (req, res) => {
                     head.split(',').map(id => newList.push(Number(id)));
                     list.headList = newList;
                    
-                } else if (head = null) {
+                } else if (head === null) {
                     list.headList = newList;
                     
                 } else {
