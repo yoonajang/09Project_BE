@@ -324,6 +324,9 @@ io.on('connection', socket => {
 
             const status = title + '게시물에 거래가 확정되었습니다.'
 
+            console.log(foundPost)
+            console.log(joinedLogin)
+
             if (joinedLogin === 1){
                 socket.to(userId).emit('added_new_participant',status);
             } else {
