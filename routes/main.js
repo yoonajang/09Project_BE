@@ -292,7 +292,7 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
                 console.log(results,'이것 확인')
                 // console.log(Number(results))
                 // // console.log(results.split(',').map(Number))
-                // headList.push(results)
+                headList.push(results)
                 
             })
       
