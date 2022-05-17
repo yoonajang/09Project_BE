@@ -45,12 +45,21 @@ router.get('/:userId', authMiddleware, (req, res) => {
             let head = list.headList;
             let newList = [];
 
-            if (list.headList !== null) {
-                newList.push(list.userId);
+            // if (list.headList !== null) {
+            //     newList.push(list.userId);
+            //     head.split(',').map(id => newList.push(Number(id)));
+            //     list.headList = newList;
+            // } else {
+            //     newList.push(list.userId);
+            //     list.headList = newList;
+            // }
+            if (isNaN(Number(head))) {
                 head.split(',').map(id => newList.push(Number(id)));
                 list.headList = newList;
-            } else {
-                newList.push(list.userId);
+            } else if (head === null) {
+                list.headList = newList;
+            } else if (head !== null){
+                newList.push(Number(head))
                 list.headList = newList;
             }
         }
