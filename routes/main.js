@@ -79,11 +79,14 @@ router.post('/postlist', (req, res) => {
                 console.log(Number(head), head)
 
                 if (isNaN(Number(head))) {
+                    console.log(1)
                     head.split(',').map(id => newList.push(Number(id)));
                     list.headList = newList;
                 } else if (head === null) {
+                    console.log(2)
                     list.headList = newList;
                 } else if (head !== null){
+                    console.log(3)
                     newList.push(Number(head))
                     list.headList = newList;
                 }
