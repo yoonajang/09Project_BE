@@ -24,8 +24,7 @@ router.post('/me',upload.single('userImage'), authMiddleware, async (req, res) =
 );
 
 
-// 수정이 필요하네요... headlist
-//유저 마이페이지 (참여한 게시판 조회) *** 자신의 것 조회할때랑 다른사람것 조회할때를... 프론트와 의논.
+//유저 마이페이지
 router.get('/:userId', authMiddleware, (req, res) => {
     const userId = req.params.userId;
 

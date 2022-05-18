@@ -15,15 +15,15 @@ const saltRounds = 10;
 
 // 회원가입
 router.post('/signup', (req, res, next) => {
-//     const userImages = [file:///C:/Users/moon/OneDrive/Desktop/image1.jpg,
-// ]
-
-    const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
-
-
-    const { userEmail, userName, userPassword } = req.body;
-    const param = [userEmail, userName, userPassword, userImage, 50];
-
+    //     const userImages = [file:///C:/Users/moon/OneDrive/Desktop/image1.jpg,
+    // ]
+    
+        const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
+    
+    
+        const { userEmail, userName, userPassword } = req.body;
+        const param = [userEmail, userName, userPassword, userImage, 50];
+    
         db.query(
             'SELECT * FROM AuthNum WHERE userEmail=?',
             userEmail,
@@ -32,7 +32,7 @@ router.post('/signup', (req, res, next) => {
                     bcrypt.hash(param[2], saltRounds, (err, hash) => {
                         param[2] = hash;
                         db.query(
-                            'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`) VALUES (?,?,?,?)',
+                            'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`) VALUES (?,?,?,?,?)',
                             param,
                             (err, row) => {
                                 if (err) {
@@ -89,77 +89,6 @@ router.post('/signup', (req, res, next) => {
 
         //authNum 저장
         db.query(
-            'SELECT * FROM AuthNum WHERE userEmail=?',
-            userEmail,
-            (err, data) => {
-                // if(err) console.log(err)
-                console.log(data.length === 0);
-                if (data.length === 0) {
-                    db.query(
-
-                        'INSERT AuthNum(`authNum`, `userEmail`) VALUES (?,?)',
-                        [authNum, userEmail],
-                        (err, data) => {
-                            res.send({ msg: 'success' });
-
-                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`) VALUES (?,?,?,?,?)',
-                        param,
-                        (err, row) => {
-                            if (err) {
-                                console.log(err);
-                                res.send({ meg: 'fail' });
-                            } else {
-                                res.send({ meg: 'success' });
-                            }
-                        }
-                    });
-                } else {
-                    db.query(
-                        'UPDATE AuthNum SET authNum=? WHERE userEmail=?',
-                        [authNum, userEmail],
-                        (err, data) => {
-                            res.send({ msg: 'success' });
-                        },
-                    );
-                }
-            },
-        );
-    });
-
-    //이메일 인증 확인
-    router.post('/mailauth', async (req, res) => {
-        const { userEmail, authNum } = req.body;
-
-        db.query(
-            'SELECT * FROM AuthNum WHERE userEmail=?',
-            userEmail,
-            (err, data) => {
-                if (data[0].authNum === authNum) {
-                    res.send({ msg: 'success' });
-                } else {
-                    res.send({ msg: 'fail' });
-                }
-            },
-        );
-    });
-
-
-    // 이메일 중복확인
-    router.post('/emailcheck', (req, res) => {
-        const email = req.body.userEmail;
-        const sql = 'select * from User where userEmail=?';
-
-        db.query(sql, [email], (err, data) => {
-            if (data.length === 0) {
-                console.log(err);
-                res.send({ msg: 'success' });
-            } else {
-        }
-        });
-   
-
-        //authNum 저장
-        db.query(
             'SELECT *, timestampdiff(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
             userEmail,
             (err, data) => {
@@ -190,11 +119,45 @@ router.post('/signup', (req, res, next) => {
                         },
                     );
                 } else if (data[0].count === 3 && data[0].timeDiff <= 5) {
-
                     res.send({ msg: 'fail' });
                 }
-            });
+            },
+        );
     });
+
+    //이메일 인증 확인
+    router.post('/mailauth', async (req, res) => {
+        const { userEmail, authNum } = req.body;
+
+        db.query(
+            'SELECT * FROM AuthNum WHERE userEmail=?',
+            userEmail,
+            (err, data) => {
+                if (data[0].authNum === authNum) {
+                    res.send({ msg: 'success' });
+                } else {
+                    res.send({ msg: 'fail' });
+                }
+            },
+        );
+    });
+
+
+    // 이메일 중복확인
+    router.post('/emailcheck', (req, res) => {
+        const email = req.body.userEmail;
+        const sql = 'select * from User where userEmail=?';
+    
+        db.query(sql, [email], (err, data) => {
+            if (data.length === 0) {
+                console.log(err);
+                res.send({ msg: 'success' });
+            } else {
+                res.send({ msg: 'fail' });
+            }
+        });
+    });
+   
 
     // 닉네임 중복확인
     router.post('/namecheck', (req, res) => {
