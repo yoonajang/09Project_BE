@@ -95,15 +95,12 @@ router.post('/signup', (req, res, next) => {
                 // if(err) console.log(err)
                 console.log(data.length === 0);
                 if (data.length === 0) {
-                    db.query(
-
-                        'INSERT AuthNum(`authNum`, `userEmail`) VALUES (?,?)',
+                    db.query('INSERT AuthNum(`authNum`, `userEmail`) VALUES (?,?)',
                         [authNum, userEmail],
                         (err, data) => {
                             res.send({ msg: 'success' });
 
-                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`) VALUES (?,?,?,?,?)',
-                        param,
+                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`) VALUES (?,?,?,?,?)', param,
                         (err, row) => {
                             if (err) {
                                 console.log(err);
@@ -111,9 +108,8 @@ router.post('/signup', (req, res, next) => {
                             } else {
                                 res.send({ meg: 'success' });
                             }
-
-                        },
-                    );
+                        }
+                    });
                 } else {
                     db.query(
                         'UPDATE AuthNum SET authNum=? WHERE userEmail=?',
