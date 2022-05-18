@@ -103,21 +103,39 @@ module.exports = (server) => {
                                 db.query(findUser, postId, (err, foundUser) => {
                                     if(err) console.log(err) 
 
-                                    foundUser.forEach((user) => console.log(user, user.isLogin,'11111111111111111111111111'))
-                                    console.log(foundUser[0])
-                                    console.log(foundUser, foundUser[0], foundUser[0].isLogin, '<<<<<<<<<<<<')
-                                        // 로그아웃된 사람들에게 메세지 저장하기
-                                        if (foundUser[0].isLogin = 0 ) {
+                                    foundUser.forEach((user) => {
+
+                                        if (user.isLogin = 0 ) {
                                             console.log('작동하나')
+                                            const insertAlarm =
+                                                'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+
+                                                db.query(insertAlarm, params, (err, Inserted) => {
+                                                    if (err) console.log(err);
+
+                                                    console.log(Inserted, '혹시 여기서..오류가 난다면')
+                                                    const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
+
+                                                    db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
+                                                        
+                                                        console.log(sendUser,'에게 감!')
+                                                        console.log(messageAlarm)
+                                                        socket.to(sendUser).emit('send message alarm',messageAlarm);   
+                                                        
+                                                    })
+                                                })
 
                                         // 로그인되어있지만, 채팅방 이용하지 않는 사람에게 메시지 보내기
-                                        } else if(foundUser[0].isLogin === 1 && foundUser[0].isConnected === 0){
+                                        } else if(user.isLogin === 1 && user.isConnected === 0){
                                             console.log('작동하나2')
+                                            socket.to(user.User_userId).emit('receive message', param.newMessage);
 
                                         } else {
                                             console.log(foundUser, '채팅하는 사람이거나, 예외처리가 필요하거나')
                                         }
-                                            
+                                        
+                                    })
+                                    socket.to(postid).emit('receive message', param.newMessage);           
                                 })
 
 
