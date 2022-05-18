@@ -33,7 +33,7 @@ module.exports = (server) => {
             console.log('채팅시작');
     
             const postid = param.postid;
-            const postId = postid.replace('p', '');
+            const postId = Number(postid.replace('p', ''));
             const { userId, userName } = param.loggedUser;
 
             // 수정됨.
@@ -43,48 +43,48 @@ module.exports = (server) => {
                     if (err) console.log(err);
                     console.log( foundJoin[0].headCount, '이건 읽어줘')
 
-                    // if (foundJoin[0].headCount === foundJoin[0],count){
-                    //     if (foundJoin[0].User_userId === userId){
-                    //         console.log(foundJoin[0].User_userId,'sucess', '다있는데 너만통과')
-                    //         socket.join(postid)
+                    if (foundJoin[0].headCount === foundJoin[0],count){
+                        if (foundJoin[0].User_userId === userId){
+                            console.log(foundJoin[0].User_userId,'sucess', '다있는데 너만통과')
+                            socket.join(postid)
 
-                    //         const socketId = socket.id;
-                    //         db.query(
-                    //             'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
-                    //             [socketId, userId, postId],
-                    //             (err, rows) => {
-                    //                 if (err) console.log(err);
-                    //             },
-                    //         );
+                            const socketId = socket.id;
+                            db.query(
+                                'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
+                                [socketId, userId, postId],
+                                (err, rows) => {
+                                    if (err) console.log(err);
+                                },
+                            );
                     
-                    //         io.to(postid).emit(
-                    //             'connected',
-                    //             userName + ' 님이 입장했습니다.',
-                    //         );
+                            io.to(postid).emit(
+                                'connected',
+                                userName + ' 님이 입장했습니다.',
+                            );
             
-                    //     } else {
-                    //         console.log(userId,'fail')
-                    //         const status = "fail"
-                    //         socket.to(userId).emit('block chatroom', status) 
-                    //     }
-                    // } else {
-                    //     console.log(userId,'sucess','아직널널해')
-                    //     socket.join(postid)
+                        } else {
+                            console.log(userId,'fail')
+                            const status = "fail"
+                            socket.to(userId).emit('block chatroom', status) 
+                        }
+                    } else {
+                        console.log(userId,'sucess','아직널널해')
+                        socket.join(postid)
 
-                    //     const socketId = socket.id;
-                    //     db.query(
-                    //         'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
-                    //         [socketId, userId, postId],
-                    //         (err, rows) => {
-                    //             if (err) console.log(err);
-                    //         },
-                    //     );
+                        const socketId = socket.id;
+                        db.query(
+                            'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
+                            [socketId, userId, postId],
+                            (err, rows) => {
+                                if (err) console.log(err);
+                            },
+                        );
                 
-                    //     io.to(postid).emit(
-                    //         'connected',
-                    //         userName + ' 님이 입장했습니다.',
-                    //     );
-                    // }
+                        io.to(postid).emit(
+                            'connected',
+                            userName + ' 님이 입장했습니다.',
+                        );
+                    }
 
                 },
             );
