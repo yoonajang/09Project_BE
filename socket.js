@@ -98,90 +98,117 @@ module.exports = (server) => {
                                             userImage,
                                           ];
                             
-                            //로그아웃된 회원들에게 메시지 보내기                            
-                            const findunLoggedUser = 
-                                'SELECT JP.User_userId, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unLoggedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=0 AND JP.Post_postId = ?'                   
-                            db.query(findunLoggedUser, postId, (err, foundUser) => {
-                                if(err) console.log(err)
-    
-                                if(foundUser[0].User_userId === null){
-                                    console.log(1)
-                                    console.log('메세지 보낼 사람이 없음')
-                                } else if (foundUser.includes(',')){
-                                    const userIds = foundUser[0].unLoggedIds.split(',').map(Number)
-                                    for (user of userIds) {
-                                        const Insert_alarm =
-                                                'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                            const findUser = 
+                                    'SELECT JP.User_userId, JP.isLogin, JP.isConnected FROM `JoinPost` JP WHERE JP.Post_postId = 202;'                   
+                                db.query(findUser, postId, (err, foundUser) => {
+                                    if(err) console.log(err) 
+
+                                    console.log(foundUser, foundUser[0], foundUser[0].isLogin, '<<<<<<<<<<<<')
+                                        // 로그아웃된 사람들에게 메세지 저장하기
+                                        if (foundUser[0].isLogin = 0 ) {
+                                            console.log('작동하나')
+
+                                        // 로그인되어있지만, 채팅방 이용하지 않는 사람에게 메시지 보내기
+                                        } else if(foundUser[0].isLogin === 1 && foundUser[0].isConnected === 0){
+                                            console.log('작동하나2')
+
+                                        } else {
+                                            console.log(foundUser, '채팅하는 사람이거나, 예외처리가 필요하거나')
+                                        }
                                             
-                                        db.query(Insert_alarm, params, (err, Inserted) => {
-                                            if (err) console.log(err);
-                                            console.log(
-                                                '오프라인 회원들에게 메시지 완료',
-                                            );
-                                        });
-                                    }
-                                } else {
-                                    console.log(3,foundUser)
-                                    const Insert_alarm =
-                                                'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                })
+
+
+
+
+
+
+
+
+                        //     //로그아웃된 회원들에게 메시지 보내기                            
+                        //     const findunLoggedUser = 
+                        //         'SELECT JP.User_userId, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unLoggedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=0 AND JP.Post_postId = ?'                   
+                        //     db.query(findunLoggedUser, postId, (err, foundUser) => {
+                        //         if(err) console.log(err)
+    
+                        //         if(foundUser[0].User_userId === null){
+                        //             console.log(1)
+                        //             console.log('메세지 보낼 사람이 없음')
+                        //         } else if (foundUser.includes(',')){
+                        //             const userIds = foundUser[0].unLoggedIds.split(',').map(Number)
+                        //             for (user of userIds) {
+                        //                 const Insert_alarm =
+                        //                         'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                            
+                        //                 db.query(Insert_alarm, params, (err, Inserted) => {
+                        //                     if (err) console.log(err);
+                        //                     console.log(
+                        //                         '오프라인 회원들에게 메시지 완료',
+                        //                     );
+                        //                 });
+                        //             }
+                        //         } else {
+                        //             console.log(3,foundUser)
+                        //             const Insert_alarm =
+                        //                         'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                                         
-                                    db.query(Insert_alarm, params, (err, Inserted) => {
-                                        if (err) console.log(err);
-                                        console.log('오프라인 회원에게 메시지 완료-!')
-                                    });    
-                                } 
-                            });
+                        //             db.query(Insert_alarm, params, (err, Inserted) => {
+                        //                 if (err) console.log(err);
+                        //                 console.log('오프라인 회원에게 메시지 완료-!')
+                        //             });    
+                        //         } 
+                        //     });
                         
                             
-                            //로그인되었지만, 채팅을 이용하지 않는 회원들에게 메시지보내기
-                            const findunConnectedUser = 
-                                'SELECT GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unConnectedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=1 AND isConnected=0 AND JP.Post_postId = ?'
+                        //     //로그인되었지만, 채팅을 이용하지 않는 회원들에게 메시지보내기
+                        //     const findunConnectedUser = 
+                        //         'SELECT GROUP_CONCAT( DISTINCT U.userId SEPARATOR ",") unConnectedIds FROM `JoinPost` JP LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE isLogin=1 AND isConnected=0 AND JP.Post_postId = ?'
     
-                            db.query(findunConnectedUser, postId, (err, foundUser) => {
-                                if(err) console.log(err)
-                                const sendUser = foundUser[0].unConnectedIds
+                        //     db.query(findunConnectedUser, postId, (err, foundUser) => {
+                        //         if(err) console.log(err)
+                        //         const sendUser = foundUser[0].unConnectedIds
     
-                                if(sendUser === null){
-                                    console.log(sendUser)
-                                    console.log('메세지 보낼 사람이 없음')
-                                } else if (sendUser.includes(',')) {
-                                    const sendUserIds = sendUser.split(',').map(Number)
+                        //         if(sendUser === null){
+                        //             console.log(sendUser)
+                        //             console.log('메세지 보낼 사람이 없음')
+                        //         } else if (sendUser.includes(',')) {
+                        //             const sendUserIds = sendUser.split(',').map(Number)
                                     
-                                    sendUserIds.forEach((user) => {
-                                        const Insert_alarm =
-                                            'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                        //             sendUserIds.forEach((user) => {
+                        //                 const Insert_alarm =
+                        //                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                                         
-                                        db.query(Insert_alarm, params, (err, Inserted) => {
-                                            if (err) console.log(err);
+                        //                 db.query(Insert_alarm, params, (err, Inserted) => {
+                        //                     if (err) console.log(err);
     
-                                            db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
-                                                console.log('잘가니', messageAlarm)
-                                                socket.to(user).emit('send message alarm',messageAlarm);
-                                            })
-                                        });
+                        //                     db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
+                        //                         console.log('잘가니', messageAlarm)
+                        //                         socket.to(user).emit('send message alarm',messageAlarm);
+                        //                     })
+                        //                 });
     
-                                    })
-                                } else { 
-                                    const Insert_alarm =
-                                                'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                        //             })
+                        //         } else { 
+                        //             const Insert_alarm =
+                        //                         'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                                         
-                                        db.query(Insert_alarm, params, (err, Inserted) => {
-                                            if (err) console.log(err);
+                        //                 db.query(Insert_alarm, params, (err, Inserted) => {
+                        //                     if (err) console.log(err);
     
-                                            db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
+                        //                     db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
                                                 
-                                                console.log(sendUser,'에게 감!')
-                                                socket.send(`${sendUser}`, '에게 감')
+                        //                         console.log(sendUser,'에게 감!')
+                        //                         socket.send(`${sendUser}`, '에게 감')
     
-                                                console.log(messageAlarm)
-                                                socket.to(sendUser).emit('send message alarm',messageAlarm);
-                                        })
-                                    });
-                                }
+                        //                         console.log(messageAlarm)
+                        //                         socket.to(sendUser).emit('send message alarm',messageAlarm);
+                        //                 })
+                        //             });
+                        //         }
     
-                            });
+                        //     });
                         }
-                        socket.to(postid).emit('receive message', param.newMessage);
+                        // socket.to(postid).emit('receive message', param.newMessage);
                     });
                 }    
             });
