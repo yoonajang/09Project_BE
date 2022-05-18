@@ -105,7 +105,7 @@ module.exports = (server) => {
 
                                     foundUser.forEach((user) => {
 
-                                        if (user.isLogin = 0 ) {
+                                        if (user.isLogin === 0 ) {
                                             console.log('작동하나')
                                             const insertAlarm =
                                                 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
