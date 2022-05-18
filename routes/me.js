@@ -101,18 +101,32 @@ router.get('/:userId', authMiddleware, (req, res) => {
 
     db.query(likelist, userId, (err, likeList) => {
         if (err) console.log(err);
-        for (list of likeList) {
-            let head = list.headList;
-            let newList = [];
+        for (like of likeList) {
+            let liked = like.headList;
+            let likenewList = [];
 
-            if (list.headList !== null) {
-                newList.push(list.userId);
-                head.split(',').map(id => newList.push(Number(id)));
-                list.headList = newList;
-            } else {
-                newList.push(list.userId);
-                list.headList = newList;
+            // if (list.headList !== null) {
+            //     newList.push(list.userId);
+            //     head.split(',').map(id => newList.push(Number(id)));
+            //     list.headList = newList;
+            // } else {
+            //     newList.push(list.userId);
+            //     list.headList = newList;
+            // }
+
+            if (isNaN(Number(liked))) {
+                console.log(1,liked)
+                liked.split(',').map(id => likenewList.push(Number(id)));
+                like.headList = likenewList;
+            } else if (liked === null) {
+                console.log(2,liked)
+                like.headList = likenewList;
+            } else if (liked !== null){
+                console.log(3, typeof liked ,liked,like.headList )
+                likenewList.push(Number(liked))
+                like.headList = likenewList;
             }
+
         }
 
         res.status(201).send({

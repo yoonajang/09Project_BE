@@ -212,6 +212,7 @@ module.exports = (server) => {
             const data = [postId, userId];
             const sql_1s = mysql.format(sql_1, data);
     
+            // headList 방장을 빼달라~~~ 
             const sql_2 =
                 'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
             const sql_2s = mysql.format(sql_2, postId);
@@ -219,7 +220,8 @@ module.exports = (server) => {
             const sql_3 =
                 'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
             const sql_3s = mysql.format(sql_3, postId);
-    
+
+            
             db.query(sql_1s + sql_2s + sql_3s, (err, rows) => {
                 if (err) {
                     console.log(err);
