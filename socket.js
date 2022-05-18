@@ -69,7 +69,7 @@ module.exports = (server) => {
                             }
                         })
                     } else {
-                        console.log(user.User_userId,'sucess')
+                        console.log(userId,'sucess')
                         socket.join(postid)
 
                         const socketId = socket.id;
