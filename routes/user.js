@@ -111,9 +111,8 @@ router.post('/signup', (req, res, next) => {
                             } else {
                                 res.send({ meg: 'success' });
                             }
-
-                        },
-                    );
+                        }
+                    });
                 } else {
                     db.query(
                         'UPDATE AuthNum SET authNum=? WHERE userEmail=?',
