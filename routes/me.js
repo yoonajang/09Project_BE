@@ -126,8 +126,10 @@ router.get('/:userId', authMiddleware, (req, res) => {
                 likenewList.push(Number(liked))
                 like.headList = likenewList;
             }
-
+        
+        
         }
+        console.log(likeList,'!!!!!!!!!!!!!!sssssssssss')
 
         res.status(201).send({
             msg: 'success',
