@@ -120,7 +120,7 @@ module.exports = (server) => {
                                                         
                                                         console.log(sendUser,'에게 감!')
                                                         console.log(messageAlarm)
-                                                        socket.to(sendUser).emit('send message alarm',messageAlarm);   
+                                                        socket.to(user.User_userId).emit('send message alarm',messageAlarm);   
                                                         
                                                     })
                                                 })
