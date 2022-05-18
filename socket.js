@@ -46,6 +46,7 @@ module.exports = (server) => {
                     if (foundJoin.length === foundJoin[0].headCount){
                         foundJoin.forEach((user) => {
                             // 채팅참여자가 찐참여자인경우,
+                            console.log(user, '여기 잘 나옴?')
                             if (user.User_userId === userId){
                                 console.log(user.User_userId,'sucess', '다있는데 너만통과')
                                 socket.join(postid)
@@ -63,6 +64,8 @@ module.exports = (server) => {
                                     'connected',
                                     userName + ' 님이 입장했습니다.',
                                 );
+
+                                
                             } else {
                                 console.log(userId,'fail')
                                 const status = "fail"
