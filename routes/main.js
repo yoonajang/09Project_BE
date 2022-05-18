@@ -242,29 +242,6 @@ router.get('/:postId', (req, res) => {
     });
 });
 
-
-// 메인페이지 게시글 상세보기ddddddd
-// router.get('/:postId', (req, res) => {
-//     const postId = req.params.postId;
-
-//     const sql =
-//         "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE `postId`=? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime";
-
-//     db.query(sql, postId, (err, data) => {
-//         if (err) console.log(err);
-//         let head = data[0].headList;
-//         if (isNaN(Number(head))) {
-//             data[0].headList = head.split(',').map(id => Number(id));
-//         } else {
-//             let newList = [];
-//             newList.push(Number(head));
-//             data[0].headList = newList;
-//         }
-
-//         res.send({ msg: 'success', data });
-//     });
-// });
-
 // 좋아요 생성
 router.get('/like/:postId', authMiddleware, (req, res) => {
     const userId = res.locals.user.userId;
