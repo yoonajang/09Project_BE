@@ -157,44 +157,44 @@ router.post('/signup', (req, res, next) => {
             } else {
         }
         });
-    });
+   
 
-    //authNum 저장
-    db.query(
-        'SELECT *, timestampdiff(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
-        userEmail,
-        (err, data) => {
+        //authNum 저장
+        db.query(
+            'SELECT *, timestampdiff(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
+            userEmail,
+            (err, data) => {
 
-            if (data.length === 0 ) {
-                db.query(
-                    'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
-                    [authNum, userEmail, 1],
-                    (err, data) => {
-                        res.send({ msg: 'success' });
-                    },
-                );
-            } else if ( data[0].timeDiff > 5) {
-                db.query(
-                    'UPDATE AuthNum SET authNum=?, `updatedAt`=now(), `count`=1 WHERE userEmail=?',
-                    [authNum, userEmail],
-                    (err, data) => {
-                        res.send({ msg: 'success' });
-                    },
-                );
+                if (data.length === 0 ) {
+                    db.query(
+                        'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
+                        [authNum, userEmail, 1],
+                        (err, data) => {
+                            res.send({ msg: 'success' });
+                        },
+                    );
+                } else if ( data[0].timeDiff > 5) {
+                    db.query(
+                        'UPDATE AuthNum SET authNum=?, `updatedAt`=now(), `count`=1 WHERE userEmail=?',
+                        [authNum, userEmail],
+                        (err, data) => {
+                            res.send({ msg: 'success' });
+                        },
+                    );
 
-            } else if (data[0].count < 3 && data[0].timeDiff <= 5) {
-                db.query(
-                    'UPDATE AuthNum SET authNum=?, `count`=count+1 WHERE userEmail=?',
-                    [authNum, userEmail],
-                    (err, data) => {
-                        res.send({ msg: 'success' });
-                    },
-                );
-            } else if (data[0].count === 3 && data[0].timeDiff <= 5) {
+                } else if (data[0].count < 3 && data[0].timeDiff <= 5) {
+                    db.query(
+                        'UPDATE AuthNum SET authNum=?, `count`=count+1 WHERE userEmail=?',
+                        [authNum, userEmail],
+                        (err, data) => {
+                            res.send({ msg: 'success' });
+                        },
+                    );
+                } else if (data[0].count === 3 && data[0].timeDiff <= 5) {
 
-                res.send({ msg: 'fail' });
-            }
-        });
+                    res.send({ msg: 'fail' });
+                }
+            });
     });
 
     // 닉네임 중복확인
