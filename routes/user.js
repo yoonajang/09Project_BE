@@ -155,6 +155,9 @@ router.post('/signup', (req, res, next) => {
                 console.log(err);
                 res.send({ msg: 'success' });
             } else {
+        }
+        });
+    });
 
     //authNum 저장
     db.query(
@@ -266,11 +269,7 @@ router.get('/islogin', authMiddleware, async (req, res) => {
                 userImage: user.userImage,
                 tradeCount: user.tradeCount,
             },
-            alaram: [
-                {
-                    status,
-                },
-            ],
+            alarm: { status }            
         });
     });
 });
