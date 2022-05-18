@@ -329,7 +329,7 @@ module.exports = (server) => {
             });
         });
 
-        //찐참여자 선택 취소 (by 본인) //이벤트명 다시설정!! 수참님과 작업!
+        //찐참여자 선택 취소 (by 본인) //이벤트명 다시설정!!
         socket.on('cancel_my_participant', param => {
             console.log(param)
             const postid = param.postid;
