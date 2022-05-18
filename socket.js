@@ -47,6 +47,7 @@ module.exports = (server) => {
                         foundJoin[0].forEach((user) => {
                             // 채팅참여자가 찐참여자인경우,
                             if (user.User_userId === userId){
+                                console.log(user.User_userId,'sucess')
                                 socket.join(postid)
 
                                 const socketId = socket.id;
@@ -63,10 +64,12 @@ module.exports = (server) => {
                                     userName + ' 님이 입장했습니다.',
                                 );
                             } else {
+                                console.log('fail')
                                 socket.to(userId).emit('block chatroom', 'fail') 
                             }
                         })
                     } else {
+                        console.log(user.User_userId,'sucess')
                         socket.join(postid)
 
                         const socketId = socket.id;
