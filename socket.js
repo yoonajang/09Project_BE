@@ -214,14 +214,14 @@ module.exports = (server) => {
     
             // headList 방장을 빼달라~~~ 
             const sql_2 =
-                'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+                'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.Post_postId = ? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName;';
             const sql_2s = mysql.format(sql_2, postId);
     
             const sql_3 =
                 'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
             const sql_3s = mysql.format(sql_3, postId);
 
-            
+
             db.query(sql_1s + sql_2s + sql_3s, (err, rows) => {
                 if (err) {
                     console.log(err);

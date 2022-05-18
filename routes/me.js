@@ -45,55 +45,38 @@ router.get('/:userId', authMiddleware, (req, res) => {
             let mine = my.headList;
             let mynewList = [];
 
-            // if (list.headList !== null) {
-            //     newList.push(list.userId);
-            //     head.split(',').map(id => newList.push(Number(id)));
-            //     list.headList = newList;
-            // } else {
-            //     newList.push(list.userId);
-            //     list.headList = newList;
-            // }
             if (isNaN(Number(mine))) {
-                console.log(1,mine)
                 mine.split(',').map(id => mynewList.push(Number(id)));
                 my.headList = mynewList;
             } else if (mine === null) {
-                console.log(2,mine)
                 my.headList = mynewList;
             } else if (mine !== null){
-                console.log(3, typeof mine ,mine,my.headList )
                 mynewList.push(Number(mine))
                 my.headList = mynewList;
             }
         }
 
-        console.log(myList,'<<<<<<<<<<<<')
     // 유저의 참여한 리스트
     const joinlist =
         "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE P.User_userId != ? AND JP.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime ORDER BY P.endTime DESC";
 
     db.query(joinlist, [userId, userId], (err, joinList) => {
-        console.log(joinList)
         if (err) console.log(err);
         for (join of joinList) {
             let joined = join.headList;
             let joinnewList = [];
 
             if (isNaN(Number(joined))) {
-                console.log(1,joined)
                 joined.split(',').map(id => joinnewList.push(Number(id)));
                 join.headList = joinnewList;
             } else if (joined === null) {
-                console.log(2,joined)
                 join.headList = joinnewList;
             } else if (joined !== null){
-                console.log(3, typeof joined ,joined,join.headList )
                 joinnewList.push(Number(joined))
                 join.headList = joinnewList;
             }
 
         }
-    console.log(joinList,'!!!!!!!!!!!!!!')
 
     // 유저의 좋아요 리스트
     const likelist =
@@ -105,31 +88,16 @@ router.get('/:userId', authMiddleware, (req, res) => {
             let liked = like.headList;
             let likenewList = [];
 
-            // if (list.headList !== null) {
-            //     newList.push(list.userId);
-            //     head.split(',').map(id => newList.push(Number(id)));
-            //     list.headList = newList;
-            // } else {
-            //     newList.push(list.userId);
-            //     list.headList = newList;
-            // }
-
             if (isNaN(Number(liked))) {
-                console.log(1,liked)
                 liked.split(',').map(id => likenewList.push(Number(id)));
                 like.headList = likenewList;
             } else if (liked === null) {
-                console.log(2,liked)
                 like.headList = likenewList;
             } else if (liked !== null){
-                console.log(3, typeof liked ,liked,like.headList )
                 likenewList.push(Number(liked))
                 like.headList = likenewList;
             }
-        
-        
         }
-        console.log(likeList,'!!!!!!!!!!!!!!sssssssssss')
 
         res.status(201).send({
             msg: 'success',
