@@ -208,16 +208,16 @@ module.exports = (server) => {
             const userImage = param.selectedUser.userImage;
     
             const sql_1 =
-                'UPDATE JoinPost SET isPick = 1 WHERE Post_postId=? and User_userId=?;';
+                'UPDATE JoinPost SET isPick = 1, updatedAt = now() WHERE Post_postId=? and User_userId=?;';
             const data = [postId, userId];
             const sql_1s = mysql.format(sql_1, data);
      
             const sql_2 =
-                'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId = ? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName;';
+                'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName ORDER BY JP.updatedAt DESC;';
             const sql_2s = mysql.format(sql_2, postId);
     
             const sql_3 =
-                'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
+                'SELECT * FROM `JoinPost` JP WHERE JP.isPick = 0 and JP.Post_postId = ? ORDER BY JP.updatedAt DESC;';
             const sql_3s = mysql.format(sql_3, postId);
 
             
@@ -283,16 +283,16 @@ module.exports = (server) => {
             const userId = param.selectedUser.User_userId;
     
             const sql_1 = 
-                'UPDATE JoinPost SET isPick = 0 WHERE Post_postId=? and User_userId=?;';
+                'UPDATE JoinPost SET isPick = 0, updatedAt = now() WHERE Post_postId=? and User_userId=?;';
             const data = [postId, userId];
             const sql_1s = mysql.format(sql_1, data);
     
             const sql_2 =
-                'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId = ? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName;';
+                'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName ORDER BY JP.updatedAt DESC;';
             const sql_2s = mysql.format(sql_2, postId);
     
             const sql_3 =
-                'SELECT * FROM JoinPost WHERE isPick = 0 and Post_postId = ?;';
+                'SELECT * FROM `JoinPost` JP WHERE JP.isPick = 0 and JP.Post_postId = ? ORDER BY JP.updatedAt DESC;';
             const sql_3s = mysql.format(sql_3, postId);
     
             db.query(sql_1s + sql_2s + sql_3s, (err, rows) => {
