@@ -15,7 +15,12 @@ const saltRounds = 10;
 
 // 회원가입
 router.post('/signup', (req, res, next) => {
+//     const userImages = [file:///C:/Users/moon/OneDrive/Desktop/image1.jpg,
+// ]
+
     const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
+
+
     const { userEmail, userName, userPassword } = req.body;
     const param = [userEmail, userName, userPassword, userImage, 50];
 

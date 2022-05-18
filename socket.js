@@ -312,7 +312,7 @@ module.exports = (server) => {
             });
         });
     
-        // 찐참여자 선택 취소 (by 본인)
+        // 방나가기 버튼 눌렀을 때, 
         socket.on('leave chatroom', (postid, user) => {
             const postId = postid.replace('p', '');
             const userId = user;
