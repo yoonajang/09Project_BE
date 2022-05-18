@@ -7,7 +7,7 @@ const s3 = new AWS.S3();
 const upload = multer({
     storage: multerS3({
         s3: s3,
-        bucket: 'imagesofairbnb',
+        bucket: 'nbbang-resizing/origin',
         contentType: multerS3.AUTO_CONTENT_TYPE,
         acl: 'public-read-write',
         key: function (req, file, cb) {
