@@ -194,10 +194,18 @@ router.post('/signup', (req, res, next) => {
         });
     });
 
-    // 로그인 여부확인
-    router.get('/islogin', authMiddleware, async (req, res) => {
-        const { user } = res.locals;
-        console.log(user.userId);
+// 로그인 여부확인
+router.get('/islogin', authMiddleware, async (req, res) => {
+    const { user } = res.locals;
+    console.log(user.userId);
+
+    const sql = 'SELECT status FROM Alarm WHERE User_userId = ? and isChecked = 0';
+    
+    db.query(sql, user.userId, (err, rows) => {
+        if (err) console.log(err);
+        console.log(rows)
+
+        const status = rows[0]
         res.send({
             userInfo: {
                 userId: user.userId,
@@ -206,8 +214,35 @@ router.post('/signup', (req, res, next) => {
                 userImage: user.userImage,
                 tradeCount: user.tradeCount,
             },
+            alaram: [
+                {
+                    status,
+                },
+            ],
         });
     });
+});
+
+    //알람확인
+router.put('/ischecked', authMiddleware, (req, res) => {
+    const userId = res.locals.user.userId;
+    const sql =
+        'SELECT * FROM Alarm WHERE User_userId = ? and isChecked = 0';
+
+    db.query(sql, userId, (err, rows) => {
+        if (rows.length !== 0) {
+            const sql =
+                'UPDATE Alarm SET isChecked = 1 WHERE User_userId=?';
+
+            db.query(sql, userId, (err, data) => {
+                if (err) console.log(err);
+                res.send({ msg: 'ischecked 1로 변경' });
+            });
+        } else {
+            res.send({ msg: '알람이 없습니다' });
+        }
+    });
+});
 
 // 유저 프로필 수정
 router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {

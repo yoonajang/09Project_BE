@@ -263,6 +263,7 @@ router.delete('/like/:postId', authMiddleware, (req, res) => {
     });
 });
 
+
 //개인적으로 채팅방 나가기
 // router.get('/outchat/:postid', authMiddleware, (req, res) => {
 //     const postId = req.params.postid;

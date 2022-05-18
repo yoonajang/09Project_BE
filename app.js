@@ -72,9 +72,9 @@ http.createServer(app_http).listen(httpPort, () => {
     console.log('http서버가 켜졌어요!');
 });
 
-server.listen(httpsPort, () => {
-    console.log('https서버가 켜졌어요!');
-});
+// server.listen(httpsPort, () => {
+//     console.log('https서버가 켜졌어요!');
+// });
 
 io.on('connection', socket => {
     console.log('연결성공');
@@ -122,7 +122,7 @@ io.on('connection', socket => {
 
     //알림기능
     socket.on('pushalarm', param => {
-        console.log(param)
+        console.log(param);
         const postid = param.newMessage.Post_postId;
         const postId = postid.replace('p', '');
         const userName = param.newMessage.User_userName;
@@ -133,15 +133,32 @@ io.on('connection', socket => {
         const sql_1 = 'SELECT User_userId FROM JoinPost WHERE Post_postId = ?;';
         const sql_1s = mysql.format(sql_1, postId);
 
-        db.query(sqls + sql_1s,  (err, rows) => {
-            console.log(rows)
+        db.query(sqls + sql_1s, (err, rows) => {
+            if (err) console.log(err);
+            console.log(rows);
             const chatAdmin = rows[0].User_userId;
             const title = rows[0].title;
-            const {users} = rows[1];
+            const { users } = rows[1];
             // console.log(chatAdmin, users);
             // socket.join(postid);
-            socket.to(chatAdmin).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
-            socket.to({users}).emit('pushalarm', title + '게시글 채팅방에서' + userName + ' 님께서 새로운 채팅을 남겼습니다.');
+            socket
+                .to(chatAdmin)
+                .emit(
+                    'pushalarm',
+                    title +
+                        '게시글 채팅방에서' +
+                        userName +
+                        ' 님께서 새로운 채팅을 남겼습니다.',
+                );
+            socket
+                .to({ users })
+                .emit(
+                    'pushalarm',
+                    title +
+                        '게시글 채팅방에서' +
+                        userName +
+                        ' 님께서 새로운 채팅을 남겼습니다.',
+                );
         });
     });
 
@@ -239,6 +256,6 @@ io.on('connection', socket => {
 });
 
 //도메인
-// server.listen(port, () => {
-//     console.log(port, '포트로 서버가 켜졌어요!');
-// });
+app.listen(port, () => {
+    console.log(port, '포트로 서버가 켜졌어요!');
+});
