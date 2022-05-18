@@ -60,18 +60,6 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm install
 
-      # - name: create env file
-      #   env:
-      #     ENVIORNMENT_VARIABLES: ${{ secrets.ENVIORNMENT_VARIABLES }}
-      #   shell: bash
-      #   run: |
-      #     echo "$ENVIORNMENT_VARIABLES" > .env
-
-      # - name: Test
-      #   run: |
-      #     npm test
-
-
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:

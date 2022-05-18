@@ -446,8 +446,12 @@ module.exports = (server) => {
             });
     
         })
+
+        
     
-    
+        
+
+
         // 강퇴 (by 방장 > 작업필요)
         socket.on('kickout chatroom', (postid, user) => {
             const deleteJP =
