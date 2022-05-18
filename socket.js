@@ -47,8 +47,8 @@ module.exports = (server) => {
             const socketId = socket.id;
     
             db.query(
-                'UPDATE JoinPost SET isConnected = 1 WHERE User_userId=? and Post_postId =?;', 
-                [userId, postId],
+                'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
+                [socketId, userId, postId],
                 (err, rows) => {
                     if (err) console.log(err);
                 },
