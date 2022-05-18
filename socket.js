@@ -103,8 +103,8 @@ module.exports = (server) => {
                                 db.query(findUser, postId, (err, foundUser) => {
                                     if(err) console.log(err) 
 
-                                    foundUser[0].isLogin.forEach((user) => console.log(user,'11111111111111111111111111'))
-                                    console.log(foundUser[0].forea)
+                                    foundUser[0].forEach((user) => console.log(user, user.isLogin,'11111111111111111111111111'))
+                                    console.log(foundUser[0])
                                     console.log(foundUser, foundUser[0], foundUser[0].isLogin, '<<<<<<<<<<<<')
                                         // 로그아웃된 사람들에게 메세지 저장하기
                                         if (foundUser[0].isLogin = 0 ) {
