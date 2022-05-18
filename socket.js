@@ -113,6 +113,18 @@ module.exports = (server) => {
                                                 db.query(insertAlarm, params, (err, Inserted) => {
                                                     if (err) console.log(err);
 
+                                                    console.log(user, '오프라인')
+                                                
+                                                })
+
+                                        // 로그인되어있지만, 채팅방 이용하지 않는 사람에게 메시지 보내기
+                                        } else if(user.isLogin === 1 && user.isConnected === 0){
+                                            const insertAlarm =
+                                                'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+
+                                                db.query(insertAlarm, params, (err, Inserted) => {
+                                                    if (err) console.log(err);
+
                                                     console.log(Inserted, '혹시 여기서..오류가 난다면')
                                                     const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
 
@@ -124,10 +136,6 @@ module.exports = (server) => {
                                                         
                                                     })
                                                 })
-
-                                        // 로그인되어있지만, 채팅방 이용하지 않는 사람에게 메시지 보내기
-                                        } else if(user.isLogin === 1 && user.isConnected === 0){
-                                            console.log('작동하나2')
                                             socket.to(user.User_userId).emit('receive message', param.newMessage);
 
                                         } else {
