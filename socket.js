@@ -36,11 +36,12 @@ module.exports = (server) => {
             const postId = postid.replace('p', '');
             const { userId, userName } = param.loggedUser;
 
-            const findJoin = 'SELECT P.headCount, JP.User_userId FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId = ?'
+            const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId = ? AND JP.isPick = 1;'
 
             db.query( findJoin, postId,(err, foundJoin) => {
                     if (err) console.log(err);
                     console.log(foundJoin.length, '이것은 몇명인가~')
+
                 },
             );
             
