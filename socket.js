@@ -44,7 +44,7 @@ module.exports = (server) => {
                     console.log(foundJoin.length, foundJoin[0].headCount, '이것은 몇명인가~')
 
                     if (foundJoin.length === foundJoin[0].headCount){
-                        foundJoin[0].forEach((user) => {
+                        foundJoin.forEach((user) => {
                             // 채팅참여자가 찐참여자인경우,
                             if (user.User_userId === userId){
                                 console.log(user.User_userId,'sucess')
