@@ -37,16 +37,16 @@ module.exports = (server) => {
             const { userId, userName } = param.loggedUser;
 
             // 수정됨.
-            const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick, COUNT(CASE WHEN JP.isPick =1 then 1 end) count, EXISTS (SELECT JP.User_userId, JP.Post_postId FROM `JoinPost`JP where JP.User_userId=? AND JP.Post_postId  =?) isJoin FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId =?'
+            const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick, COUNT(CASE WHEN JP.isPick =1 then 1 end) count, EXISTS (SELECT JP.User_userId, JP.Post_postId FROM `JoinPost`JP where JP.User_userId=? AND JP.Post_postId  =? AND JP.isPick=1) isJoin FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId =?'
 
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
                     console.log(foundJoin)
                     console.log( foundJoin[0].headCount, '이건 읽어줘')
 
-                    if (foundJoin[0].headCount === foundJoin[0],count){
-                        if (foundJoin[0].User_userId === userId){
-                            console.log(foundJoin[0].User_userId,'sucess', '다있는데 너만통과')
+                    if (foundJoin[0].headCount === foundJoin[0].count){
+                        if (foundJoin[0].isJoin === 1){
+                            console.log(userId,'sucess', '다있는데 너만통과')
                             socket.join(postid)
 
                             const socketId = socket.id;
@@ -64,11 +64,11 @@ module.exports = (server) => {
                             );
             
                         } else {
-                            console.log(userId,'fail')
+                            console.log(userId,'다있는데, 너는 참가자 아니야. fail')
                             const status = "fail"
                             socket.to(userId).emit('block chatroom', status) 
                         }
-                    } else {
+                    } else if (foundJoin[0].headCount > foundJoin[0].count) {
                         console.log(userId,'sucess','아직널널해')
                         socket.join(postid)
 
@@ -85,6 +85,10 @@ module.exports = (server) => {
                             'connected',
                             userName + ' 님이 입장했습니다.',
                         );
+                    } else {
+                        console.log(userId,'인원초과로 fail')
+                        const status = "fail"
+                        socket.to(userId).emit('block chatroom', status)
                     }
 
                 },
