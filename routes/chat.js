@@ -1,70 +1,85 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config');
-// const moment = require('moment');
-// require('moment-timezone');
-// moment.tz.setDefault('Asia/seoul');
+const mysql = require('mysql');
 
 const authMiddleware = require('../middlewares/auth');
 
 
-//거래 참여자 추가 (방장만 권한)  //postId가 아닌 chatId로 보내줄 예정(수정필요), 프론트에 추가된 유저정보를 보내줌
-router.post('/deal/add/:userId', authMiddleware, (req, res, next) => {
-    const postId = req.body.postId
-    const joinId = res.paramsId;
-    const user = res.locals.user.userId;  //수정원하는 자
-    
-    const sql = "SELECT `postId`,`User_userId` FROM `Post` WHERE `postId`=?";
+// 채팅 시작하기
+router.get('/getchat/:postId', authMiddleware, (req, res) => {
+    const postId = req.params.postId;
+    const userEmail = res.locals.user.userEmail;
+    const userName = res.locals.user.userName;
+    const userImage = res.locals.user.userImage;
+    const userId = res.locals.user.userId;
 
-    db.query(sql, postId, (err, rows) => {
-        console.log('postId:', postId, "참여자:", joinId, "작업자:", user, "방장:", rows[0].User_userId)
+    //waitingUser table 데이터 넣기
+    const sql_1 =
+        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick, isLogin, isConnected) SELECT ?,?,?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
+    const param_1 = [
+        postId,
+        userEmail,
+        userName,
+        userImage,
+        userId,
+        0,
+        0,
+        0,
+        userId,
+        postId,
+    ];
 
-        if (rows[0].User_userId === user) {
-            const sql = "SELECT `User_userId`, `Post_postId` FROM `JoinPost` WHERE `User_userId`=? and `Post_postId`=?"
+    const sql_1s = mysql.format(sql_1, param_1);
 
-            db.query(sql, [joinId, Number(postId)], (err, join) => {
-                if(join.length === 0) {
-                    const sql = "INSERT INTO `JoinPost` (`User_userId`, `Post_postId`) VALUES (?,?)";
-                    db.query(sql, [joinId, Number(postId)], (err, join) => {
-                        res.send({ msg: 'success'}); 
-                    })
-                } else {
-                    console.log("이미 추가됨")
-                    res.send({ msg: 'fail'});
-                }
+    //waitingUser table 데이터 불러오기
+    const sql_2 = 'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.Post_postId = ? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName;';
+    const sql_2s = mysql.format(sql_2, postId);
+
+    //Chat table 데이터 가져오기
+    const sql_3 =
+        'SELECT C.chatId, C.Post_postId, C.chat, date_format(C.createdAt, "%Y-%m-%d %T") createdAt, C.User_userId, C.User_userEmail, C.User_userName, C.userImage FROM Chat C WHERE Post_postId=? ORDER BY createdAt DESC LIMIT 200;';
+    const sql_3s = mysql.format(sql_3, postId);
+
+    //게시글 작성자 정보 가져오기
+    const sql_4 = 'SELECT User_userId FROM Post WHERE postId=?;';
+    const sql_4s = mysql.format(sql_4, postId);
+
+    db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
+        // console.log(results)
+
+        if (err) console.log(err);
+        else {
+            const userInfo = results[1];
+            const chatInfo = results[2].reverse();
+            const chatAdmin = results[3];
+
+            //찐참여자 목록 가져오기
+            const sql_5 =
+            'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ? AND User_userId NOT IN(?)';
+            const param_5 = [postId, chatAdmin[0].User_userId]
+            db.query(sql_5, param_5, (err, headList) => {
+                return res.status(200).send({
+                    data: { userInfo, chatInfo, chatAdmin, headList },
+                    message: '채팅 참여자와 메세지 정보가 전달되었습니다',
+                });           
             })
-        } else {
-            console.log("권한 없음")
-            res.send({ msg: 'fail'});
         }
     });
 });
 
 
-//거래 참여자 삭제 //postId가 아닌 chatId로 보내줄 예정(수정필요) //프론트에 삭제된 유저정보를 보내줌
-router.delete('/deal/delete/:userId', authMiddleware, (req, res, next) => {
-    const postId = req.body.postId
-    const joinId = res.paramsId;
-    const user = res.locals.user.userId;  // 수정원하는 자
+// // 채팅 나가기
+// router.get('/outchat/:postid', authMiddleware, (req, res) => {
+//     const postId = req.params.postid;
+//     const userId = res.locals.user.userId;
+//     const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
+//     const params = [postId, userId];
 
-    const sql = "SELECT `postId`,`User_userId` FROM `Post` WHERE `postId`=?";
-
-    db.query(sql, postId, (err, rows) => {
-        console.log('postId:', postId, "참여자:", joinId, "작업자:", user, "방장:", rows[0].User_userId)
-
-        if (rows[0].User_userId === user || joinId === user) {
-            const sql = 'DELETE FROM `JoinPost` WHERE `User_userId`=? and `Post_postId`=?'
-
-            db.query(sql, [joinId, Number(postId)], (err, join) => {
-                res.send({ msg: 'success'}); 
-            })
-        } else {
-            console.log("권한 없음")
-            res.send({ msg: 'fail'});
-        }
-
-    });
-});
-
+//     db.query(sql, params, (err, data) => {
+//         if (err) console.log(err);
+//         res.status(201).send({ msg: 'success', data });
+//     });
+// });
 
 module.exports = router;

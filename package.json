@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+
     "test": "echo \"Error: no test specified\" && exit 1",
+
+    "test": "jest",
+
     "start": "node ./bin/www",
     "debug": "nodemon ./bin/www",
     "deploy": "forever start ./bin/www"
@@ -44,6 +48,8 @@
     "socket.io": "^4.5.0"
   },
   "devDependencies": {
-    "prettier": "2.6.2"
+    "jest": "^28.1.0",
+    "prettier": "2.6.2",
+    "supertest": "^6.2.3"
   }
 }

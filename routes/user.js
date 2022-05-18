@@ -15,9 +15,14 @@ const saltRounds = 10;
 
 // 회원가입
 router.post('/signup', (req, res, next) => {
+//     const userImages = [file:///C:/Users/moon/OneDrive/Desktop/image1.jpg,
+// ]
+
     const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
+
+
     const { userEmail, userName, userPassword } = req.body;
-    const param = [userEmail, userName, userPassword, userImage];
+    const param = [userEmail, userName, userPassword, userImage, 50];
 
         db.query(
             'SELECT * FROM AuthNum WHERE userEmail=?',
@@ -91,10 +96,22 @@ router.post('/signup', (req, res, next) => {
                 console.log(data.length === 0);
                 if (data.length === 0) {
                     db.query(
+
                         'INSERT AuthNum(`authNum`, `userEmail`) VALUES (?,?)',
                         [authNum, userEmail],
                         (err, data) => {
                             res.send({ msg: 'success' });
+
+                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`) VALUES (?,?,?,?,?)',
+                        param,
+                        (err, row) => {
+                            if (err) {
+                                console.log(err);
+                                res.send({ meg: 'fail' });
+                            } else {
+                                res.send({ meg: 'success' });
+                            }
+
                         },
                     );
                 } else {
@@ -127,6 +144,7 @@ router.post('/signup', (req, res, next) => {
         );
     });
 
+
     // 이메일 중복확인
     router.post('/emailcheck', (req, res) => {
         const email = req.body.userEmail;
@@ -137,6 +155,40 @@ router.post('/signup', (req, res, next) => {
                 console.log(err);
                 res.send({ msg: 'success' });
             } else {
+
+    //authNum 저장
+    db.query(
+        'SELECT *, timestampdiff(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
+        userEmail,
+        (err, data) => {
+
+            if (data.length === 0 ) {
+                db.query(
+                    'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
+                    [authNum, userEmail, 1],
+                    (err, data) => {
+                        res.send({ msg: 'success' });
+                    },
+                );
+            } else if ( data[0].timeDiff > 5) {
+                db.query(
+                    'UPDATE AuthNum SET authNum=?, `updatedAt`=now(), `count`=1 WHERE userEmail=?',
+                    [authNum, userEmail],
+                    (err, data) => {
+                        res.send({ msg: 'success' });
+                    },
+                );
+
+            } else if (data[0].count < 3 && data[0].timeDiff <= 5) {
+                db.query(
+                    'UPDATE AuthNum SET authNum=?, `count`=count+1 WHERE userEmail=?',
+                    [authNum, userEmail],
+                    (err, data) => {
+                        res.send({ msg: 'success' });
+                    },
+                );
+            } else if (data[0].count === 3 && data[0].timeDiff <= 5) {
+
                 res.send({ msg: 'fail' });
             }
         });
@@ -244,6 +296,7 @@ router.put('/ischecked', authMiddleware, (req, res) => {
     });
 });
 
+
 // 유저 프로필 수정
 router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
         const userId = res.locals.user.userId;
@@ -302,5 +355,21 @@ router.get('/like/:userId', authMiddleware, (req, res) => {
         res.status(201).send({ msg: 'success', data });
     });
 });
+
+// 로그인 여부확인
+router.get('/islogin', authMiddleware, async (req, res) => {
+    const { user } = res.locals;
+    console.log(user.userId);
+    res.send({
+        userInfo: {
+            userId: user.userId,
+            userEmail: user.userEmail,
+            userName: user.userName,
+            userImage: user.userImage,
+            tradeCount: user.tradeCount,
+        },
+    });
+});
+
 
 module.exports = router; 

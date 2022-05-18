@@ -9,13 +9,16 @@ const http = require('http');
 const https = require('https');
 const app = express();
 const app_http = express();
-const port = 3000;
 const httpPort = 80;
 const httpsPort = 443;
+
 const path = require('path');
 const { Server } = require('socket.io'); //소켓 라이브러리 불러오기
 const db = require('./config');
 const mysql = require('mysql');
+
+const SocketIO = require("./socket");
+
 
 app.use(cors());
 
@@ -25,22 +28,26 @@ const credentials = {
     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
 };
 
-const server = https.createServer(credentials, app);
-const io = new Server(server, {
-    cors: {
-        origin: '*',
-        methods: ['GET', 'POST'],
-    },
-});
-
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
-    console.log('Request URL:', req.originalUrl, '-', new Date());
+    console.log(
+        'ip:',
+        req.ip,
+        'domain:',
+        req.rawHeaders[1],
+        'method:',
+        req.method,
+        'Request URL:',
+        req.originalUrl,
+        '-',
+        new Date(),
+    );
     next();
 };
 
+
 app.use(helmet());
-app.use(express.static('static'));
+app.use(express.static('static')); 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(bodyParser.json());
@@ -68,6 +75,7 @@ app.get(
     },
 );
 
+
 http.createServer(app_http).listen(httpPort, () => {
     console.log('http서버가 켜졌어요!');
 });
@@ -86,10 +94,13 @@ io.on('connection', socket => {
         const postId = param.postid;
         const { userId, userName } = param.loggedUser;
 
-        console.log(socket.id);
-        socket.join(postId); // string ('p' + postId)
-        socket.join(userId);
-        console.log(socket.rooms);
+
+const httpServer = http.createServer(app_http);
+const httpsServer = https.createServer(credentials, app);
+SocketIO(httpsServer);
+
+
+
 
         socket.to(postId).emit('connected', userName + ' 님이 입장했습니다.');
     });
@@ -258,4 +269,12 @@ io.on('connection', socket => {
 //도메인
 app.listen(port, () => {
     console.log(port, '포트로 서버가 켜졌어요!');
+});
+
+httpServer.listen(httpPort, () => {
+    console.log('http서버가 켜졌어요!');
+});
+
+httpsServer.listen(httpsPort, () => {
+    console.log('https서버가 켜졌어요!');
 });
