@@ -118,7 +118,7 @@ module.exports = (server) => {
 
                                                     db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
                                                         
-                                                        console.log(sendUser,'에게 감!')
+                                                        console.log(user.User_userId,'에게 감!')
                                                         console.log(messageAlarm)
                                                         socket.to(user.User_userId).emit('send message alarm',messageAlarm);   
                                                         
