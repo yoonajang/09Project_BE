@@ -36,81 +36,82 @@ module.exports = (server) => {
             const postId = postid.replace('p', '');
             const { userId, userName } = param.loggedUser;
 
-            // const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick, COUNT(CASE WHEN JP.isPick =1 then 1 end) count FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId = ? AND JP.User_userId = ?'
+            // 수정됨.
+            const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick, COUNT(CASE WHEN JP.isPick =1 then 1 end) count, EXISTS (select JP.User_userId, P.Post_postId from `JoinPost`JP where JP.User_userId=? AND JP.Post_postId  =?) isJoin FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId =?'
 
-            // db.query( findJoin, [postId, userId],(err, foundJoin) => {
-            //         if (err) console.log(err);
-            //         console.log( foundJoin[0].headCount)
-
-            //         if (foundJoin[0].headCount === foundJoin[0],count){
-            //             if (foundJoin[0].User_userId === userId){
-            //                 console.log(foundJoin[0].User_userId,'sucess', '다있는데 너만통과')
-            //                 socket.join(postid)
-
-            //                 const socketId = socket.id;
-            //                 db.query(
-            //                     'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
-            //                     [socketId, userId, postId],
-            //                     (err, rows) => {
-            //                         if (err) console.log(err);
-            //                     },
-            //                 );
-                    
-            //                 io.to(postid).emit(
-            //                     'connected',
-            //                     userName + ' 님이 입장했습니다.',
-            //                 );
-            
-            //             } else {
-            //                 console.log(userId,'fail')
-            //                 const status = "fail"
-            //                 socket.to(userId).emit('block chatroom', status) 
-            //             }
-            //         } else {
-            //             console.log(userId,'sucess','아직널널해')
-            //             socket.join(postid)
-
-            //             const socketId = socket.id;
-            //             db.query(
-            //                 'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
-            //                 [socketId, userId, postId],
-            //                 (err, rows) => {
-            //                     if (err) console.log(err);
-            //                 },
-            //             );
-                
-            //             io.to(postid).emit(
-            //                 'connected',
-            //                 userName + ' 님이 입장했습니다.',
-            //             );
-            //         }
-
-            //     },
-            // );
-            
-    
-            socket.join(postid); // string ('p' + postId)
-    
-            // 확인용
-            // console.log(io.sockets.adapter.rooms.get(postid), '여려명이 있는지 확인할 수 있나?' )
-            // console.log(socket.id)
-            // console.log(socket.rooms, '클 라 이 언 트')
-    
-            console.log(socket.id, '<<<<<<<<<<<<<<<<<< 채팅 시작시 id');
-            const socketId = socket.id;
-    
-            db.query(
-                'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
-                [socketId, userId, postId],
-                (err, rows) => {
+            db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
+                    console.log( foundJoin[0].headCount)
+
+                    if (foundJoin[0].headCount === foundJoin[0],count){
+                        if (foundJoin[0].User_userId === userId){
+                            console.log(foundJoin[0].User_userId,'sucess', '다있는데 너만통과')
+                            socket.join(postid)
+
+                            const socketId = socket.id;
+                            db.query(
+                                'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
+                                [socketId, userId, postId],
+                                (err, rows) => {
+                                    if (err) console.log(err);
+                                },
+                            );
+                    
+                            io.to(postid).emit(
+                                'connected',
+                                userName + ' 님이 입장했습니다.',
+                            );
+            
+                        } else {
+                            console.log(userId,'fail')
+                            const status = "fail"
+                            socket.to(userId).emit('block chatroom', status) 
+                        }
+                    } else {
+                        console.log(userId,'sucess','아직널널해')
+                        socket.join(postid)
+
+                        const socketId = socket.id;
+                        db.query(
+                            'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
+                            [socketId, userId, postId],
+                            (err, rows) => {
+                                if (err) console.log(err);
+                            },
+                        );
+                
+                        io.to(postid).emit(
+                            'connected',
+                            userName + ' 님이 입장했습니다.',
+                        );
+                    }
+
                 },
             );
+            
     
-            io.to(postid).emit(
-                'connected',
-                userName + ' 님이 입장했습니다.',
-            );
+            // socket.join(postid); // string ('p' + postId)
+    
+            // // 확인용
+            // // console.log(io.sockets.adapter.rooms.get(postid), '여려명이 있는지 확인할 수 있나?' )
+            // // console.log(socket.id)
+            // // console.log(socket.rooms, '클 라 이 언 트')
+    
+            // console.log(socket.id, '<<<<<<<<<<<<<<<<<< 채팅 시작시 id');
+            // const socketId = socket.id;
+    
+            // db.query(
+            //     'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
+            //     [socketId, userId, postId],
+            //     (err, rows) => {
+            //         if (err) console.log(err);
+            //     },
+            // );
+    
+            // io.to(postid).emit(
+            //     'connected',
+            //     userName + ' 님이 입장했습니다.',
+            // );
         });
     
         // 메세지 주고 받기 + 오프라인 사용자들에게 알림
