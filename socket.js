@@ -42,9 +42,9 @@ module.exports = (server) => {
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
                     console.log(foundJoin)
-                    console.log( foundJoin[0].headCount, '이건 읽어줘')
+                    console.log( foundJoin[0].headCount,foundJoin[0].count, '이건 읽어줘')
 
-                    if (foundJoin[0].headCount >= foundJoin[0].count){
+                    if (foundJoin[0].headCount === foundJoin[0].count){
                         if (foundJoin[0].isJoin === 1){
                             console.log(userId,'sucess', '다있는데 너만통과')
                             socket.join(postid)
