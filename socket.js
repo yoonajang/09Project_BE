@@ -36,59 +36,55 @@ module.exports = (server) => {
             const postId = postid.replace('p', '');
             const { userId, userName } = param.loggedUser;
 
-            const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId = ? AND JP.isPick = 1;'
+            const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick, COUNT(CASE WHEN JP.isPick =1 then 1 end) count FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId = ? AND JP.User_userId = ?'
 
-            db.query( findJoin, postId,(err, foundJoin) => {
+            db.query( findJoin, [postId, userId],(err, foundJoin) => {
                     if (err) console.log(err);
+                    console.log(foundJoin, foundJoin[0], foundJoin[0].headCount)
+
+                    if (foundJoin.headCount === foundJoin.count){
+                        // if (user.User_userId === userId){
+                    //         console.log(user.User_userId,'sucess', '다있는데 너만통과')
+                    //         socket.join(postid)
+
+                    //         const socketId = socket.id;
+                    //         db.query(
+                    //             'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
+                    //             [socketId, userId, postId],
+                    //             (err, rows) => {
+                    //                 if (err) console.log(err);
+                    //             },
+                    //         );
                     
-                    console.log(foundJoin.length, foundJoin[0].headCount, '이것은 몇명인가~')
+                    //         io.to(postid).emit(
+                    //             'connected',
+                    //             userName + ' 님이 입장했습니다.',
+                    //         );
 
-                    if (foundJoin.length === foundJoin[0].headCount){
-                        foundJoin.forEach((user) => {
-                            // 채팅참여자가 찐참여자인경우,
-                            console.log(user, '여기 잘 나옴?')
-                            if (user.User_userId === userId){
-                                console.log(user.User_userId,'sucess', '다있는데 너만통과')
-                                socket.join(postid)
+                            
+                    //     } else {
+                    //         console.log(userId,'fail')
+                    //         const status = "fail"
+                    //         socket.to(userId).emit('block chatroom', status) 
+                    //     }
+                    //     })
+                    // } else {
+                    //     console.log(userId,'sucess','아직널널해')
+                    //     socket.join(postid)
 
-                                const socketId = socket.id;
-                                db.query(
-                                    'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
-                                    [socketId, userId, postId],
-                                    (err, rows) => {
-                                        if (err) console.log(err);
-                                    },
-                                );
-                        
-                                io.to(postid).emit(
-                                    'connected',
-                                    userName + ' 님이 입장했습니다.',
-                                );
-
-                                
-                            } else {
-                                console.log(userId,'fail')
-                                const status = "fail"
-                                socket.to(userId).emit('block chatroom', status) 
-                            }
-                        })
-                    } else {
-                        console.log(userId,'sucess','아직널널해')
-                        socket.join(postid)
-
-                        const socketId = socket.id;
-                        db.query(
-                            'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
-                            [socketId, userId, postId],
-                            (err, rows) => {
-                                if (err) console.log(err);
-                            },
-                        );
+                    //     const socketId = socket.id;
+                    //     db.query(
+                    //         'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
+                    //         [socketId, userId, postId],
+                    //         (err, rows) => {
+                    //             if (err) console.log(err);
+                    //         },
+                    //     );
                 
-                        io.to(postid).emit(
-                            'connected',
-                            userName + ' 님이 입장했습니다.',
-                        );
+                    //     io.to(postid).emit(
+                    //         'connected',
+                    //         userName + ' 님이 입장했습니다.',
+                    //     );
                     }
 
                 },
