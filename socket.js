@@ -40,7 +40,7 @@ module.exports = (server) => {
 
             db.query( findJoin, postId,(err, foundJoin) => {
                     if (err) console.log(err);
-                    console.log(foundJoin.length)
+                    console.log(foundJoin.length, '이것은 몇명인가~')
                 },
             );
             
