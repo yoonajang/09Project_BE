@@ -85,10 +85,10 @@ module.exports = (server) => {
                             'connected',
                             userName + ' 님이 입장했습니다.',
                         );
-                    } else {
-                        console.log(userId,'인원초과로 fail')
-                        const status = "fail"
-                        socket.to(userId).emit('block chatroom', status)
+                    // } else {
+                    //     console.log(userId,'인원초과로 fail')
+                    //     const status = "fail"
+                    //     socket.to(userId).emit('block chatroom', status)
                     }
 
                 },
