@@ -41,6 +41,7 @@ module.exports = (server) => {
 
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
+                    console.log(foundJoin)
                     console.log( foundJoin[0].headCount, '이건 읽어줘')
 
                     if (foundJoin[0].headCount === foundJoin[0],count){
