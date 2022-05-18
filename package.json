@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+
+    "test": "echo \"Error: no test specified\" && exit 1",
+
     "test": "jest",
+
     "start": "node ./bin/www",
     "debug": "nodemon ./bin/www",
     "deploy": "forever start ./bin/www"
@@ -40,6 +44,7 @@
     "nodemailer": "^6.7.4",
     "path": "^0.12.7",
     "sequelize": "^6.19.0",
+    "sharp": "^0.30.4",
     "socket.io": "^4.5.0"
   },
   "devDependencies": {

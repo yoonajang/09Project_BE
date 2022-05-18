@@ -8,7 +8,7 @@ const db = mysql.createConnection({
     user: process.env.user,
     password: process.env.password,
     database: process.env.database,
-    multipleStatements : true,
+    multipleStatements : true,  /*다중 쿼리 요청을 가능하게 하기 위해 필요한 속성*/
 });
 
 db.connect();
