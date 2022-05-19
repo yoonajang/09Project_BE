@@ -11,8 +11,7 @@ const app = express();
 const app_http = express();
 const httpPort = 80;
 const httpsPort = 443;
-const SocketIO = require("./socket");
-
+const SocketIO = require('./socket');
 
 app.use(cors());
 
@@ -39,9 +38,8 @@ const requestMiddleware = (req, res, next) => {
     next();
 };
 
-
 app.use(helmet());
-app.use(express.static('static')); 
+app.use(express.static('static'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(bodyParser.json());
@@ -69,17 +67,14 @@ app.get(
     },
 );
 
-
 const httpServer = http.createServer(app_http);
 const httpsServer = https.createServer(credentials, app);
 SocketIO(httpsServer);
 
-
 httpServer.listen(httpPort, () => {
-    console.log(new Date(),'http서버가 켜졌어요!');
+    console.log(new Date(), 'http서버가 켜졌어요!');
 });
 
 httpsServer.listen(httpsPort, () => {
-    console.log(new Date(),'https서버가 켜졌어요!');
+    console.log(new Date(), 'https서버가 켜졌어요!');
 });
-
