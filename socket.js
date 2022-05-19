@@ -209,10 +209,7 @@ module.exports = (server) => {
     
 
         // 상대방이 타자칠때 
-        socket.on('typing', postid => {
-            console.log(postid, '상대방이 타자칠때')
-            socket.to(postid).emit('typing')}
-       );
+        socket.on('typing', postid => {socket.to(postid).emit('typing')});
     
         socket.on('stop typing', postid => socket.to(postid).emit('stop typing'));
     
@@ -331,6 +328,52 @@ module.exports = (server) => {
                 }
             });
         });
+
+        //찐참여자 선택 취소 (by 본인) //이벤트명 다시설정!!
+        socket.on('cancel_my_participant', param => {
+            console.log(param)
+            const postid = param.postid;
+            const postId = postid.replace('p', '');
+            const userId = param.selectedUser.User_userId;
+            const userName = param.selectedUser.User_userName;
+    
+            const sql_1 = 
+                'UPDATE JoinPost SET isPick = 0, updatedAt = now() WHERE Post_postId=? and User_userId=?;';
+            const data = [postId, userId];
+            const sql_1s = mysql.format(sql_1, data);
+    
+            const sql_2 =
+                'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName ORDER BY JP.updatedAt DESC;';
+            const sql_2s = mysql.format(sql_2, postId);
+    
+            const sql_3 =
+                'SELECT * FROM `JoinPost` JP WHERE JP.isPick = 0 and JP.Post_postId = ? ORDER BY JP.updatedAt DESC;';
+            const sql_3s = mysql.format(sql_3, postId);
+            
+            const sql_4 =
+                'SELECT User_userId, title FROM Post WHERE postId = ?';
+            const sql_4s = mysql.format(sql_3, postId);
+    
+            db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, rows) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    const headList = rows[1];
+                    const waitList = rows[2];
+                    const bossId = rows[3].User_userId
+                    const status = title + ' 게시물에서 '+ userName +'님이 참여를 취소하셨습니다.' 
+                    console.log(bossId, status)
+                    socket.to(bossId).emit(`canceled_my_participant`, status)
+                    socket
+                        .to(postid)
+                        .emit(
+                            'receive_participant_list_after_canceled',
+                            headList,
+                            waitList,
+                        );
+                }
+            });
+        });
     
         // 방나가기 버튼 눌렀을 때, 
         socket.on('leave chatroom', (postid, user) => {
@@ -403,8 +446,8 @@ module.exports = (server) => {
             });
     
         })
-    
-    
+
+
         // 강퇴 (by 방장 > 작업필요)
         socket.on('kickout chatroom', (postid, user) => {
             const deleteJP =
