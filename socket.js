@@ -230,7 +230,7 @@ module.exports = (server) => {
             const sql_2s = mysql.format(sql_2, postId);
     
             const sql_3 =
-                'SELECT * FROM `JoinPost` JP WHERE JP.isPick = 0 and JP.Post_postId = ? ORDER BY JP.updatedAt DESC;';
+                'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE P.Post_postId = ? AND JP.isPick = 0 AND JP.User_userId NOT IN (P.User_userId) ORDER BY JP.updatedAt DESC;';
             const sql_3s = mysql.format(sql_3, postId);
 
             
@@ -343,7 +343,7 @@ module.exports = (server) => {
             const sql_2s = mysql.format(sql_2, postId);
     
             const sql_3 =
-                'SELECT * FROM `JoinPost` JP WHERE JP.isPick = 0 and JP.Post_postId = ? ORDER BY JP.updatedAt DESC;';
+                'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE P.Post_postId = ? AND JP.isPick = 0 AND JP.User_userId NOT IN (P.User_userId) ORDER BY JP.updatedAt DESC;';
             const sql_3s = mysql.format(sql_3, postId);
             
             const sql_4 =
