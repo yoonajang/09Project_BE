@@ -13,8 +13,6 @@ const httpPort = 80;
 const httpsPort = 443;
 const SocketIO = require('./socket');
 
-console.log('test')
-
 app.use(cors());
 
 const credentials = {
