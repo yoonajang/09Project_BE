@@ -22,3 +22,15 @@
 [31m    at Function.Module._load (node:internal/modules/cjs/loader:822:12)[39m
 [31m    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)[39m
 [31m    at node:internal/main/run_main_module:17:47[39m
+ 2022-05-19 20:05:90 || [ [31merror[39m ] ▶ [31muncaughtException: OAuth2Strategy requires a clientID option[39m
+[31mTypeError: OAuth2Strategy requires a clientID option[39m
+[31m    at Strategy.OAuth2Strategy (C:\Users\moon\OneDrive\Desktop\sparta\donationChallenge_BE\node_modules\passport-oauth2\lib\strategy.js:83:34)[39m
+[31m    at new Strategy (C:\Users\moon\OneDrive\Desktop\sparta\donationChallenge_BE\node_modules\passport-kakao\dist\Strategy.js:33:31)[39m
+[31m    at module.exports (C:\Users\moon\OneDrive\Desktop\sparta\donationChallenge_BE\kakao-auth\index.js:12:9)[39m
+[31m    at Object.<anonymous> (C:\Users\moon\OneDrive\Desktop\sparta\donationChallenge_BE\app.js:20:1)[39m
+[31m    at Module._compile (node:internal/modules/cjs/loader:1103:14)[39m
+[31m    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1155:10)[39m
+[31m    at Module.load (node:internal/modules/cjs/loader:981:32)[39m
+[31m    at Function.Module._load (node:internal/modules/cjs/loader:822:12)[39m
+[31m    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)[39m
+[31m    at node:internal/main/run_main_module:17:47[39m

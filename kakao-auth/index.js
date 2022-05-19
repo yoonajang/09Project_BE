@@ -5,14 +5,13 @@ const db = require('../config');
 const KakaoStrategy = require('passport-kakao').Strategy;
 // const User = require('../schemas/user.schemas');
 
-console.log(process.env.KAKAOCLIENT_ID, '>>>>>')
 
 module.exports = () => {
     passport.use(
         new KakaoStrategy(
             {
-                clientID: process.env.KAKAOCLIENT_ID,
-                clientSecret: process.env.KAKAOSECRET,
+                clientID: process.env.KAKAO_CLIENT_ID,
+                clientSecret: process.env.KAKAO_CLIENT_SECRET,
                 callbackURL: process.env.KAKAOCALLBACKURL,
             },
 
