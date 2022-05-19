@@ -41,12 +41,10 @@ module.exports = (server) => {
 
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
-                    console.log(foundJoin)
-                    console.log( foundJoin[0].headCount,foundJoin[0].count, '이건 읽어줘')
 
                     if (foundJoin[0].count >= foundJoin[0].headCount){
                         if (foundJoin[0].isJoin === 1){
-                            console.log(userId,'sucess', '다있는데 너만통과')
+
                             socket.join(postid)
 
                             const socketId = socket.id;
@@ -193,7 +191,7 @@ module.exports = (server) => {
         // 메세지 주고 받기 + 오프라인 사용자들에게 알림
         socket.on('sendmessage', param => {
             console.log('메세지');
-            console.log(param);
+
     
             const postid = param.newMessage.Post_postId;
             const postId = postid.replace('p', '');
@@ -273,8 +271,7 @@ module.exports = (server) => {
                                         console.log(foundUser, '채팅하는 사람이거나, 예외처리가 필요하거나')
                                     }
                                     
-                                })
-                                socket.to(postid).emit('receive message', param.newMessage);           
+                                });           
                             });
                         }
                     });
@@ -505,7 +502,7 @@ module.exports = (server) => {
                                 db.query(insertAlarm, insertParam, (err, Inserted) => {
                                     if (err) console.log(err);
     
-                                    db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
+                                    db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [Number(postId), Inserted.insertId], (err, messageAlarm) => {
                                         socket.to(bossId).emit('leaved chatroom',messageAlarm);
                                     })
     
