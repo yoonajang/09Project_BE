@@ -62,7 +62,7 @@ module.exports = server => {
                             postId,
                             (err, noPick) => {
                                 db.query(
-                                    'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId);',
+                                    'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
                                     postId,
                                     (err, Pick) => {
                                         db.query(
@@ -104,7 +104,7 @@ module.exports = server => {
                             postId,
                             (err, noPick) => {
                                 db.query(
-                                    'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId);',
+                                    'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
                                     postId,
                                     (err, Pick) => {
 
@@ -142,7 +142,7 @@ module.exports = server => {
                                 postId,
                                 (err, noPick) => {
                                     db.query(
-                                        'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId);',
+                                        'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
                                         postId,
                                         (err, Pick) => {
 
