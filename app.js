@@ -14,8 +14,7 @@ const app_http = express();
 const httpPort = 80;
 const httpsPort = 443;
 const SocketIO = require('./socket');
-const logger = require ('./config/logger');
-const morgan = require('morgan');
+
 
 kakaoPassport();
 app.use(cors()); 
@@ -52,20 +51,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestMiddleware);
 app.use('/', routers);
 app.use('/oauth', kakaoRouter);
-
-
-app.use(morgan('dev'));
-app.use(((req, res, next) => {
-    logger.info('로그 출력 test용 middleware');
-
-    logger.error('error 메시지');
-    logger.warn('warn 메시지');
-    logger.info('info 메시지');
-    logger.http('http 메시지');
-    logger.debug('debug 메시지');
-
-    next();
-}));
 
 
 app_http.use((req, res, next) => {
