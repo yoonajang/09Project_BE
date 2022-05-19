@@ -40,8 +40,6 @@ module.exports = (server) => {
 
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
-                    console.log(foundJoin)
-                    console.log( foundJoin[0].headCount,foundJoin[0].count, '이건 읽어줘')
 
                     if (foundJoin[0].count >= foundJoin[0].headCount){
                         if (foundJoin[0].isJoin === 1){
@@ -65,7 +63,7 @@ module.exports = (server) => {
                         } else {
                             console.log(userId,'다있는데, 너는 참가자 아니야. fail','<<<<<<<<<<<<<<<<<<<<<<<')
                             const status = "fail"
-                            socket.to(userId).emit('block chatroom', status)
+                            socket.to(userId).emit('block chatroom', "fail")
                         }
                     } else if (foundJoin[0].headCount > foundJoin[0].count) {
                         console.log(userId,'sucess','아직널널해')
@@ -442,8 +440,7 @@ module.exports = (server) => {
                     const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
                         db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
                             if(err) console.log(err)
-                            console.log('삭제, 거래자 아님')
-                            console.log('퇴장하셨습니다!_____1')
+                            console.log('삭제, 거래자 아님', '퇴장하셨습니다_______________!')
                             socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.');
                         })
                 }
