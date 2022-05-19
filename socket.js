@@ -183,19 +183,15 @@ module.exports = (server) => {
                                             db.query(insertAlarm, params, (err, Inserted) => {
                                                 if (err) console.log(err);
 
-                                                console.log(Inserted, '혹시 여기서..오류가 난다면')
                                                 const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
 
                                                 db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
-                                                    
-                                                    console.log(user.User_userId,'에게 감!')
-                                                    console.log(messageAlarm)
                                                     
                                                     socket.to(user.User_userId).emit('send message alarm',messageAlarm);   
                                                     
                                                 })
                                             })
-                                        socket.to(user.User_userId).emit('receive message', param.newMessage);
+                                        // socket.to(user.User_userId).emit('receive message', param.newMessage);
 
                                     } else {
                                         console.log(foundUser, '채팅하는 사람이거나, 예외처리가 필요하거나')
