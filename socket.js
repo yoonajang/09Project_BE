@@ -58,32 +58,101 @@ module.exports = (server) => {
                                 },
                             );
                     
-                            io.to(postid).emit(
-                                'connected',
-                                userName + ' 님이 입장했습니다.',
+                            db.query(
+                                'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
+                                postId,
+                                (err, noPick) => {
+                                    db.query(
+                                        'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
+                                        postId,
+                                        (err, Pick) => {
+                                            db.query(
+                                                'SELECT User_userId FROM Post WHERE postId = ?',
+                                                postId,
+                                                (err, bossId) => {
+                                                    const userLists  = [param.loggedUser, noPick, Pick, bossId]
+    
+                                                    io.to(postid).emit(
+                                                        'connected',
+                                                        userName +
+                                                            ' 님이 입장했습니다.',
+                                                        userLists
+                                                    );
+    
+                                            })
+    
+                                        },
+                                    );
+                                },
                             );
-            
                         } else {
-                            console.log(userId,'다있는데, 너는 참가자 아니야. fail')
-                            const status = "fail"
-                            socket.to(userId).emit('block chatroom', status) 
-                        }
-                    } else if (foundJoin[0].headCount > foundJoin[0].count) {
-                        console.log(userId,'sucess','아직널널해')
-                        socket.join(postid)
+                            console.log(
+                                userId,
+                                '다있는데, 너는 참가자 아니야. fail',
+                            );
+                            
+                            const status = 'fail';
 
+                            socket.join(userId);
+                            socket.to(userId).emit('block', 'fail');
+
+                            db.query('SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;', postId,(err, noPick) => {
+
+                                db.query(
+                                    'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;', postId, (err, Pick) => {
+
+                                        db.query('SELECT User_userId FROM Post WHERE postId = ?', postId, (err, bossId) => {
+                                            const userLists  = [param.loggedUser, noPick, Pick, bossId]
+
+                                            io.to(postid).emit(
+                                                'connected',
+                                                userName +
+                                                    ' 님이 입장했습니다.',
+                                                userLists
+                                            );
+
+                                        })
+                                })
+                                 
+                            })
+                        }  
+                    } else if (foundJoin[0].headCount > foundJoin[0].count) {
+                        console.log(userId, 'sucess', '아직널널해');
+                        socket.join(postid);
+    
                         const socketId = socket.id;
                         db.query(
-                            'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
+                            'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;',
                             [socketId, userId, postId],
                             (err, rows) => {
                                 if (err) console.log(err);
+                                db.query(
+                                    'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
+                                    postId,
+                                    (err, noPick) => {
+                                        db.query(
+                                            'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
+                                            postId,
+                                            (err, Pick) => {
+    
+                                                db.query(
+                                                    'SELECT User_userId FROM Post WHERE postId = ?',
+                                                    postId,
+                                                    (err, bossId) => {
+                                                        const userLists  = [param.loggedUser, noPick, Pick, bossId]
+    
+                                                        io.to(postid).emit(
+                                                            'connected',
+                                                            userName +
+                                                                ' 님이 입장했습니다.',
+                                                            userLists
+                                                        );
+
+                                                })
+
+                                        })
+                                    });
                             },
-                        );
-                
-                        io.to(postid).emit(
-                            'connected',
-                            userName + ' 님이 입장했습니다.',
                         );
                     }
 
