@@ -89,7 +89,6 @@ router.post('/signup', (req, res, next) => {
 
         //authNum 저장
         db.query(
-<<<<<<< HEAD
             'SELECT * FROM AuthNum WHERE userEmail=?',
             userEmail,
             (err, data) => {
@@ -158,8 +157,6 @@ router.post('/signup', (req, res, next) => {
 
         //authNum 저장
         db.query(
-=======
->>>>>>> 3be42909c42a00acbe1647c534632e64c874cb6d
             'SELECT *, timestampdiff(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
             userEmail,
             (err, data) => {
@@ -328,65 +325,6 @@ router.put('/ischecked', authMiddleware, (req, res) => {
     });
 });
 
-
-// 유저 프로필 수정
-router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
-        const userId = res.locals.user.userId;
-        const userImage = req.file?.location;
-        // console.log(userId, userImage);
-        try {
-            const sql = ' UPDATE User SET userImage=? WHERE userId=?';
-            db.query(sql, [userImage, userId], (err, rows) => {
-                res.send({ msg: '글 등록 성공' });
-            });
-        } catch (error) {
-            res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
-        }
-    },
-);
-
-//유저 마이페이지 (참여한 게시판 조회) *** 자신의 것 조회할때랑 다른사람것 조회할때를... 프론트와 의논.
-router.get('/:userId', authMiddleware, (req, res) => {
-    const userId = req.params.userId;
-
-    const userInfo = 
-        'SELECT * FROM `User` WHERE `userId`=?';
-    db.query(userInfo, [userId],(err, userinfo) =>{
-        if (err) console.log(err)
-    
-    const buyList =
-        'SELECT * FROM Post WHERE `User_userId`= ? and `category`="buy"';
-    db.query(buyList, [userId], (err, buylist) => {
-        if (err) console.log(err);
-
-    const eatList =
-        'SELECT * FROM Post WHERE `User_userId`= ? and `category`="eat"';
-    db.query(eatList, [userId], (err, eatlist) => {
-        if (err) console.log(err);
-
-    const likeList = 
-        'SELECT * FROM `Like` WHERE `User_userId`= ?';
-    db.query(likeList, [userId], (err, likelist) => {
-        if (err) console.log(err);
-    
-        
-        res.status(201).send({ msg: 'success', userInfo, buyList, eatList ,likeList});
-    })  
-    })
-    })
-    })
-});
-
-//유저 좋아요 조회
-router.get('/like/:userId', authMiddleware, (req, res) => {
-    const userId = req.params.userId;
-
-    const sql = 'SELECT * FROM `Like` WHERE `User_userId`= ?';
-    db.query(sql, [userId], (err, data) => {
-        if (err) console.log(err);
-        res.status(201).send({ msg: 'success', data });
-    });
-});
 
 // 로그인 여부확인
 router.get('/islogin', authMiddleware, async (req, res) => {
