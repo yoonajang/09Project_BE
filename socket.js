@@ -376,11 +376,11 @@ module.exports = (server) => {
         });
     
         // 방나가기 버튼 눌렀을 때, 
-        socket.on('leave chatroom', (postid, user) => {
+        socket.on('leave chatroom', (postid, userinfo) => {
             console.log(postid, user)
             const postId = postid.replace('p', '');
-            const userId = user.userId;
-            const userName = user.userName;
+            const user = userinfo.userId;
+            const userName = userinfo.userName;
     
             //방장만 안내가 가기.
             const selectJP = 'SELECT isPick FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
@@ -445,11 +445,9 @@ module.exports = (server) => {
                     const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
                         db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
                             if(err) console.log(err)
-                            console.log('삭제')
+                            console.log('삭제, 거래자 아님')
                             socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.');
                         })
-                
-                    console.log('거래자는 아님!')
                 }
             });
     
