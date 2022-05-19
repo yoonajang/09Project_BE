@@ -133,7 +133,7 @@ module.exports = server => {
                                         postId,
                                         (err, Pick) => {
 
-                                            const userList  = [param.loggedUser, noPick, Pick,]
+                                            const userList = [param.loggedUser, noPick, Pick,]
 
                                             io.to(postid).emit(
                                                 'connected',

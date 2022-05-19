@@ -4,8 +4,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const routers = require('./routes');
-// const kakaoPassport = require('./kakao-auth/index.js');
-// const kakaoRouter = require('./kakao-auth/kakao/kakao.js');
+const kakaoPassport = require('./kakao-auth/index.js');
+const kakaoRouter = require('./kakao-auth/kakao/kakao.js');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
@@ -17,11 +17,7 @@ const SocketIO = require('./socket');
 const logger = require ('./config/logger');
 const morgan = require('morgan');
 
-// global.logger || (global.logger = require('./config/logger'))
-// const morganMiddleware = require('./config/morganMiddleware');
-// app.use(morganMiddleware);
-
-// kakaoPassport();
+kakaoPassport();
 app.use(cors()); 
 
 const credentials = {
@@ -55,7 +51,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestMiddleware);
 app.use('/', routers);
-// app.use('', kakaoRouter);
+app.use('', kakaoRouter);
 
 
 app.use(morgan('dev'));
