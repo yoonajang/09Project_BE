@@ -62,7 +62,7 @@ module.exports = server => {
                             postId,
                             (err, noPick) => {
                                 db.query(
-                                    'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 1;',
+                                    'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId);',
                                     postId,
                                     (err, Pick) => {
                                         const userList  = [param.loggedUser, noPick, Pick,]
@@ -97,7 +97,7 @@ module.exports = server => {
                             postId,
                             (err, noPick) => {
                                 db.query(
-                                    'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 1;',
+                                    'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId);',
                                     postId,
                                     (err, Pick) => {
 
@@ -129,7 +129,7 @@ module.exports = server => {
                                 postId,
                                 (err, noPick) => {
                                     db.query(
-                                        'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 1;',
+                                        'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId);',
                                         postId,
                                         (err, Pick) => {
 
