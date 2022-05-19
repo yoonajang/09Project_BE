@@ -65,13 +65,7 @@ module.exports = (server) => {
                         } else {
                             console.log(userId,'다있는데, 너는 참가자 아니야. fail','<<<<<<<<<<<<<<<<<<<<<<<')
                             const status = "fail"
-                            socket.to(userId).emit('block chatroom', status) 
-
-                            io.to(postid).emit(
-                                'connected',
-                                userName + ' 님이 입장했습니다.',
-                            );
-
+                            socket.to(userId).emit('block chatroom', status)
                         }
                     } else if (foundJoin[0].headCount > foundJoin[0].count) {
                         console.log(userId,'sucess','아직널널해')
