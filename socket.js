@@ -57,7 +57,7 @@ module.exports = (server) => {
                     
                             io.to(postid).emit(
                                 'connected',
-                                userName + ' 님이 입장했습니다.',
+                                param.loggedUser,
                             );
             
                         } else {
@@ -68,7 +68,7 @@ module.exports = (server) => {
                             socket.to(userId).emit('block', "fail")
                             io.to(postid).emit(
                                 'connected',
-                                userName + ' 님이 입장했습니다.',
+                                param.loggedUser,
                             );
                         }
                     } else if (foundJoin[0].headCount > foundJoin[0].count) {
@@ -86,7 +86,7 @@ module.exports = (server) => {
                 
                         io.to(postid).emit(
                             'connected',
-                            userName + ' 님이 입장했습니다.',
+                            param.loggedUser,
                         );
                     }
 
