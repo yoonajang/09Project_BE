@@ -17,7 +17,7 @@ const SocketIO = require('./socket');
 const morgan = require("morgan");
 const winston = require("./config/winston");
 
-kakaoPassport();
+// kakaoPassport();
 app.use(cors()); 
 
 const credentials = {
