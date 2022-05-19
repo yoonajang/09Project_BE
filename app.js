@@ -50,7 +50,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestMiddleware);
 app.use('/', routers);
-app.use('/oauth', kakaoRouter);
+app.use('/kakao-auth', kakaoRouter);
 
 
 app_http.use((req, res, next) => {
@@ -85,12 +85,3 @@ httpsServer.listen(httpsPort, () => {
     console.log(new Date(),`${httpPort}`, 'https서버가 켜졌어요!');
 });
 
-// app.get('/', (req, res) => {
-//     logger.info('GET /');
-//     res.sendStatus(200);
-//   });
-  
-//   app.get('/error', (req, res) => {
-//     logger.error('Error message');
-//     res.sendStatus(500);
-//   });

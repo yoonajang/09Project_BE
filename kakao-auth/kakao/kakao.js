@@ -33,5 +33,6 @@ const kakaoCallback = (req, res, next) => {
         res.send({ user: result });
     })(req, res, next);
 };
+
 router.get('/kakao/callback', kakaoCallback);
 module.exports = router;
