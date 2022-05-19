@@ -76,10 +76,10 @@ SocketIO(httpsServer);
 
 
 httpServer.listen(httpPort, () => {
-    console.log('_______________________http서버가 켜졌어요!');
+    console.log(new Date(),'http서버가 켜졌어요!');
 });
 
 httpsServer.listen(httpsPort, () => {
-    console.log('_______________________https서버가 켜졌어요!');
+    console.log(new Date(),'https서버가 켜졌어요!');
 });
 
