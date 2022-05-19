@@ -90,6 +90,7 @@ module.exports = server => {
                             '총인원',
                             foundJoin[0].headCount,
                             '현재인원',
+                            
                         );
                         console.log(
                             userId,
