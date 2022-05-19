@@ -34,9 +34,7 @@ module.exports = (server) => {
     
             const postid = param.postid;
             const postId = Number(postid.replace('p', ''));
-            console.log(param, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
             const { userId, userName } = param.loggedUser;
-            console.log(userId, userName , '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
 
             const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick, COUNT(CASE WHEN JP.isPick =1 then 1 end) count, EXISTS (SELECT JP.User_userId, JP.Post_postId FROM `JoinPost`JP where JP.User_userId=? AND JP.Post_postId  =? AND JP.isPick=1) isJoin FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId =?'
 
