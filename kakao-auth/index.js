@@ -5,7 +5,7 @@ const db = require('../config');
 const KakaoStrategy = require('passport-kakao').Strategy;
 // const User = require('../schemas/user.schemas');
 
-
+console.log(process.env.KAKAO_CLIENT_ID)
 module.exports = () => {
     passport.use(
         new KakaoStrategy(
