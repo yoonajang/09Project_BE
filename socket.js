@@ -68,6 +68,7 @@ module.exports = server => {
                                         io.to(postid).emit(
                                             'connected',
                                             userName + ' 님이 입장했습니다.',
+                                            param.loggedUser,
                                             noPick,
                                             Pick,
                                         );
@@ -101,6 +102,7 @@ module.exports = server => {
                                         io.to(postid).emit(
                                             'connected',
                                             userName + ' 님이 입장했습니다.',
+                                            param.loggedUser,
                                             noPick,
                                             Pick,
                                         );
@@ -131,6 +133,7 @@ module.exports = server => {
                                                 'connected',
                                                 userName +
                                                     ' 님이 입장했습니다.',
+                                                param.loggedUser,
                                                 noPick,
                                                 Pick,
                                             );
