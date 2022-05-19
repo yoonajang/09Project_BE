@@ -16,7 +16,7 @@ module.exports = () => {
             async (accessToken, refreshToken, profile, done) => {
                 console.log('try in', profile,'<<<<<<<');
                 
-                const userEmail = profile.kakao_account.email
+                const userEmail = profile._json.kakao_account.email
                 const sql = 'select * from User where kakaoId = ? AND provider ="kakao"'
 
                 db.query(sql, profile.id, (err, results) => {
