@@ -444,8 +444,11 @@ module.exports = (server) => {
                         db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
                             if(err) console.log(err)
                             console.log('삭제, 거래자 아님')
+                            console.log('퇴장하셨습니다!_____1')
+                            socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.');
                         })
                 }
+                console.log('퇴장하셨습니다!____2')
                 socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.');
             });
     
