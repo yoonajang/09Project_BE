@@ -43,7 +43,9 @@
     "path": "^0.12.7",
     "sequelize": "^6.19.0",
     "sharp": "^0.30.4",
-    "socket.io": "^4.5.0"
+    "socket.io": "^4.5.0",
+    "winston": "^3.7.2",
+    "winston-daily-rotate-file": "^4.6.1"
   },
   "devDependencies": {
     "jest": "^28.1.0",
