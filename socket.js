@@ -56,7 +56,7 @@ module.exports = server => {
                             },
                         );
 
-                        // 수정하고 있었으.
+                       
                         db.query(
                             'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
                             postId,
@@ -65,14 +65,21 @@ module.exports = server => {
                                     'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId);',
                                     postId,
                                     (err, Pick) => {
-                                        const userList  = [param.loggedUser, noPick, Pick,]
+                                        db.query(
+                                            'SELECT User_userId FROM Post WHERE postId = ?',
+                                            postId,
+                                            (err, bossId) => {
+                                                const userLists  = [param.loggedUser, noPick, Pick, bossId]
 
-                                        io.to(postid).emit(
-                                            'connected',
-                                            userName +
-                                                ' 님이 입장했습니다.',
-                                            userList
-                                        );
+                                                io.to(postid).emit(
+                                                    'connected',
+                                                    userName +
+                                                        ' 님이 입장했습니다.',
+                                                    userLists
+                                                );
+
+                                        })
+  
                                     },
                                 );
                             },
@@ -101,14 +108,20 @@ module.exports = server => {
                                     postId,
                                     (err, Pick) => {
 
-                                        const userList  = [param.loggedUser, noPick, Pick,]
-                                        
-                                        io.to(postid).emit(
-                                            'connected',
-                                            userName +
-                                                ' 님이 입장했습니다.',
-                                            userList 
-                                        );
+                                        db.query(
+                                            'SELECT User_userId FROM Post WHERE postId = ?',
+                                            postId,
+                                            (err, bossId) => {
+                                                const userLists  = [param.loggedUser, noPick, Pick, bossId]
+
+                                                io.to(postid).emit(
+                                                    'connected',
+                                                    userName +
+                                                        ' 님이 입장했습니다.',
+                                                    userLists
+                                                );
+
+                                        })
                                     },
                                 );
                             },
@@ -133,14 +146,20 @@ module.exports = server => {
                                         postId,
                                         (err, Pick) => {
 
-                                            const userList = [param.loggedUser, noPick, Pick,]
-
-                                            io.to(postid).emit(
-                                                'connected',
-                                                userName +
-                                                    ' 님이 입장했습니다.',
-                                                userList 
-                                            );
+                                            db.query(
+                                                'SELECT User_userId FROM Post WHERE postId = ?',
+                                                postId,
+                                                (err, bossId) => {
+                                                    const userLists  = [param.loggedUser, noPick, Pick, bossId]
+    
+                                                    io.to(postid).emit(
+                                                        'connected',
+                                                        userName +
+                                                            ' 님이 입장했습니다.',
+                                                        userLists
+                                                    );
+    
+                                            })
                                         },
                                     );
                                 },
