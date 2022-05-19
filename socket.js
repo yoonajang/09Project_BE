@@ -421,9 +421,6 @@ module.exports = (server) => {
                             if (bossStatus === 0){         
                                 db.query(insertAlarm, insertParam, (err, Inserted) => {
                                     if (err) console.log(err);
-                                    console.log(
-                                        '오프라인 회원들에게 메시지 완료',
-                                    );
                                 });
     
                             } else {
@@ -441,6 +438,12 @@ module.exports = (server) => {
                         });
                     });     
                 } else {
+                    const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
+                            db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
+                                if(err) console.log(err)
+                                console.log('삭제')
+                            })
+    
                     console.log('거래자는 아님!')
                 }
             });
