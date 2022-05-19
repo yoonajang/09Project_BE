@@ -63,7 +63,7 @@ module.exports = (server) => {
                             );
             
                         } else {
-                            console.log(userId,'다있는데, 너는 참가자 아니야. fail')
+                            console.log(userId,'다있는데, 너는 참가자 아니야. fail','<<<<<<<<<<<<<<<<<<<<<<<')
                             const status = "fail"
                             socket.to(userId).emit('block chatroom', status) 
 
