@@ -377,9 +377,8 @@ module.exports = (server) => {
     
         // 방나가기 버튼 눌렀을 때, 
         socket.on('leave chatroom', (postid, userinfo) => {
-            console.log(postid, userinfo)
+
             const postId = postid.replace('p', '');
-            console.log(userinfo.userId,'M<<<<<<<<<<<<<,<<<')
             const user = userinfo.userId;
             const userName = userinfo.userName;
     
@@ -441,8 +440,6 @@ module.exports = (server) => {
                         });
                     });     
                 } else {
-
-
                     const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
                         db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
                             if(err) console.log(err)
