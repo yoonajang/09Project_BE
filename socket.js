@@ -34,6 +34,7 @@ module.exports = (server) => {
     
             const postid = param.postid;
             const postId = Number(postid.replace('p', ''));
+            console.log(param, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
             const { userId, userName } = param.loggedUser;
 
             // 수정됨.
