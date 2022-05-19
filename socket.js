@@ -377,8 +377,9 @@ module.exports = (server) => {
     
         // 방나가기 버튼 눌렀을 때, 
         socket.on('leave chatroom', (postid, userinfo) => {
-            console.log(postid, user)
+            console.log(postid, userinfo)
             const postId = postid.replace('p', '');
+            console.log(userinfo.userId,'M<<<<<<<<<<<<<,<<<')
             const user = userinfo.userId;
             const userName = userinfo.userName;
     
