@@ -89,6 +89,77 @@ router.post('/signup', (req, res, next) => {
 
         //authNum 저장
         db.query(
+<<<<<<< HEAD
+            'SELECT * FROM AuthNum WHERE userEmail=?',
+            userEmail,
+            (err, data) => {
+                // if(err) console.log(err)
+                console.log(data.length === 0);
+                if (data.length === 0) {
+                    db.query('INSERT AuthNum(`authNum`, `userEmail`) VALUES (?,?)',
+                        [authNum, userEmail],
+                        (err, data) => {
+                            res.send({ msg: 'success' });
+
+                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`) VALUES (?,?,?,?,?)', param,
+                        (err, row) => {
+                            if (err) {
+                                console.log(err);
+                                res.send({ meg: 'fail' });
+                            } else {
+                                res.send({ meg: 'success' });
+                            }
+                        }
+                    });
+                } else {
+                    db.query(
+                        'UPDATE AuthNum SET authNum=? WHERE userEmail=?',
+                        [authNum, userEmail],
+                        (err, data) => {
+                            res.send({ msg: 'success' });
+                        },
+                    );
+                }
+            },
+        );
+    });
+
+    //이메일 인증 확인
+    router.post('/mailauth', async (req, res) => {
+        const { userEmail, authNum } = req.body;
+
+        db.query(
+            'SELECT * FROM AuthNum WHERE userEmail=?',
+            userEmail,
+            (err, data) => {
+                if (data[0].authNum === authNum) {
+                    res.send({ msg: 'success' });
+                } else {
+                    res.send({ msg: 'fail' });
+                }
+            },
+        );
+    });
+
+
+    // 이메일 중복확인
+    router.post('/emailcheck', (req, res) => {
+        const email = req.body.userEmail;
+        const sql = 'select * from User where userEmail=?';
+
+        db.query(sql, [email], (err, data) => {
+            if (data.length === 0) {
+                console.log(err);
+                res.send({ msg: 'success' });
+            } else {
+        }
+        });
+   
+
+        //authNum 저장
+        db.query(
+=======
+>>>>>>> 3be42909c42a00acbe1647c534632e64c874cb6d
             'SELECT *, timestampdiff(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
             userEmail,
             (err, data) => {
