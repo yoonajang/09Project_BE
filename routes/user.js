@@ -9,7 +9,7 @@ const path = require('path');
 let appDir = path.dirname(require.main.filename);
 const upload = require('../S3/s3');
 const { PollyCustomizations } = require('aws-sdk/lib/services/polly');
-
+const passport = require('passport');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -193,6 +193,19 @@ router.post('/login', (req, res) => {
         }
     });
 });
+//카카오로그인
+
+router.get('/kakao', passport.authenticate('kakao'));
+
+router.get(
+    '/kakao/callback',
+    passport.authenticate('kakao', {
+        failureRedirect: '/',
+    }),
+    (req, res) => {
+        res.redirect('/');
+    },
+);
 
 // 로그인 여부확인
 router.get('/islogin', authMiddleware, async (req, res) => {
@@ -209,5 +222,4 @@ router.get('/islogin', authMiddleware, async (req, res) => {
     });
 });
 
-
-module.exports = router; 
+module.exports = router;

@@ -69,7 +69,6 @@ router.post('/postlist', (req, res) => {
     }
 });
 
-
 //----------------게시글-----------------//
 
 // 게시글 조회
@@ -159,6 +158,7 @@ router.post(
 router.delete('/:postId', authMiddleware, (req, res, next) => {
     const postId = req.params.postId;
     const userId = res.locals.user.userId;
+    const email = res.locals.user.userEmail;
     const sql = 'DELETE FROM Post WHERE postId=?';
 
     db.query(sql, postId, function (err, result) {
@@ -168,6 +168,35 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
         } else {
             const sql = 'UPDATE User SET point = point-3 WHERE userId=?';
             db.query(sql, userId, function (err, result) {
+                var emailpush = function (req, res, next) {
+                    let transporter = nodemailer.createTransport({
+                        service: 'gmail',
+                        auth: {
+                            user: process.env.nodemailerUser,
+                            pass: process.env.nodemailerPw, // gmail 계정의 비밀번호를 입력
+                        },
+                    });
+
+                    //    var emails = 'SELECT *FROM user WEHRE='userEmail'
+                    //    to_list= ['okey235@gmail.com']
+
+                    let mailOptions = {
+                        from: 'nbbang2022@gmail.com', // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
+                        to: 'okey2356@gmail.com', // 수신 메일 주소
+                        subject: '[안내]작성자가 게시글을 삭제하였습니다.', // 제목
+                        text: '안녕하세요 고객님, 09프로젝트입니다.  작성자가 게시글을 삭제하였습니다. ', // 내용
+                    };
+
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    });
+                };
+
+                emailpush();
                 res.status(201).send({ msg: 'success' });
             });
         }
@@ -191,10 +220,8 @@ router.put('/:postId', authMiddleware, (req, res) => {
                 res.send({ msg: 'success' });
             });
         }
-
     });
 });
-
 
 //----------------채팅-----------------//
 
@@ -267,7 +294,6 @@ router.get('/outchat/:postid', authMiddleware, (req, res) => {
     });
 });
 
-
 //----------------좋아요-----------------//
 
 // 좋아요 생성
@@ -315,6 +341,5 @@ router.delete('/like/:postId', authMiddleware, (req, res) => {
         }
     });
 });
-
 
 module.exports = router;
