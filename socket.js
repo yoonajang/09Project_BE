@@ -407,7 +407,7 @@ module.exports = (server) => {
                             const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
     
                             socket.leave(postid)
-                            socket.to(postid).emit('connected', unjoinedName + '님이 퇴장하셨습니다.');
+                            // socket.to(postid).emit('connected', unjoinedName + '님이 퇴장하셨습니다.');
     
                             const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
                             db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
@@ -444,9 +444,9 @@ module.exports = (server) => {
                         db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
                             if(err) console.log(err)
                             console.log('삭제, 거래자 아님')
-                            socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.');
                         })
                 }
+                socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.');
             });
     
         })
