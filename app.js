@@ -15,7 +15,7 @@ const httpPort = 80;
 const httpsPort = 443;
 const SocketIO = require('./socket');
 const morgan = require("morgan");
-const winston = require("./config/winston");
+// const winston = require("./config/winston");
 
 // kakaoPassport();
 app.use(cors()); 
@@ -78,9 +78,9 @@ const httpsServer = https.createServer(credentials, app);
 SocketIO(httpsServer);
 
 httpServer.listen(httpPort, () => {
-    winston.info(new Date(),`${httpPort}`,'http서버가 켜졌어요!');
+    console.log(new Date(),`${httpPort}`,'http서버가 켜졌어요!');
 });
 
 httpsServer.listen(httpsPort, () => {
-    winston.info(new Date(),`${httpPort}`, 'https서버가 켜졌어요!');
+    console.log(new Date(),`${httpPort}`, 'https서버가 켜졌어요!');
 });
