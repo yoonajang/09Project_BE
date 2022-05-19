@@ -558,12 +558,31 @@ module.exports = server => {
                                                     'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId',
                                                     [postId, Inserted.insertId],
                                                     (err, messageAlarm) => {
-                                                        socket
-                                                            .to(bossId)
-                                                            .emit(
-                                                                'leaved chatroom',
-                                                                messageAlarm,
-                                                            );
+                                                        db.query(
+                                                            'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
+                                                            postId,
+                                                            (err, noPick) => {
+                                                                db.query(
+                                                                    'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 1;',
+                                                                    postId,
+                                                                    (
+                                                                        err,
+                                                                        Pick,
+                                                                    ) => {
+                                                                        socket
+                                                                            .to(
+                                                                                bossId,
+                                                                            )
+                                                                            .emit(
+                                                                                'leaved chatroom',
+                                                                                messageAlarm,
+                                                                                noPick,
+                                                                                Pick,
+                                                                            );
+                                                                    },
+                                                                );
+                                                            },
+                                                        );
                                                     },
                                                 );
                                             },
@@ -585,12 +604,28 @@ module.exports = server => {
                                 '삭제, 거래자 아님',
                                 '퇴장하셨습니다_______________!',
                             );
-                            socket
-                                .to(postid)
-                                .emit(
-                                    'connected',
-                                    userName + '님이 퇴장하셨습니다.',
-                                );
+
+                            db.query(
+                                'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
+                                postId,
+                                (err, noPick) => {
+                                    db.query(
+                                        'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 1;',
+                                        postId,
+                                        (err, Pick) => {
+                                            socket
+                                                .to(postid)
+                                                .emit(
+                                                    'connected',
+                                                    userName +
+                                                        '님이 퇴장하셨습니다.',
+                                                    noPick,
+                                                    Pick,
+                                                );
+                                        },
+                                    );
+                                },
+                            );
                         },
                     );
                 }
