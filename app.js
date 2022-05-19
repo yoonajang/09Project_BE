@@ -14,7 +14,7 @@ const app_http = express();
 const httpPort = 80;
 const httpsPort = 443;
 const SocketIO = require('./socket');
-const { logger } = require ('./config/winston');
+// const { logger } = require ('./config/winston');
 // const morgan = require("morgan");
 // const winston = require("./config/winston");
 
@@ -86,12 +86,12 @@ httpsServer.listen(httpsPort, () => {
     console.log(new Date(),`${httpPort}`, 'https서버가 켜졌어요!');
 });
 
-app.get('/', (req, res) => {
-    logger.info('GET /');
-    res.sendStatus(200);
-  });
+// app.get('/', (req, res) => {
+//     logger.info('GET /');
+//     res.sendStatus(200);
+//   });
   
-  app.get('/error', (req, res) => {
-    logger.error('Error message');
-    res.sendStatus(500);
-  });
+//   app.get('/error', (req, res) => {
+//     logger.error('Error message');
+//     res.sendStatus(500);
+//   });
