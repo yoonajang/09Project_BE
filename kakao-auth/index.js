@@ -47,12 +47,14 @@ module.exports = () => {
                                 }
                                 
                                 const user = results[0];
+                                console.log(user, 1)
                                 return done(null, user);
                             });
                         });
                     } else {
                         //이미 유저가 존재한다면 바로 로그인
                         const user = results[0];
+                        console.log(user, 2)
                         return done(null, user);
                     }
                 });
