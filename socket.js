@@ -230,7 +230,7 @@ module.exports = (server) => {
             const sql_2s = mysql.format(sql_2, postId);
     
             const sql_3 =
-                'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE P.Post_postId = ? AND JP.isPick = 0 AND JP.User_userId NOT IN (P.User_userId) ORDER BY JP.updatedAt DESC;';
+                'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.Post_postId = ? AND JP.isPick = 0 AND JP.User_userId NOT IN (P.User_userId) ORDER BY JP.updatedAt DESC;';
             const sql_3s = mysql.format(sql_3, postId);
 
             
@@ -292,7 +292,7 @@ module.exports = (server) => {
         //찐참여자 선택 취소 (by 방장)
         socket.on('cancel_new_participant', param => {
             const postid = param.postid;
-            const postId = postid.replace('p', '');
+            const postId = Number(postid.replace('p', ''));
             const userId = param.selectedUser.User_userId;
     
             const sql_1 = 
@@ -305,7 +305,7 @@ module.exports = (server) => {
             const sql_2s = mysql.format(sql_2, postId);
     
             const sql_3 =
-                'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE P.Post_postId = ? AND JP.isPick = 0 AND JP.User_userId NOT IN (P.User_userId) ORDER BY JP.updatedAt DESC;';
+                'SELECT * FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.Post_postId = ? AND JP.isPick = 0 AND JP.User_userId NOT IN (P.User_userId) ORDER BY JP.updatedAt DESC;';
             const sql_3s = mysql.format(sql_3, postId);
     
             db.query(sql_1s + sql_2s + sql_3s, (err, rows) => {
