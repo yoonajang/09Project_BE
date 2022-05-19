@@ -17,9 +17,9 @@ module.exports = () => {
                 console.log('try in', profile,'<<<<<<<');
                 
                 const userEmail = profile._json.kakao_account.email
-                const sql = 'select * from User where kakaoId = ? AND provider ="kakao"'
+                const sql = 'select * from User where userEmail = ?'
 
-                db.query(sql, profile.id, (err, results) => {
+                db.query(sql, userEmail, (err, results) => {
                     if (err) {
                         console.log(err);
                         done(err);
