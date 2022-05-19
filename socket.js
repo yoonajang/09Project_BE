@@ -191,12 +191,9 @@ module.exports = (server) => {
                                                     
                                                 })
                                             })
-                                        // socket.to(user.User_userId).emit('receive message', param.newMessage);
-
                                     } else {
                                         console.log(foundUser, '채팅하는 사람이거나, 예외처리가 필요하거나')
-                                    }
-                                    
+                                    } 
                                 })
                                 socket.to(postid).emit('receive message', param.newMessage);           
                             });

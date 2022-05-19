@@ -33,7 +33,7 @@ router.get('/getchat/:postId', authMiddleware, (req, res) => {
     const sql_1s = mysql.format(sql_1, param_1);
 
     //waitingUser table 데이터 불러오기
-    const sql_2 = 'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.Post_postId = ? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName;';
+    const sql_2 = 'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.Post_postId = ? AND JP.isPick = 1 AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName;';
     const sql_2s = mysql.format(sql_2, postId);
 
     //Chat table 데이터 가져오기
@@ -54,7 +54,7 @@ router.get('/getchat/:postId', authMiddleware, (req, res) => {
             const chatInfo = results[2].reverse();
             const chatAdmin = results[3];
 
-            //찐참여자 목록 가져오기 /////
+            //찐참여자 목록 가져오기
             const sql_5 =
             'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ? AND User_userId NOT IN(?)';
             const param_5 = [postId, chatAdmin[0].User_userId]
