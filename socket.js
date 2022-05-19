@@ -36,7 +36,9 @@ module.exports = (server) => {
             const postId = Number(postid.replace('p', ''));
             const { userId, userName } = param.loggedUser;
 
+
             const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick, COUNT(CASE WHEN JP.isPick =1 then 1 end) count, EXISTS (SELECT JP.User_userId, JP.Post_postId FROM `JoinPost`JP where JP.User_userId=? AND JP.Post_postId  =? AND JP.isPick=1) isJoin FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId =?'
+            
 
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
@@ -54,7 +56,16 @@ module.exports = (server) => {
                                     if (err) console.log(err);
                                 },
                             );
-                    
+                            
+                            // 수정하고 있었으.
+                            db.query(
+                                'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;', 
+                                [socketId, userId, postId],
+                                (err, rows) => {
+                                    if (err) console.log(err);
+                                },
+                            );
+
                             io.to(postid).emit(
                                 'connected',
                                 param.loggedUser,

@@ -4,6 +4,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const routers = require('./routes');
+const kakaoPassport = require('./kakao-auth');
+const kakaoRouter = require('./kakao-auth/kakao/kakao');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
@@ -12,7 +14,10 @@ const app_http = express();
 const httpPort = 80;
 const httpsPort = 443;
 const SocketIO = require('./socket');
+const morgan = require("morgan");
+const winston = require("./config/winston");
 
+kakaoPassport();
 app.use(cors()); 
 
 const credentials = {
@@ -46,6 +51,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestMiddleware);
 app.use('/', routers);
+app.use('/', kakaoRouter);
 
 app.use(((req, res, next) => {
     logger.info('로그 출력 test용 middleware');
