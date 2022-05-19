@@ -1,8 +1,17 @@
+# Folder
 node_modules
+kakao-auth
+
+# ENV
 .env
+
+# S3
+s3config.json
+
+# Key 파일
 ca_bundle.crt
 certificate.crt
 private.key
-s3config.json
 
+# TEMP
 createTable.sql
