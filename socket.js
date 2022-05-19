@@ -64,7 +64,7 @@ module.exports = (server) => {
                             console.log(foundJoin[0].count,'총인원', foundJoin[0].headCount,'현재인원')
                             console.log(userId,'다있는데, 너는 참가자 아니야. fail','<<<<<<<<<<<<<<<<<<<<<<<')
                             const status = "fail"
-                            socket.join(postid)
+                            socket.join(userId)
                             socket.to(userId).emit('block chatroom', "fail")
                             io.to(postid).emit(
                                 'connected',
