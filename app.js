@@ -13,7 +13,8 @@ const httpPort = 80;
 const httpsPort = 443;
 const SocketIO = require('./socket');
 
-app.use(cors());
+//teste
+app.use(cors()); 
 
 const credentials = {
     key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
