@@ -16,11 +16,12 @@ module.exports = () => {
             },
 
             async (accessToken, refreshToken, profile, done) => {
-                console.log('try in', profile);
-                const sql = 'select * from User where userEmail = ?';
+                console.log('try in', profile,'<<<<<<<');
+                
+                const sql = 'select * from User where userId = ? AND provider ="kakao"';
                 const post = [NewUserEmail];
 
-                db.query(sql, post, (err, results, fields) => {
+                db.query(sql, profile.id, (err, results, fields) => {
                     if (err) {
                         console.log(err);
                         done(err);

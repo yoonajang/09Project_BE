@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-// const upload = require('../../routes/multer/uploads');
+// const upload = require('..../S3/s3');
 
 
 
@@ -33,5 +33,5 @@ const kakaoCallback = (req, res, next) => {
         res.send({ user: result });
     })(req, res, next);
 };
-router.get('kakao-auth/kakao/callback', kakaoCallback);
+router.get('/kakao/callback', kakaoCallback);
 module.exports = router;

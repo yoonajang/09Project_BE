@@ -51,7 +51,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestMiddleware);
 app.use('/', routers);
-app.use('', kakaoRouter);
+app.use('/oauth', kakaoRouter);
 
 
 app.use(morgan('dev'));
