@@ -15,7 +15,7 @@ const httpPort = 80;
 const httpsPort = 443;
 const SocketIO = require('./socket');
 const logger = require ('./config/logger');
-// const morgan = require('morgan');
+const morgan = require('morgan');
 
 // global.logger || (global.logger = require('./config/logger'))
 // const morganMiddleware = require('./config/morganMiddleware');
@@ -58,7 +58,7 @@ app.use('/', routers);
 // app.use('', kakaoRouter);
 
 
-// app.use(morgan('dev'));
+app.use(morgan('dev'));
 app.use(((req, res, next) => {
     logger.info('로그 출력 test용 middleware');
 

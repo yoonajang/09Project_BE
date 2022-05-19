@@ -65,12 +65,13 @@ module.exports = server => {
                                     'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 1;',
                                     postId,
                                     (err, Pick) => {
+                                        const userList  = [param.loggedUser, noPick, Pick,]
+
                                         io.to(postid).emit(
                                             'connected',
-                                            userName + ' 님이 입장했습니다.',
-                                            param.loggedUser,
-                                            noPick,
-                                            Pick,
+                                            userName +
+                                                ' 님이 입장했습니다.',
+                                            userList
                                         );
                                     },
                                 );
@@ -99,12 +100,14 @@ module.exports = server => {
                                     'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 1;',
                                     postId,
                                     (err, Pick) => {
+
+                                        const userList  = [param.loggedUser, noPick, Pick,]
+                                        
                                         io.to(postid).emit(
                                             'connected',
-                                            userName + ' 님이 입장했습니다.',
-                                            param.loggedUser,
-                                            noPick,
-                                            Pick,
+                                            userName +
+                                                ' 님이 입장했습니다.',
+                                            userList 
                                         );
                                     },
                                 );
@@ -129,13 +132,14 @@ module.exports = server => {
                                         'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 1;',
                                         postId,
                                         (err, Pick) => {
+
+                                            const userList  = [param.loggedUser, noPick, Pick,]
+
                                             io.to(postid).emit(
                                                 'connected',
                                                 userName +
                                                     ' 님이 입장했습니다.',
-                                                param.loggedUser,
-                                                noPick,
-                                                Pick,
+                                                userList 
                                             );
                                         },
                                     );
