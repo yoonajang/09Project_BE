@@ -14,7 +14,7 @@ const app_http = express();
 const httpPort = 80;
 const httpsPort = 443;
 const SocketIO = require('./socket');
-const morgan = require("morgan");
+// const morgan = require("morgan");
 // const winston = require("./config/winston");
 
 // kakaoPassport();
@@ -51,7 +51,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestMiddleware);
 app.use('/', routers);
-app.use('', kakaoRouter);
+// app.use('', kakaoRouter);
 
 app_http.use((req, res, next) => {
     if (req.secure) {
