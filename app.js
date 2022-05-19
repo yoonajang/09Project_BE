@@ -53,19 +53,6 @@ app.use(requestMiddleware);
 app.use('/', routers);
 app.use('', kakaoRouter);
 
-app.use(((req, res, next) => {
-    logger.info('로그 출력 test용 middleware');
-
-    logger.error('error 메시지');
-    logger.warn('warn 메시지');
-    logger.info('info 메시지');
-    logger.http('http 메시지');
-    logger.debug('debug 메시지');
-
-    next();
-}));
-
-
 app_http.use((req, res, next) => {
     if (req.secure) {
         next();
@@ -91,9 +78,9 @@ const httpsServer = https.createServer(credentials, app);
 SocketIO(httpsServer);
 
 httpServer.listen(httpPort, () => {
-    console.log(new Date(), 'http서버가 켜졌어요!');
+    winston.info(new Date(),`${httpPort}`,'http서버가 켜졌어요!');
 });
 
 httpsServer.listen(httpsPort, () => {
-    console.log(new Date(), 'https서버가 켜졌어요!');
+    winston.info(new Date(),`${httpPort}`, 'https서버가 켜졌어요!');
 });
