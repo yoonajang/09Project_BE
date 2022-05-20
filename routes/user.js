@@ -237,8 +237,14 @@ router.get('/islogin', authMiddleware, (req, res) => {
     const sql_4 = 
         'SELECT alarmId, status, userImage, createdAt, Post_postId FROM Alarm WHERE User_userId=? AND type="addDeal" AND isChecked = 0 ;';
     const sql_4s = mysql.format(sql_4, userId);
+
+    // byebye (모든 알림 다보내기)
+    const sql_5 = 
+        'SELECT alarmId, status, userImage, createdAt, Post_postId FROM Alarm WHERE User_userId=? AND type="byebye" AND isChecked = 0 ;';
+    const sql_5s = mysql.format(sql_5, userId);
+
     
-    db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, rows) => {
+    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, rows) => {
         if (err) {
             console.log(err);
         } else {
@@ -247,11 +253,13 @@ router.get('/islogin', authMiddleware, (req, res) => {
             const leaveChat = rows[1];
             const blockChat = rows[2];
             const addDeal = rows[3];
+            const byebye = rows[4];
 
             const alarm = { sendMessage: sendMessage, 
                             leaveChat: leaveChat,
                             blockChat: blockChat,
-                            addDeal: addDeal }
+                            addDeal: addDeal,
+                            byebye: byebye }
             
             res.send({
                 userInfo: {
