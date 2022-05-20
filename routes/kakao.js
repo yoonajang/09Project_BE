@@ -3,13 +3,13 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-// const upload = require('../S3/s3');
+const upload = require('../S3/s3');
 
 
 
 router.get(
     '/kakao',
-    // upload.single('profileImage'),
+    upload.single('profileImage'),
     passport.authenticate('kakao'),
 );
 
