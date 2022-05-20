@@ -452,7 +452,10 @@ module.exports = (server) => {
                             const bossEmail = bossIs[0].User_userEmail
                             const bossName = bossIs[0].User_userName
                             const bossImage = bossIs[0].userImage
-                            const bossInfo = { bossId, bossEmail, bossName, bossImage }
+                            const bossInfo = {  User_userId: bossId, 
+                                                User_userEmail: bossEmail,
+                                                User_userName: bossName,
+                                                userImage: bossImage}
 
                             const status = title + ' 게시물에서 ' + userName +'님의 거래가 취소되었습니다.' 
 
@@ -520,7 +523,10 @@ module.exports = (server) => {
                             const bossEmail = bossIs[0].User_userEmail
                             const bossName = bossIs[0].User_userName
                             const bossImage = bossIs[0].userImage
-                            const bossInfo = { bossId, bossEmail, bossName, bossImage }
+                            const bossInfo = {  User_userId: bossId, 
+                                                User_userEmail: bossEmail,
+                                                User_userName: bossName,
+                                                userImage: bossImage}
 
                             
                             // isPick=0 인 유저찾기
