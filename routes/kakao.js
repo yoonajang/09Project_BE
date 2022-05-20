@@ -26,7 +26,7 @@ const kakaoCallback = (req, res, next) => {
             provider,
             userEmail, 
             userName,
-            userIamge
+            userImage
         };
         console.log('result', result);
         res.send({ msg:"success", user: result, });
