@@ -182,36 +182,6 @@ router.post('/mailauth', async (req, res) => {
 });
 
 
-// 이메일 중복확인
-router.post('/emailcheck', (req, res) => {
-    const email = req.body.userEmail;
-    const sql = 'select * from User where userEmail=?';
-
-    db.query(sql, [email], (err, data) => {
-        if (data.length === 0) {
-            console.log(err);
-            res.send({ msg: 'success' })
-        }
-    });
-});
-
-//이메일 인증 확인
-router.post('/mailauth', async (req, res) => {
-    const { userEmail, authNum } = req.body;
-
-    db.query(
-        'SELECT * FROM AuthNum WHERE userEmail=?',
-        userEmail,
-        (err, data) => {
-            if (data[0].authNum === authNum) {
-                res.send({ msg: 'success' });
-            } else {
-                res.send({ msg: 'fail' });
-            }
-        },
-    );
-});
-
 
 // 이메일 중복확인
 router.post('/emailcheck', (req, res) => {
@@ -344,20 +314,5 @@ router.get(
     },
 );
 
-
-// 로그인 여부확인
-router.get('/islogin', authMiddleware, async (req, res) => {
-    const { user } = res.locals;
-
-    res.send({
-        userInfo: {
-            userId: user.userId,
-            userEmail: user.userEmail,
-            userName: user.userName,
-            userImage: user.userImage,
-            tradeCount: user.tradeCount,
-        },
-    });
-});
 
 module.exports = router;
