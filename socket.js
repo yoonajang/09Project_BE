@@ -517,6 +517,8 @@ module.exports = (server) => {
 
         // 강퇴 (by 방장 > 작업필요)
         socket.on('kickout chatroom', (postid, user) => {
+
+            console.log(postid, user)
             const deleteJP =
                 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?';
             db.query(deleteJP, [postid, user], (err, deletedJP) => {
@@ -543,7 +545,7 @@ module.exports = (server) => {
                                         .emit(
                                             'kickedout chatroom',
                                             userName + ' 님이 나가셨습니다.',
-                                        ); //
+                                        ); 
                                 } else {
                                     const findUser =
                                         'SELECT userEmail, userId, userName, userImage FROM `User` WHERE `User_userId`=?';
@@ -588,9 +590,12 @@ module.exports = (server) => {
     
         // 채팅방 나가기
         socket.on('close chatroom', (postid, user) => {
+            console.log(postid, user)
             const userId = user.userId
             const userName = user.userName
             const postId = postid.replace('p', '');
+
+            console.log(userId, userName, postId)
     
             db.query(
                 'UPDATE JoinPost SET isConnected = 0 WHERE User_userId=? and Post_postId =?;', 
