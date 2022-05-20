@@ -122,14 +122,14 @@ router.post('/mail', async (req, res) => {
                     //authNum 저장
                     db.query(
                         'SELECT *, TIMESTAMPDIFF(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
-                        email,
+                        userEmail,
                         (err, user) => { 
                             const authNum = user[0].authNum
         
                             if (data.length === 0 ) {
                                 db.query(
                                     'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
-                                    [authNum, email, 1],
+                                    [authNum, userEmail, 1],
                                     (err, data) => {
                                         res.send({ msg: 'success' });
                                     },
@@ -137,7 +137,7 @@ router.post('/mail', async (req, res) => {
                             } else if ( data[0].timeDiff > 5) {
                                 db.query(
                                     'UPDATE AuthNum SET authNum=?, `updatedAt`=now(), `count`=1 WHERE userEmail=?',
-                                    [authNum, email],
+                                    [authNum, userEmail],
                                     (err, data) => {
                                         res.send({ msg: 'success' });
                                     },
@@ -146,7 +146,7 @@ router.post('/mail', async (req, res) => {
                             } else if (data[0].count < 3 && data[0].timeDiff <= 5) {
                                 db.query(
                                     'UPDATE AuthNum SET authNum=?, `count`=count+1 WHERE userEmail=?',
-                                    [authNum, email],
+                                    [authNum, userEmail],
                                     (err, data) => {
                                         res.send({ msg: 'success' });
                                     },
