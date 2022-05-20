@@ -146,42 +146,56 @@ router.post('/signup', (req, res, next) => {
         const email = req.body.userEmail;
         const sql = 'select * from User where userEmail=?';
 
-        //authNum 저장
-        db.query(
-            'SELECT *, timestampdiff(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
-            email,
-            (err, data) => {
+        db.query(sql, [email], (err, data) => {
+            if (data.length === 0) {
+                console.log(err);
+                res.send({ msg: 'success' });
+            } else {
+                //authNum 저장
+                db.query(
+                    'SELECT *, timestampdiff(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
+                    email,
+                    (err, data) => {
 
-                if (data.length === 0 ) {
-                    db.query(
-                        'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
-                        [authNum, email, 1],
-                        (err, data) => {
-                            res.send({ msg: 'success' });
-                        },
-                    );
-                } else if ( data[0].timeDiff > 5) {
-                    db.query(
-                        'UPDATE AuthNum SET authNum=?, `updatedAt`=now(), `count`=1 WHERE userEmail=?',
-                        [authNum, userEmail],
-                        (err, data) => {
-                            res.send({ msg: 'success' });
-                        },
-                    );
+                        db.query(sql, [email], (err, data) => {
+                            if (data.length === 0) {
+                                console.log(err);
+                                res.send({ msg: 'success' });
+                            }
+                        });
 
-                } else if (data[0].count < 3 && data[0].timeDiff <= 5) {
-                    db.query(
-                        'UPDATE AuthNum SET authNum=?, `count`=count+1 WHERE userEmail=?',
-                        [authNum, userEmail],
-                        (err, data) => {
-                            res.send({ msg: 'success' });
-                        },
-                    );
-                } else if (data[0].count === 3 && data[0].timeDiff <= 5) {
-                    res.send({ msg: 'fail' });
-                }
-            },
-        );
+                        if (data.length === 0 ) {
+                            db.query(
+                                'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
+                                [authNum, email, 1],
+                                (err, data) => {
+                                    res.send({ msg: 'success' });
+                                },
+                            );
+                        } else if ( data[0].timeDiff > 5) {
+                            db.query(
+                                'UPDATE AuthNum SET authNum=?, `updatedAt`=now(), `count`=1 WHERE userEmail=?',
+                                [authNum, userEmail],
+                                (err, data) => {
+                                    res.send({ msg: 'success' });
+                                },
+                            );
+
+                        } else if (data[0].count < 3 && data[0].timeDiff <= 5) {
+                            db.query(
+                                'UPDATE AuthNum SET authNum=?, `count`=count+1 WHERE userEmail=?',
+                                [authNum, userEmail],
+                                (err, data) => {
+                                    res.send({ msg: 'success' });
+                                },
+                            );
+                        } else if (data[0].count === 3 && data[0].timeDiff <= 5) {
+                            res.send({ msg: 'fail' });
+                        }
+                        
+                    })
+            }
+        });
     });
 
     //이메일 인증 확인
