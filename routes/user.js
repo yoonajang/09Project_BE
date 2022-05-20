@@ -220,8 +220,9 @@ router.get('/islogin', authMiddleware, (req, res) => {
     
     db.query(sql, user.userId, (err, rows) => {
         if (err) console.log(err);
-
+        
         const status = rows[0]
+        console.log(status)
         res.send({
             userInfo: {
                 userId: user.userId,
