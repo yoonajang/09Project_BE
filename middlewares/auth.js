@@ -3,9 +3,7 @@ const db = require('../config');
 
 module.exports = (req, res, next) => {
     const { authorization } = req.headers;
-    console.log(authorization);
     const [authType, authToken] = authorization.split(' ');
-    console.log(authorization);
 
     if (!authToken || authType !== 'Bearer') {
         res.status(401).json({
