@@ -15,12 +15,12 @@ module.exports = () => {
 
             async (accessToken, refreshToken, profile, done) => {
                 console.log('try in', profile,'<<<<<<<');
-                console.log( profile._json, '제이슨')
-                console.log( profile._json.properties, '프로퍼티')
-                console.log( profile.properties, '프로퍼티')
 
                 const userEmail = profile._json.kakao_account.email;
-                const userImage = profile._json.properties.profile_image
+
+                const userImage = 
+                profile._json.properties.thumbnail_image === 'http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg'? 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27' : profile._json.properties.thumbnail_image
+                
                 const userName = profile._json.properties.nickname
                 const provider = "kakao"
                 const kakaoId = profile._json.id
