@@ -215,6 +215,7 @@ router.post('/login', (req, res) => {
 
 // 로그인 여부확인
 router.get('/islogin', authMiddleware, (req, res) => {
+    const { user } = res.locals
     const userId = res.locals.user.userId;
 
     // SendMessage (게시물당 1개씩 알림보내기)
@@ -237,7 +238,6 @@ router.get('/islogin', authMiddleware, (req, res) => {
         'SELECT alarmId, status, userImage, createdAt, Post_postId FROM Alarm WHERE User_userId=? AND type="addDeal" AND isChecked = 0 ;';
     const sql_4s = mysql.format(sql_4, userId);
     
-
     db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, rows) => {
         if (err) {
             console.log(err);
