@@ -17,16 +17,24 @@ module.exports = () => {
                 console.log('try in', profile,'<<<<<<<');
 
                 const userEmail = profile._json.kakao_account.email;
-
-                const userImage = 
-                profile._json.properties.thumbnail_image === 'http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg'? 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27' : profile._json.properties.thumbnail_image
-                
                 const userName = profile._json.properties.nickname
                 const provider = "kakao"
                 const kakaoId = profile._json.id
                 const point = 50
 
-                const params = [userEmail, userImage, userName, provider, kakaoId, point]
+                let params = [userEmail, userName, provider, kakaoId, point]
+
+                let userImage = profile._json.properties.thumbnail_image
+                const defaultKakaoImage = 'http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg'
+                const defaultImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27'
+                
+                if (userImage === defaultKakaoImage){
+                    userImage = defaultImage
+                    params.push(userImage)
+                } else {
+                    params.push(userImage)
+                }
+            
 
                 const sql = 'select * from User where userEmail = ? AND provider="kakao"'
 

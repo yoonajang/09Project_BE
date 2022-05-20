@@ -342,7 +342,7 @@ router.get(
 // 로그인 여부확인
 router.get('/islogin', authMiddleware, async (req, res) => {
     const { user } = res.locals;
-    console.log(user.userId);
+
     res.send({
         userInfo: {
             userId: user.userId,
