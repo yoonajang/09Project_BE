@@ -35,7 +35,6 @@ module.exports = () => {
                     params.push(userImage)
                 }
             
-
                 const sql = 'select * from User where userEmail = ? AND provider="kakao"'
 
                 db.query(sql, userEmail, (err, results) => {
