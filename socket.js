@@ -515,7 +515,12 @@ module.exports = (server) => {
                         });
                     });     
                 } else {
-                    console.log('거래자는 아님!')
+                    const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
+                    db.query(deleteJP, [postId, user], (err, deletedJP) => {
+                        if(err) console.log(err)
+                        console.log('삭제')
+                        console.log('거래자는 아님!----------------------------------------------------LEAVECHATROOM')
+                    })
                 }
             });
     
