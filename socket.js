@@ -520,10 +520,7 @@ module.exports = (server) => {
                             const bossEmail = bossIs[0].User_userEmail
                             const bossName = bossIs[0].User_userName
                             const bossImage = bossIs[0].userImage
-                            const bossInfo = {  userId: bossId, 
-                                                userEmail: bossEmail,
-                                                userName: bossName,
-                                                userImage: bossImage}
+                            const bossInfo = { bossId, bossEmail, bossName, bossImage }
 
                             
                             // isPick=0 인 유저찾기
