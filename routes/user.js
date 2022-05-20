@@ -155,9 +155,10 @@ router.post('/signup', (req, res, next) => {
                 db.query(
                     'SELECT *, TIMESTAMPDIFF(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
                     email,
-                    (err, data) => {
+                    (err, user) => { 
+                        const authNum = user[0].authNum
 
-                        db.query(sql, [email], (err, data) => {
+                        db.query(sql, email, (err, data) => {
                             if (data.length === 0) {
                                 console.log(err);
                                 res.send({ msg: 'success' });
@@ -175,7 +176,7 @@ router.post('/signup', (req, res, next) => {
                         } else if ( data[0].timeDiff > 5) {
                             db.query(
                                 'UPDATE AuthNum SET authNum=?, `updatedAt`=now(), `count`=1 WHERE userEmail=?',
-                                [authNum, userEmail],
+                                [authNum, email],
                                 (err, data) => {
                                     res.send({ msg: 'success' });
                                 },
@@ -184,7 +185,7 @@ router.post('/signup', (req, res, next) => {
                         } else if (data[0].count < 3 && data[0].timeDiff <= 5) {
                             db.query(
                                 'UPDATE AuthNum SET authNum=?, `count`=count+1 WHERE userEmail=?',
-                                [authNum, userEmail],
+                                [authNum, email],
                                 (err, data) => {
                                     res.send({ msg: 'success' });
                                 },
