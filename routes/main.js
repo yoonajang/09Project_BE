@@ -9,9 +9,9 @@ moment.tz.setDefault('Asia/seoul');
 const authMiddleware = require('../middlewares/auth');
 const upload = require('../S3/s3');
 
-//
+
 router.get('/', (req, res) => {
-    console.log('test입니다.')
+    
 })
 
 
@@ -47,12 +47,9 @@ router.post('/postlist', (req, res) => {
             lat,
             km,
         ];
-        console.log(params);
 
         db.query(sql, params, (err, data) => {
             if (err) console.log(err);
-
-            console.log(data, '>>>>>>>>>>>>>>>>>>>>>>>>>>>');
 
             for (list of data) {
                 let head = list.headList;
@@ -69,7 +66,6 @@ router.post('/postlist', (req, res) => {
                 }
             }
 
-            console.log(data);
             res.send({ msg: 'success', data });
         });
     } else {
