@@ -218,7 +218,6 @@ module.exports = (server) => {
                                             db.query(insertAlarm, params, (err, Inserted) => {
                                                 if (err) console.log(err);
 
-                                                console.log(Inserted, '혹시 여기서..오류가 난다면')
                                                 const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
 
                                                 db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
@@ -316,7 +315,6 @@ module.exports = (server) => {
     
                     db.query(insertAlarm, insertParam , (err, Inserted) => {
                         if (err) console.log(err);
-                        console.log('오프라인시 저장')
                     });
                 }
             });
@@ -441,9 +439,8 @@ module.exports = (server) => {
                                     postId, (err, Pick) => {
                                         const userLists  = [ unjoinedInfo , noPick, Pick, bossInfo]
 
-                                        console.log(userLists)
                                         socket.leave(postid)
-                                        console.log('LEAVE______________________메시지 들어갑니다.')
+                                
                                         socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.', userLists, "leave")
 
                                 })
