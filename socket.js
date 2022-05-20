@@ -11,7 +11,7 @@ module.exports = (server) => {
     });
 
     io.on('connection', socket => {
-        console.log(socket.id, '연결성공');
+        // console.log(socket.id, '연결성공');
     
         socket.on('socket is connected', loggedUser => {
             const socketId = socket.id
@@ -30,7 +30,7 @@ module.exports = (server) => {
     
         // 채팅시작
         socket.on('startchat', param => {
-            console.log('채팅시작');
+            // console.log('채팅시작');
     
             const postid = param.postid;
             const postId = Number(postid.replace('p', ''));
@@ -69,8 +69,6 @@ module.exports = (server) => {
                                                 postId,
                                                 (err, bossId) => {
                                                     const userLists  = [param.loggedUser, noPick, Pick, bossId]
-
-                                                    console.log(userLists)
     
                                                     io.to(postid).emit(
                                                         'connected',
@@ -86,11 +84,7 @@ module.exports = (server) => {
                                 },
                             );
                         } else {
-                            console.log(
-                                userId,
-                                '다있는데, 너는 참가자 아니야. fail',
-                            );
-                            
+                        
                             const status = 'fail';
 
                             socket.join(userId);
@@ -119,7 +113,6 @@ module.exports = (server) => {
                             })
                         }  
                     } else if (foundJoin[0].headCount > foundJoin[0].count) {
-                        console.log(userId, 'sucess', '아직널널해');
                         socket.join(postid);
     
                         const socketId = socket.id;
@@ -143,8 +136,6 @@ module.exports = (server) => {
                                                     (err, bossId) => {
                                                         const userLists  = [param.loggedUser, noPick, Pick, bossId]
 
-                                                        console.log(userLists)
-    
                                                         io.to(postid).emit(
                                                             'connected',
                                                             userName +
@@ -167,9 +158,8 @@ module.exports = (server) => {
     
         // 메세지 주고 받기 + 오프라인 사용자들에게 알림
         socket.on('sendmessage', param => {
-            console.log('메세지');
+            // console.log('메세지');
 
-    
             const postid = param.newMessage.Post_postId;
             const postId = postid.replace('p', '');
             const userId = param.newMessage.User_userId;
@@ -211,14 +201,12 @@ module.exports = (server) => {
                                 foundUser.forEach((user) => {
 
                                     if (user.isLogin === 0 ) {
-                                        console.log('작동하나')
                                         const insertAlarm =
                                             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
 
                                             db.query(insertAlarm, params, (err, Inserted) => {
                                                 if (err) console.log(err);
 
-                                                console.log(user, '오프라인')
                                             
                                             })
 
@@ -235,17 +223,12 @@ module.exports = (server) => {
 
                                                 db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
                                                     
-                                                    console.log(user.User_userId,'에게 감!')
-                                                    console.log(messageAlarm)
-                                                    
                                                     socket.to(user.User_userId).emit('send message alarm',messageAlarm);   
                                                     
                                                 })
                                             })
                                         socket.to(user.User_userId).emit('receive message', param.newMessage);
 
-                                    } else {
-                                        console.log(foundUser, '채팅하는 사람이거나, 예외처리가 필요하거나')
                                     }
                                     
                                 });           
@@ -265,7 +248,6 @@ module.exports = (server) => {
     
         // 찐참여자 선택 (by 방장) 
         socket.on('add_new_participant', param => {
-            console.log(param);
             const postid = param.postid;
             const postId = postid.replace('p', '');
             const userId = param.selectedUser.User_userId;
@@ -293,7 +275,7 @@ module.exports = (server) => {
                 } else {
                     const headList = rows[1];
                     const waitList = rows[2];
-                    console.log(headList);
+
                     socket
                         .to(postid)
                         .emit(
@@ -380,7 +362,7 @@ module.exports = (server) => {
 
         //찐참여자 선택 취소 (by 본인) //이벤트명 다시설정!!
         socket.on('cancel_my_participant', param => {
-            console.log(param)
+
             const postid = param.postid;
             const postId = postid.replace('p', '');
             const userId = param.selectedUser.User_userId;
@@ -411,7 +393,7 @@ module.exports = (server) => {
                     const waitList = rows[2];
                     const bossId = rows[3].User_userId
                     const status = title + ' 게시물에서 '+ userName +'님이 참여를 취소하셨습니다.' 
-                    console.log(bossId, status)
+
                     socket.to(bossId).emit(`canceled_my_participant`, status)
                     socket
                         .to(postid)
@@ -442,7 +424,6 @@ module.exports = (server) => {
                     const findBoss = 'SELECT P.postId, P.User_userId, P.title FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title'
     
                     db.query(findBoss, [postId, userId], (err, foundBoss) => {
-                        console.log(foundBoss)
                         const bossId = foundBoss[0].User_userId
                         const title = foundBoss[0].title
 
@@ -471,7 +452,7 @@ module.exports = (server) => {
                             const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
                             db.query(deleteJP, [postId, userId], (err, deletedJP) => {
                                 if(err) console.log(err)
-                                console.log('삭제')
+
                             })
     
                             const insertParam = [0,status, userEmail, userId, userName, userImage]
@@ -482,9 +463,6 @@ module.exports = (server) => {
                             if (bossStatus === 0){         
                                 db.query(insertAlarm, insertParam, (err, Inserted) => {
                                     if (err) console.log(err);
-                                    console.log(
-                                        '오프라인 회원들에게 메시지 완료',
-                                    );
                                 });
     
                             } else {
@@ -522,9 +500,8 @@ module.exports = (server) => {
                                         
                                         const userLists  = [ unjoinedInfo , noPick, Pick, bossInfo]
 
-                                        console.log(userLists)
+                                      
                                         socket.leave(postid)
-                                        console.log('LEAVE______________________메시지 들어갑니다.')
                                         socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.', userLists, "leave")
 
                                 })
@@ -533,7 +510,6 @@ module.exports = (server) => {
                             const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
                             db.query(deleteJP, [postId, userId], (err, deletedJP) => {
                                 if(err) console.log(err)
-                                console.log('삭제')
                             })
 
                         })
@@ -578,18 +554,12 @@ module.exports = (server) => {
     
                                     db.query(findUser, params, (err, foundUser) => {
                                         if (err) console.log(err);
-                                        console.log(
-                                            foundUser,
-                                            '이게 안나오면 안되지. 강퇴by 방장',
-                                        );
+                                        
                                         const userEmail = foundUser[0].userEmail;
                                         const userId = foundUser[0].userId;
                                         const userName = foundUser[0].userName;
                                         const userImage = foundUser[0].userImage;
     
-                                        console.log(
-                                            '오프라인 회원에게 강퇴 메시지 완료',
-                                        );
                                         const InsertAlarm =
                                             'INSERT INTO Alarm  (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
                                         const params = [
@@ -606,9 +576,7 @@ module.exports = (server) => {
                                             params,
                                             (err, InsertedAlarm) => {
                                                 if (err) console.log(err);
-                                                console.log(
-                                                    '오프라인 회원에게 강퇴 메시지 완료',
-                                                );
+                                                
                                             },
                                         );
                                     });
@@ -649,7 +617,6 @@ module.exports = (server) => {
                 (err, rows) => {
                     if (err) console.log(err);
                     socket.leave();
-                    console.log(socketId, '브라우저 종료');
                 },
             );
         });
