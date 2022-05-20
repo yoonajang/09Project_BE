@@ -30,7 +30,7 @@ const credentials = {
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
     console.log(
-        `|ip| ${req.ip} \n |domain| ${req.rawHeaders[1]} |method| ${req.method} |Request URL| ${req.originalUrl}`, moment().format("YY-MM-DD HH:mm:ss")
+        `|ip| ${req.ip}   |method|${req.method}   |domain| ${req.rawHeaders[1]}   |method| ${req.method}   |Request URL| ${req.originalUrl}  `, moment().format("YY-MM-DD HH:mm:ss")
     );
     next();
 };
@@ -70,11 +70,12 @@ const httpServer = http.createServer(app_http);
 const httpsServer = https.createServer(credentials, app);
 SocketIO(httpsServer);
 
+console.log(moment().format("YY-MM-DD HH:mm:ss"))
 httpServer.listen(httpPort, () => {
-    console.log(moment().format("YY-MM-DD HH:mm:ss"),'|',`${httpPort}`,'http서버가 켜졌어요!');
+    console.log(`${httpPort}`,'http서버가 켜졌어요!');
 });
 
 httpsServer.listen(httpsPort, () => {
-    console.log(moment().format("YY-MM-DD HH:mm:ss"),'|',`${httpPort}`, 'https서버가 켜졌어요!');
+    console.log(`${httpPort}`, 'https서버가 켜졌어요!');
 });
 
