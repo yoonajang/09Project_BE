@@ -51,7 +51,7 @@ router.post('/signup', (req, res, next) => {
         );
 });
 
-//회원가입시 이메일 인증
+//회원가입시 이메일 인증코드 보내기
 router.post('/mail', async (req, res) => {
     const userEmail = req.body.userEmail;
     let authNum = Math.random().toString().substr(2, 6);
