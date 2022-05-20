@@ -13,6 +13,9 @@ const app_http = express();
 const httpPort = 80;
 const httpsPort = 443;
 const SocketIO = require('./socket');
+const moment = require('moment');
+require('moment-timezone');
+moment.tz.setDefault('Asia/seoul');
 
 
 kakaoPassport();
@@ -36,7 +39,7 @@ const requestMiddleware = (req, res, next) => {
         '[Request URL]',
         req.originalUrl,
         '-',
-        new Date(),
+        now.format("YYYY.MM.DD HH:mm:ss"),
     );
     next();
 };
@@ -77,10 +80,10 @@ const httpsServer = https.createServer(credentials, app);
 SocketIO(httpsServer);
 
 httpServer.listen(httpPort, () => {
-    console.log(new Date(),`${httpPort}`,'http서버가 켜졌어요!');
+    console.log(now.format("YYYY.MM.DD HH:mm:ss"),`${httpPort}`,'http서버가 켜졌어요!');
 });
 
 httpsServer.listen(httpsPort, () => {
-    console.log(new Date(),`${httpPort}`, 'https서버가 켜졌어요!');
+    console.log(now.format("YYYY.MM.DD HH:mm:ss"),`${httpPort}`, 'https서버가 켜졌어요!');
 });
 
