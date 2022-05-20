@@ -28,13 +28,13 @@ const credentials = {
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
     console.log(
-        'ip:',
+        '[ip]',
         req.ip,
-        'domain:',
+        '[domain]',
         req.rawHeaders[1],
-        'method:',
+        '[method]',
         req.method,
-        'Request URL:',
+        '[Request URL]',
         req.originalUrl,
         '-',
         new Date(),

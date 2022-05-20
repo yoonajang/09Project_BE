@@ -9,6 +9,12 @@ moment.tz.setDefault('Asia/seoul');
 const authMiddleware = require('../middlewares/auth');
 const upload = require('../S3/s3');
 
+//
+router.get('/', (req, res) => {
+    console.log('test입니다.')
+})
+
+
 // 메인페이지 게시글 불러오기
 router.post('/postlist', (req, res) => {
     const address = req.body.address.split(' ');
