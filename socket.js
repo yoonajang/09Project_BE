@@ -510,47 +510,52 @@ module.exports = (server) => {
                         });
                     });     
                 } else {
-                    // 방장 정보 찾기
-                    db.query('SELECT * FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [postId, bossId], (err, bossIs) => {
-                        const {User_userEmail, User_userName, userImage} = bossIs[0]
-                        const bossId = bossIs[0].User_userId
-                        const bossEmail = bossIs[0].User_userEmail
-                        const bossName = bossIs[0].User_userName
-                        const bossImage = bossIs[0].userImage
-                        const bossInfo = {  userId: bossId, 
-                                            userEmail: bossEmail,
-                                            userName: bossName,
-                                            userImage: bossImage}
+                    // 방장 ID 찾기
+                    const findBoss = 'SELECT P.User_userId FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.User_userId'
+    
+                    db.query(findBoss, [postId, userId], (err, foundBoss) => {
+                        const bossId = foundBoss[0].User_userId
+                    
+                        // 방장 정보 찾기
+                        db.query('SELECT * FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [postId, bossId], (err, bossIs) => {
+                            console.log(bossIs)
+                            const bossId = bossIs[0].User_userId
+                            const bossEmail = bossIs[0].User_userEmail
+                            const bossName = bossIs[0].User_userName
+                            const bossImage = bossIs[0].userImage
+                            const bossInfo = {  userId: bossId, 
+                                                userEmail: bossEmail,
+                                                userName: bossName,
+                                                userImage: bossImage}
 
-                        
-                        // isPick=0 인 유저찾기
-                        db.query('SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
-                        postId, (err, noPick) => {
+                            
+                            // isPick=0 인 유저찾기
+                            db.query('SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
+                            postId, (err, noPick) => {
 
-                            // isPick=1 인 유저찾기 (방장제외)
-                            db.query(
-                                'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
-                                postId, (err, Pick) => {
-                                    
-                                    const userLists  = [ unjoinedInfo , noPick, Pick, bossInfo]
+                                // isPick=1 인 유저찾기 (방장제외)
+                                db.query(
+                                    'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
+                                    postId, (err, Pick) => {
+                                        
+                                        const userLists  = [ unjoinedInfo , noPick, Pick, bossInfo]
 
-                                    console.log(userLists)
-                                    socket.leave(postid)
-                                    socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.', userLists, "leave")
+                                        console.log(userLists)
+                                        socket.leave(postid)
+                                        socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.', userLists, "leave")
 
+                                })
                             })
-                        })
 
-                        const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
-                        db.query(deleteJP, [postId, userId], (err, deletedJP) => {
-                            if(err) console.log(err)
-                            console.log('삭제')
-                        })
+                            const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
+                            db.query(deleteJP, [postId, userId], (err, deletedJP) => {
+                                if(err) console.log(err)
+                                console.log('삭제')
+                            })
 
+                        })
                     })
                 }
-
-            });
     
         })
 
