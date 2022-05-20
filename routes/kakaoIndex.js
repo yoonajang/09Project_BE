@@ -16,6 +16,8 @@ module.exports = () => {
             async (accessToken, refreshToken, profile, done) => {
                 console.log('try in', profile,'<<<<<<<');
 
+                const userEmail = profile._json.kakao_account.emai
+
                 const sql = 'select * from User where userEmail = ? AND provider="kakao"'
 
                 db.query(sql, userEmail, (err, results) => {
@@ -24,7 +26,6 @@ module.exports = () => {
                         done(err);
                     }
 
-                    const userEmail = profile._json.kakao_account.email
                     const userImage = profile.properties.profile_image
                     const userName = profile.properties.nickname
                     const provider = "kakao"
