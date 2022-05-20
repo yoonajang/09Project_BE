@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config');
+const mysql = require('mysql');
 const jwt = require('jsonwebtoken');
 const authMiddleware = require('../middlewares/auth');
 const nodemailer = require('nodemailer');
@@ -214,26 +215,50 @@ router.post('/login', (req, res) => {
 
 // 로그인 여부확인
 router.get('/islogin', authMiddleware, (req, res) => {
-    const { user } = res.locals;
+    const userId = res.locals.user.userId;
 
-    // Post_post추가해주세요.
-    const sql = 'SELECT alarmId, status, userImage, createdAt, Post_postId FROM Alarm WHERE User_userId = ? and isChecked = 0 LIMIT 5;';
+    // SendMessage (게시물당 1개씩 알림보내기)
+    const sql_1 = 
+        'SELECT alarmId, status, userImage, createdAt, Post_postId FROM Alarm WHERE User_userId=? AND type="sendMessage" AND isChecked = 0 ;';
+    const sql_1s = mysql.format(sql_1, userId);
+
+    // leaveChat (모든 알림 다보내기)
+    const sql_2 = 
+        'SELECT alarmId, status, userImage, createdAt, Post_postId FROM Alarm WHERE User_userId=? AND type="leaveChat" AND isChecked = 0 ;';
+    const sql_2s = mysql.format(sql_2, userId);
+
+    // blockChat (모든 알림 다보내기)
+    const sql_3 = 
+        'SELECT alarmId, status, userImage, createdAt, Post_postId FROM Alarm WHERE User_userId=? AND type="blockChat" AND isChecked = 0 ;';
+    const sql_3s = mysql.format(sql_3, userId);
+
+    // addDeal (모든 알림 다보내기)
+    const sql_4 = 
+        'SELECT alarmId, status, userImage, createdAt, Post_postId FROM Alarm WHERE User_userId=? AND type="addDeal" AND isChecked = 0 ;';
+    const sql_4s = mysql.format(sql_4, userId);
     
-    db.query(sql, user.userId, (err, status) => {
-        if (err) console.log(err);
-        
-        // const status = rows[0]
-        // console.log(rows, '이것이 문자다!')
-        res.send({
-            userInfo: {
-                userId: user.userId,
-                userEmail: user.userEmail,
-                userName: user.userName,
-                userImage: user.userImage,
-                tradeCount: user.tradeCount,
-            },
-            alarm: { status }            
-        });
+
+    db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, rows) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const sendMessage = rows[0];
+            const leaveChat = rows[1];
+            const blockChat = rows[2];
+            const addDeal = rows[3];
+            
+            res.send({
+                userInfo: {
+                    userId: user.userId,
+                    userEmail: user.userEmail,
+                    userName: user.userName,
+                    userImage: user.userImage,
+                    tradeCount: user.tradeCount,
+                },
+                alarm: rows            
+            });
+
+        }
     });
 });
 
