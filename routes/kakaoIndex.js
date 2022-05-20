@@ -15,18 +15,26 @@ module.exports = () => {
 
             async (accessToken, refreshToken, profile, done) => {
                 console.log('try in', profile,'<<<<<<<');
-                
-                const userEmail = profile._json.kakao_account.email
-                const sql = 'select * from User where userEmail = ?'
+
+                const sql = 'select * from User where userEmail = ? AND provider="kakao"'
 
                 db.query(sql, userEmail, (err, results) => {
                     if (err) {
                         console.log(err);
                         done(err);
                     }
+
+                    const userEmail = profile._json.kakao_account.email
+                    const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
+                    const userName = profile.username
+                    const provider = profile.provider
+                    const kakaoId = profile.id
+                    const point = 50
+
                     // done(null,results[0]);
                     if (results.length === 0) {
                         // 해당 유저가 존재하지 않는다면, 새로운 아이디를 만들어주고 로그인 시켜줌.
+
                         const sql =
                             'INSERT User(userEmail) values(?)';
 
