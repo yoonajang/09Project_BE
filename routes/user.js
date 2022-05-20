@@ -153,7 +153,7 @@ router.post('/signup', (req, res, next) => {
             } else {
                 //authNum 저장
                 db.query(
-                    'SELECT *, timestampdiff(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
+                    'SELECT *, TIMESTAMPDIFF(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
                     email,
                     (err, data) => {
 
