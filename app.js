@@ -30,7 +30,7 @@ const credentials = {
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
     console.log(
-        `|ip| ${req.ip} |domain| ${req.rawHeaders[1]} |method| ${req.method} |Request URL| ${req.originalUrl} |moment().format("YY-MM-DD HH:mm:ss")`
+        `|ip| ${req.ip} |domain| ${req.rawHeaders[1]} |method| ${req.method} |Request URL| ${req.originalUrl}`, moment().format("YY-MM-DD HH:mm:ss")
     );
     next();
 };
