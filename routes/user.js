@@ -88,79 +88,79 @@ router.post('/mail', async (req, res) => {
     });
 
     //authNum 저장
-    // db.query(
-    //     'SELECT * FROM AuthNum WHERE userEmail=?',
-    //     userEmail,
-    //     (err, data) => {
-    //         // if(err) console.log(err)
-    //         console.log(data.length === 0);
-    //         if (data.length === 0) {
-    //             db.query('INSERT AuthNum(`authNum`, `userEmail`) VALUES (?,?)',
-    //                 [authNum, userEmail],
-    //                 (err, data) => {
-    //                     res.send({ msg: 'success' });
+    db.query(
+        'SELECT * FROM AuthNum WHERE userEmail=?',
+        userEmail,
+        (err, data) => {
+            // if(err) console.log(err)
+            console.log(data.length === 0);
+            if (data.length === 0) {
+                db.query('INSERT AuthNum(`authNum`, `userEmail`) VALUES (?,?)',
+                    [authNum, userEmail],
+                    (err, data) => {
+                        res.send({ msg: 'success' });
 
-    //                 'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`) VALUES (?,?,?,?,?)', param,
-    //                 (err, row) => {
-    //                     if (err) {
-    //                         console.log(err);
-    //                         res.send({ meg: 'fail' });
-    //                     } else {
-    //                         res.send({ meg: 'success' });
-    //                     }
-    //                 }
-    //             });
-    //         } else {
-    //             db.query(
-    //                 'UPDATE AuthNum SET authNum=? WHERE userEmail=?',
-    //                 [authNum, userEmail],
-    //                 (err, data) => {
-    //                     res.send({ msg: 'success' });
-    //                 },
+                    'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`) VALUES (?,?,?,?,?)', param,
+                    (err, row) => {
+                        if (err) {
+                            console.log(err);
+                            res.send({ meg: 'fail' });
+                        } else {
+                            res.send({ meg: 'success' });
+                        }
+                    }
+                });
+            } else {
+                db.query(
+                    'UPDATE AuthNum SET authNum=? WHERE userEmail=?',
+                    [authNum, userEmail],
+                    (err, data) => {
+                        res.send({ msg: 'success' });
+                    },
 
                 // } else {
                     //authNum 저장
-                    db.query(
-                        'SELECT *, TIMESTAMPDIFF(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
-                        userEmail,
-                        (err, user) => { 
-                            const authNum = user[0].authNum
+                    // db.query(
+                    //     'SELECT *, TIMESTAMPDIFF(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
+                    //     userEmail,
+                    //     (err, user) => { 
+                    //         const authNum = user[0].authNum
         
-                            if (data.length === 0 ) {
-                                db.query(
-                                    'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
-                                    [authNum, userEmail, 1],
-                                    (err, data) => {
-                                        res.send({ msg: 'success' });
-                                    },
-                                );
-                            } else if ( data[0].timeDiff > 5) {
-                                db.query(
-                                    'UPDATE AuthNum SET authNum=?, `updatedAt`=now(), `count`=1 WHERE userEmail=?',
-                                    [authNum, userEmail],
-                                    (err, data) => {
-                                        res.send({ msg: 'success' });
-                                    },
-                                );
+                    //         if (data.length === 0 ) {
+                    //             db.query(
+                    //                 'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
+                    //                 [authNum, userEmail, 1],
+                    //                 (err, data) => {
+                    //                     res.send({ msg: 'success' });
+                    //                 },
+                    //             );
+                    //         } else if ( data[0].timeDiff > 5) {
+                    //             db.query(
+                    //                 'UPDATE AuthNum SET authNum=?, `updatedAt`=now(), `count`=1 WHERE userEmail=?',
+                    //                 [authNum, userEmail],
+                    //                 (err, data) => {
+                    //                     res.send({ msg: 'success' });
+                    //                 },
+                    //             );
         
-                            } else if (data[0].count < 3 && data[0].timeDiff <= 5) {
-                                db.query(
-                                    'UPDATE AuthNum SET authNum=?, `count`=count+1 WHERE userEmail=?',
-                                    [authNum, userEmail],
-                                    (err, data) => {
-                                        res.send({ msg: 'success' });
-                                    },
-                                );
-                            } else if (data[0].count === 3 && data[0].timeDiff <= 5) {
-                                res.send({ msg: 'fail' });
-                            }
+                    //         } else if (data[0].count < 3 && data[0].timeDiff <= 5) {
+                    //             db.query(
+                    //                 'UPDATE AuthNum SET authNum=?, `count`=count+1 WHERE userEmail=?',
+                    //                 [authNum, userEmail],
+                    //                 (err, data) => {
+                    //                     res.send({ msg: 'success' });
+                    //                 },
+                    //             );
+                    //         } else if (data[0].count === 3 && data[0].timeDiff <= 5) {
+                    //             res.send({ msg: 'fail' });
+                    //         }
                             
-                        })
+                    //     })
 
-    //             );
-    //         }
-    //     },
-    // );
+                );
+            }
+        },
+    );
 });
 
 
@@ -179,6 +179,9 @@ router.post('/mailauth', async (req, res) => {
             }
         },
     );
+
+
+    
 });
 
 
