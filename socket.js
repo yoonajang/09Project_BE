@@ -452,10 +452,7 @@ module.exports = (server) => {
                             const bossEmail = bossIs[0].User_userEmail
                             const bossName = bossIs[0].User_userName
                             const bossImage = bossIs[0].userImage
-                            const bossInfo = {  userId: bossId, 
-                                                userEmail: bossEmail,
-                                                userName: bossName,
-                                                userImage: bossImage}
+                            const bossInfo = { bossId, bossEmail, bossName, bossImage }
 
                             const status = title + ' 게시물에서 ' + userName +'님의 거래가 취소되었습니다.' 
 
@@ -470,13 +467,14 @@ module.exports = (server) => {
 
                                         console.log(userLists)
                                         socket.leave(postid)
+                                        console.log('LEAVE______________________메시지 들어갑니다.')
                                         socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.', userLists, "leave")
 
                                 })
                             })
 
                             const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
-                            db.query(deleteJP, [postId, user], (err, deletedJP) => {
+                            db.query(deleteJP, [postId, userId], (err, deletedJP) => {
                                 if(err) console.log(err)
                                 console.log('삭제')
                             })
@@ -541,6 +539,7 @@ module.exports = (server) => {
 
                                         console.log(userLists)
                                         socket.leave(postid)
+                                        console.log('LEAVE______________________메시지 들어갑니다.')
                                         socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.', userLists, "leave")
 
                                 })
