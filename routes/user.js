@@ -146,25 +146,16 @@ router.post('/signup', (req, res, next) => {
         const email = req.body.userEmail;
         const sql = 'select * from User where userEmail=?';
 
-        db.query(sql, [email], (err, data) => {
-            if (data.length === 0) {
-                console.log(err);
-                res.send({ msg: 'success' });
-            } else {
-        }
-        });
-   
-
         //authNum 저장
         db.query(
             'SELECT *, timestampdiff(minute, updatedAt, now()) timeDiff FROM AuthNum WHERE userEmail=?',
-            userEmail,
+            email,
             (err, data) => {
 
                 if (data.length === 0 ) {
                     db.query(
                         'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
-                        [authNum, userEmail, 1],
+                        [authNum, email, 1],
                         (err, data) => {
                             res.send({ msg: 'success' });
                         },
