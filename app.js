@@ -58,7 +58,7 @@ app_http.use((req, res, next) => {
         next();
     } else {
         const to = `https://${req.hostname}:${httpsPort}${req.url}`;
-        console.log(to);
+        // console.log(to);
         res.redirect(to);
     }
 });
