@@ -118,10 +118,8 @@ router.post('/mail', async (req, res) => {
                 );
             } else if (data[0].count === 3 && data[0].timeDiff <= 5) {
                 res.send({ msg: 'fail' });
-            }
-            
+            }   
     });
-
 });
 
 
@@ -139,12 +137,8 @@ router.post('/mailauth', async (req, res) => {
                 res.send({ msg: 'fail' });
             }
         },
-    );
-
-
-    
+    ); 
 });
-
 
 
 // 이메일 중복확인
@@ -221,7 +215,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
 
     // SendMessage (게시물당 1개씩 알림보내기)
     const sql_1 = 
-        'SELECT alarmId, status, userImage, createdAt, Post_postId, type FROM Alarm WHERE User_userId=? AND type="sendMessage" AND isChecked = 0 ;';
+        'SELECT A.alarmId, A.status, A.userImage, A.createdAt, A.Post_postId, A.type FROM Alarm A WHERE A.User_userId=10 AND A.type="sendMessage" AND A.isChecked = 0 GROUP BY A.type, A.Post_postId;';
     const sql_1s = mysql.format(sql_1, userId);
 
     // leaveChat (모든 알림 다보내기)
@@ -289,10 +283,13 @@ router.patch('/ischecked', authMiddleware, (req, res) => {
 
             db.query(sql, userId, (err, data) => {
                 if (err) console.log(err);
-                res.send({ msg: 'ischecked 1로 변경' });
+
+                db.query('SELECT * FROM Alarm WHERE User_userId = ? and isChecked = 1, userId, (err, rows', userId, (err, msgs) => {
+                    res.send({ msg: 'success', msgs});
+                })
             });
         } else {
-            res.send({ msg: '알람이 없습니다' });
+            res.send({ msg: 'fail' });
         }
     });
 });
