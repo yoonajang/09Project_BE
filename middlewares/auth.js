@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../config');
 
 module.exports = (req, res, next) => {
+    console.log(req.headers)
     const { authorization } = req.headers;
     const [authType, authToken] = authorization.split(' ');
     console.log(authorization, authType, authToken)
