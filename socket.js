@@ -476,7 +476,7 @@ module.exports = (server) => {
 
                                                 console.log(userLists)
                                                 socket.leave(postid)
-                                                socket.to(postid).emit('connected', unjoinedName + '님이 퇴장하셨습니다.', userLists, "leave")
+                                                socket.to(postid).emit('connected', unjoinedName + '님이 퇴장하셨습니다.', userLists, "leave") //
 
                                 })
                             })
