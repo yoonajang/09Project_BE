@@ -5,9 +5,12 @@ const mainRouter = require('./main');
 const postRouter = require('./post');
 const likeRouter = require('./like');
 const chatRouter = require('./chat');
+const kakaoRouter = require('./kakao');  //소셜로그인
+
 
 
 const router = express.Router();
+
 
 // 앞에 /로 시작됨
 router.use('/user', userRouter);
@@ -16,5 +19,6 @@ router.use('/main', mainRouter);
 router.use('/main', postRouter);
 router.use('/main/like', likeRouter);
 router.use('/main', chatRouter);
+router.use('/kakao-auth', kakaoRouter);
 
 module.exports = router;

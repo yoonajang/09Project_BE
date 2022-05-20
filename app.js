@@ -4,8 +4,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const routers = require('./routes');
-const kakaoPassport = require('./kakao-auth/index.js');
-const kakaoRouter = require('./kakao-auth/kakao/kakao.js');
+const kakaoPassport = require('./routes/kakaoIndex');
+// const kakaoRouter = require('./kakao-auth/kakao/kakao.js');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
@@ -50,7 +50,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestMiddleware);
 app.use('/', routers);
-app.use('/kakao-auth', kakaoRouter);
+// app.use('/kakao-auth', kakaoRouter);
 
 
 app_http.use((req, res, next) => {
