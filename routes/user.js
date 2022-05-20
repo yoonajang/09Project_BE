@@ -221,7 +221,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
 
     // SendMessage (게시물당 1개씩 알림보내기)
     const sql_1 = 
-        'SELECT alarmId, status, userImage, createdAt, Post_postId, type FROM Alarm WHERE User_userId=? AND type="sendMessage" AND isChecked = 0 ;';
+        'SELECT alarmId, status, userImage, createdAt, Post_postId, DiSTINCT type FROM Alarm WHERE User_userId=? AND type="sendMessage" AND isChecked = 0 ;';
     const sql_1s = mysql.format(sql_1, userId);
 
     // leaveChat (모든 알림 다보내기)
@@ -277,8 +277,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
 });
 
 //알람확인
-router.put('/ischecked', authMiddleware, (req, res) => {
-    
+router.patch('/ischecked', authMiddleware, (req, res) => {    
     const userId = res.locals.user.userId;
     const sql =
         'SELECT * FROM Alarm WHERE User_userId = ? and isChecked = 0';
