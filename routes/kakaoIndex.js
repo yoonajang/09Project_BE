@@ -16,7 +16,14 @@ module.exports = () => {
             async (accessToken, refreshToken, profile, done) => {
                 console.log('try in', profile,'<<<<<<<');
 
-                const userEmail = profile._json.kakao_account.emai
+                const userEmail = profile._json.kakao_account.email;
+                const userImage = profile._json.properties.profile_image
+                const userName = profile._json.properties.nickname
+                const provider = "kakao"
+                const kakaoId = profile._json.id
+                const point = 50
+
+                const params = [userEmail, userImage, userName, provider, kakaoId, point]
 
                 const sql = 'select * from User where userEmail = ? AND provider="kakao"'
 
@@ -25,14 +32,6 @@ module.exports = () => {
                         console.log(err);
                         done(err);
                     }
-
-                    const userImage = profile.properties.profile_image
-                    const userName = profile.properties.nickname
-                    const provider = "kakao"
-                    const kakaoId = profile.id
-                    const point = 50
-
-                    const params = [userEmail, userImage, userName, provider, kakaoId, point]
 
                     // done(null,results[0]);
                     if (results.length === 0) {
