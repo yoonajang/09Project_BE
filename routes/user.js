@@ -213,7 +213,7 @@ router.post('/login', (req, res) => {
 
 
 // 로그인 여부확인
-router.get('/islogin', authMiddleware, async (req, res) => {
+router.get('/islogin', authMiddleware, (req, res) => {
     const { user } = res.locals;
 
     const sql = 'SELECT status FROM Alarm WHERE User_userId = ? and isChecked = 0';
@@ -235,7 +235,7 @@ router.get('/islogin', authMiddleware, async (req, res) => {
     });
 });
 
-    //알람확인
+//알람확인
 router.put('/ischecked', authMiddleware, (req, res) => {
     const userId = res.locals.user.userId;
     const sql =
@@ -255,19 +255,5 @@ router.put('/ischecked', authMiddleware, (req, res) => {
         }
     });
 });
-//카카오로그인
-
-router.get('/kakao', passport.authenticate('kakao'));
-
-router.get(
-    '/kakao/callback',
-    passport.authenticate('kakao', {
-        failureRedirect: '/',
-    }),
-    (req, res) => {
-        res.redirect('/');
-    },
-);
-
 
 module.exports = router;
