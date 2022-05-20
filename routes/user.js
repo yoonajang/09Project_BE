@@ -218,11 +218,11 @@ router.get('/islogin', authMiddleware, (req, res) => {
 
     const sql = 'SELECT status FROM Alarm WHERE User_userId = ? and isChecked = 0';
     
-    db.query(sql, user.userId, (err, rows) => {
+    db.query(sql, user.userId, (err, status) => {
         if (err) console.log(err);
         
-        const status = rows[0]
-        console.log(rows, '이것이 문자다!')
+        // const status = rows[0]
+        // console.log(rows, '이것이 문자다!')
         res.send({
             userInfo: {
                 userId: user.userId,
