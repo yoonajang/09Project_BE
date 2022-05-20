@@ -242,12 +242,13 @@ router.get('/islogin', authMiddleware, (req, res) => {
         if (err) {
             console.log(err);
         } else {
+            console.log(rows)
             const sendMessage = rows[0];
             const leaveChat = rows[1];
             const blockChat = rows[2];
             const addDeal = rows[3];
 
-            const alarm = [sendMessage, leaveChat, blockChat, addDeal ]
+            const alarm = [ sendMessage, leaveChat, blockChat, addDeal ]
             
             res.send({
                 userInfo: {
