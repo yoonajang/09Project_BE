@@ -447,15 +447,15 @@ module.exports = (server) => {
                         const title = foundBoss[0].title
 
                         // 방장 정보찾기
-                        db.query('SELECT * FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [postId, bossId], (err, bossIs) => {
-                            const bossStatus = bossIs[0].isLogin
-                            const bossEmail = bossIs[0].User_userEmail
-                            const bossName = bossIs[0].User_userName
-                            const bossImage = bossIs[0].userImage
-                            const bossInfo = {  User_userId: bossId, 
-                                                User_userEmail: bossEmail,
-                                                User_userName: bossName,
-                                                userImage: bossImage}
+                        db.query('SELECT * FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [postId, bossId], (err, bossInfo) => {
+                            const bossStatus = bossInfo[0].isLogin
+                            // const bossEmail = bossIs[0].User_userEmail
+                            // const bossName = bossIs[0].User_userName
+                            // const bossImage = bossIs[0].userImage
+                            // const bossInfo = {  User_userId: bossId, 
+                            //                     User_userEmail: bossEmail,
+                            //                     User_userName: bossName,
+                            //                     userImage: bossImage } 
 
                             const status = title + ' 게시물에서 ' + userName +'님의 거래가 취소되었습니다.' 
 
@@ -517,16 +517,16 @@ module.exports = (server) => {
                         const bossId = foundBoss[0].User_userId
                     
                         // 방장 정보 찾기
-                        db.query('SELECT * FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [postId, bossId], (err, bossIs) => {
-                            console.log(bossIs)
-                            const bossId = bossIs[0].User_userId
-                            const bossEmail = bossIs[0].User_userEmail
-                            const bossName = bossIs[0].User_userName
-                            const bossImage = bossIs[0].userImage
-                            const bossInfo = {  User_userId: bossId, 
-                                                User_userEmail: bossEmail,
-                                                User_userName: bossName,
-                                                userImage: bossImage}
+                        db.query('SELECT * FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [postId, bossId], (err, bossInfo) => {
+                            // console.log(bossIs)
+                            // const bossStatus = bossInfo[0].isLogin
+                            // const bossEmail = bossIs[0].User_userEmail
+                            // const bossName = bossIs[0].User_userName
+                            // const bossImage = bossIs[0].userImage
+                            // const bossInfo = {  User_userId: bossId, 
+                            //                     User_userEmail: bossEmail,
+                            //                     User_userName: bossName,
+                            //                     userImage: bossImage}
 
                             
                             // isPick=0 인 유저찾기
