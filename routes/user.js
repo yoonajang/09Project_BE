@@ -222,7 +222,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
         if (err) console.log(err);
         
         const status = rows[0]
-        console.log(status)
+        console.log(rows, '이것이 문자다!')
         res.send({
             userInfo: {
                 userId: user.userId,
