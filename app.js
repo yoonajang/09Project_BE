@@ -80,10 +80,10 @@ const httpsServer = https.createServer(credentials, app);
 SocketIO(httpsServer);
 
 httpServer.listen(httpPort, () => {
-    console.log(moment().format("YY-MM-DD HH:mm:ss"),`${httpPort}`,'http서버가 켜졌어요!');
+    console.log(moment().format("YY-MM-DD HH:mm:ss"),'|',`${httpPort}`,'http서버가 켜졌어요!');
 });
 
 httpsServer.listen(httpsPort, () => {
-    console.log(moment().format("YY-MM-DD HH:mm:ss"),`${httpPort}`, 'https서버가 켜졌어요!');
+    console.log(moment().format("YY-MM-DD HH:mm:ss"),'|',`${httpPort}`, 'https서버가 켜졌어요!');
 });
 
