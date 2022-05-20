@@ -216,7 +216,7 @@ router.post('/login', (req, res) => {
 router.get('/islogin', authMiddleware, (req, res) => {
     const { user } = res.locals;
 
-    const sql = 'SELECT status FROM Alarm WHERE User_userId = ? and isChecked = 0';
+    const sql = 'SELECT alarmId, Post_postId, status, userImage, createdAt FROM Alarm WHERE User_userId = ? and isChecked = 0 LIMIT 5;';
     
     db.query(sql, user.userId, (err, status) => {
         if (err) console.log(err);
