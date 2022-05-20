@@ -163,29 +163,6 @@ module.exports = (server) => {
                 },
             );
             
-    
-            // socket.join(postid); // string ('p' + postId)
-    
-            // // 확인용
-            // // console.log(io.sockets.adapter.rooms.get(postid), '여려명이 있는지 확인할 수 있나?' )
-            // // console.log(socket.id)
-            // // console.log(socket.rooms, '클 라 이 언 트')
-    
-            // console.log(socket.id, '<<<<<<<<<<<<<<<<<< 채팅 시작시 id');
-            // const socketId = socket.id;
-    
-            // db.query(
-            //     'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
-            //     [socketId, userId, postId],
-            //     (err, rows) => {
-            //         if (err) console.log(err);
-            //     },
-            // );
-    
-            // io.to(postid).emit(
-            //     'connected',
-            //     userName + ' 님이 입장했습니다.',
-            // );
         });
     
         // 메세지 주고 받기 + 오프라인 사용자들에게 알림
@@ -449,12 +426,12 @@ module.exports = (server) => {
     
         // 방나가기 버튼 눌렀을 때, 
         socket.on('leave chatroom', (postid, user) => {
-            const postId = postid.replace('p', '');
+            const postId = Number(postid.replace('p', ''));
             const userId = user;
     
             //방장만 안내가 가기.
             const selectJP = 'SELECT isPick FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
-            db.query(selectJP, [Number(postId), user], (err, selectedJP) => {
+            db.query(selectJP, [postId, user], (err, selectedJP) => {
                 if(err) console.log(err)
                 const selectedStatus = selectedJP[0].isPick
                 
@@ -462,25 +439,50 @@ module.exports = (server) => {
                     // 방장찾기
                     const findBoss = 'SELECT P.postId, P.User_userId, P.title, JP.User_userName unjoinedName, JP.User_userId unjoinedId, JP.User_userEmail unjoinedEmail, JP.userImage unjoinedImage FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title, JP.User_userName, JP.User_userId, JP.User_userEmail, JP.userImage'
     
-                    db.query(findBoss, [Number(postId), userId], (err, foundBoss) => {
+                    db.query(findBoss, [postId, userId], (err, foundBoss) => {
                         console.log(foundBoss)
                         const bossId = foundBoss[0].User_userId
-                        const unjoinedId = foundBoss[0].unjoinedId
-                        const unjoinedName = foundBoss[0].unjoinedName
-                        const unjoinedEmail = foundBoss[0].unjoinedEmail
-                        const unjoinedImage = foundBoss[0].unjoinedImage
-                        const title = foundBoss[0].title
+                        const {unjoinedId, unjoinedName, unjoinedEmail,unjoinedImage, title} = foundBoss[0]
+                        console.log(unjoinedId,unjoinedName,unjoinedEmail,unjoinedImage, '잘나오는지 확인, leave chat room')
+                        // const unjoinedId = foundBoss[0].unjoinedId
+                        // const unjoinedName = foundBoss[0].unjoinedName
+                        // const unjoinedEmail = foundBoss[0].unjoinedEmail
+                        // const unjoinedImage = foundBoss[0].unjoinedImage
+                        // const title = foundBoss[0].unjoinedImage
+                        const unjoinedUser = {  userId: unjoinedId, 
+                                                userEmail: unjoinedEmail,
+                                                userName: unjoinedName,
+                                                userImage: unjoinedImage }
+                        
     
                         // 방장 로그인상태 찾기
-                        db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [Number(postId), bossId], (err, bossIsLogin) => {
-                            const bossStatus = bossIsLogin[0].isLogin
+                        db.query('SELECT * FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [postId, bossId], (err, bossIs) => {
+                            const bossStatus = bossIs[0].isLogin
+                            const {User_userEmail, User_userName, userImage} = bossIs[0]
+                            const bossUser = {  userId: bossId, 
+                                                userEmail: User_userEmail,
+                                                userName: User_userName,
+                                                userImage: userImage}
+
                             const status = title + ' 게시물에서 ' + unjoinedName +'님의 거래가 취소되었습니다.' 
-    
-                            socket.leave(postid)
-                            socket.to(postid).emit('connected', unjoinedName + '님이 퇴장하셨습니다.');
-    
+
+                    
+                            db.query('SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
+                            postId, (err, noPick) => {
+                                db.query(
+                                    'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
+                                    postId, (err, Pick) => {
+                                                const userLists  = [unjoinedUser, noPick, Pick, bossUser]
+
+                                                console.log(userLists)
+                                                socket.leave(postid)
+                                                socket.to(postid).emit('connected', unjoinedName + '님이 퇴장하셨습니다.', userLists, "leave")
+
+                                })
+                            })
+
                             const deleteJP = 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?'
-                            db.query(deleteJP, [Number(postId), user], (err, deletedJP) => {
+                            db.query(deleteJP, [postId, user], (err, deletedJP) => {
                                 if(err) console.log(err)
                                 console.log('삭제')
                             })
@@ -502,7 +504,7 @@ module.exports = (server) => {
                                 db.query(insertAlarm, insertParam, (err, Inserted) => {
                                     if (err) console.log(err);
     
-                                    db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [Number(postId), Inserted.insertId], (err, messageAlarm) => {
+                                    db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
                                         socket.to(bossId).emit('leaved chatroom',messageAlarm);
                                     })
     
