@@ -449,7 +449,6 @@ module.exports = (server) => {
                         // 방장 정보찾기
                         db.query('SELECT * FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [postId, bossId], (err, bossIs) => {
                             const bossStatus = bossIs[0].isLogin
-                            // const bossId = bossIs[0].User_userId
                             const bossEmail = bossIs[0].User_userEmail
                             const bossName = bossIs[0].User_userName
                             const bossImage = bossIs[0].userImage
@@ -471,7 +470,7 @@ module.exports = (server) => {
 
                                         console.log(userLists)
                                         socket.leave(postid)
-                                        socket.to(postid).emit('connected', unjoinedName + '님이 퇴장하셨습니다.', userLists, "leave")
+                                        socket.to(postid).emit('connected', userName + '님이 퇴장하셨습니다.', userLists, "leave")
 
                                 })
                             })
