@@ -25,28 +25,29 @@ module.exports = () => {
                     }
 
                     const userEmail = profile._json.kakao_account.email
-                    const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
-                    const userName = profile.username
-                    const provider = profile.provider
+                    const userImage = profile.properties.profile_image
+                    const userName = profile.properties.nickname
+                    const provider = "kakao"
                     const kakaoId = profile.id
                     const point = 50
+
+                    const params = [userEmail, userImage, userName, provider, kakaoId, point]
 
                     // done(null,results[0]);
                     if (results.length === 0) {
                         // 해당 유저가 존재하지 않는다면, 새로운 아이디를 만들어주고 로그인 시켜줌.
 
                         const sql =
-                            'INSERT User(userEmail) values(?)';
+                            'INSERT User(userEmail, userImage, userName, provider, kakaoId, point) values(?,?,?,?,?,?)';
 
-                        db.query(sql, userEmail, (err, results) => {
+                        db.query(sql, params, (err, results) => {
                             if (err) {
                                 console.log(err);
                                 done(err);
                             }
-                            // done(null,results[0]); // 로그인 인증 완료... 일것이다.
 
                             const sql =
-                                'SELECT * FROM User Where userEmail =?'; //가입이 완료되었으면 로그인
+                                'SELECT * FROM User Where userEmail = ?'; //가입이 완료되었으면 로그인
 
                             db.query(sql, userEmail, (err, results) => {
                                 if (err) {
@@ -55,14 +56,14 @@ module.exports = () => {
                                 }
                                 
                                 const user = results[0];
-                                console.log(user, 1)
+                                console.log(user, 1, results[0])
                                 return done(null, user);
                             });
                         });
                     } else {
                         //이미 유저가 존재한다면 바로 로그인
                         const user = results[0];
-                        console.log(user, 2)
+                        console.log(user, 2, results[0])
                         return done(null, user);
                     }
                 });
