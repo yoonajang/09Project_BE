@@ -25,7 +25,7 @@ module.exports = () => {
                 let params = [userEmail, userName, provider, kakaoId, point]
 
                 let userImage = profile._json.properties.thumbnail_image
-                const defaultKakaoImage = 'http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg'
+                const defaultKakaoImage = 'http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_110x110.jpg'
                 const defaultImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27'
                 
                 if (userImage === defaultKakaoImage){
