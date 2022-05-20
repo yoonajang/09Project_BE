@@ -283,10 +283,7 @@ router.patch('/ischecked', authMiddleware, (req, res) => {
 
             db.query(sql, userId, (err, data) => {
                 if (err) console.log(err);
-
-                db.query('SELECT * FROM Alarm WHERE User_userId = ? and isChecked = 1, userId, (err, rows', userId, (err, msgs) => {
-                    res.send({ msg: 'success', msgs});
-                })
+                    res.send({ msg: 'success'});
             });
         } else {
             res.send({ msg: 'fail' });
