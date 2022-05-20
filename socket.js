@@ -200,7 +200,7 @@ module.exports = (server) => {
 
                                     if (user.isLogin === 0 ) {
                                         const insertAlarm =
-                                            'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                            'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`) VALUES (?,?,?,?,?,?,?)';
 
                                             db.query(insertAlarm, params, (err, Inserted) => {
                                                 if (err) console.log(err);
@@ -211,7 +211,7 @@ module.exports = (server) => {
                                     // 로그인되어있지만, 채팅방 이용하지 않는 사람에게 메시지 보내기
                                     } else if(user.isLogin === 1 && user.isConnected === 0){
                                         const insertAlarm =
-                                            'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                            'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`) VALUES (?,?,?,?,?,?,?)';
 
                                             db.query(insertAlarm, params, (err, Inserted) => {
                                                 if (err) console.log(err);
@@ -294,9 +294,9 @@ module.exports = (server) => {
     
                 if (joinedLogin === 1){
                     const insertAlarm =
-                        'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                        'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`) VALUES (?,?,?,?,?,?,?)';
                     
-                    const insertParam = [1, status, userEmail, userId, userName, userImage]
+                    const insertParam = [1, status, userEmail, userId, userName, userImage, postId]
                 
                     db.query(insertAlarm, insertParam, (err, Inserted) => {
                         if (err) console.log(err);
@@ -307,9 +307,9 @@ module.exports = (server) => {
                     });
                 } else {
                     const insertAlarm =
-                        'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                        'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`) VALUES (?,?,?,?,?,?,?)';
                     
-                    const insertParam = [0, status, userEmail, userId, userName, userImage]
+                    const insertParam = [1, status, userEmail, userId, userName, userImage, postId]
     
                     db.query(insertAlarm, insertParam , (err, Inserted) => {
                         if (err) console.log(err);
@@ -450,9 +450,9 @@ module.exports = (server) => {
 
                             })
     
-                            const insertParam = [0,status, userEmail, userId, userName, userImage]
+                            const insertParam = [0,status, userEmail, userId, userName, userImage, postId]
                             const insertAlarm =
-                                    'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                    'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`) VALUES (?,?,?,?,?,?,?)';
     
                             // 방장 로그아웃 상태시 저장
                             if (bossStatus === 0){         
@@ -556,7 +556,7 @@ module.exports = (server) => {
                                         const userImage = foundUser[0].userImage;
     
                                         const InsertAlarm =
-                                            'INSERT INTO Alarm  (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`) VALUES (?,?,?,?,?,?)';
+                                            'INSERT INTO Alarm  (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`) VALUES (?,?,?,?,?,?,?)';
                                         const params = [
                                             0,
                                             status,
@@ -564,6 +564,7 @@ module.exports = (server) => {
                                             userId,
                                             userName,
                                             userImage,
+                                            postId
                                         ];
     
                                         db.query(

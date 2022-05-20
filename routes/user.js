@@ -217,7 +217,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
     const { user } = res.locals;
 
     // Post_post추가해주세요.
-    const sql = 'SELECT alarmId, status, userImage, createdAt FROM Alarm WHERE User_userId = ? and isChecked = 0 LIMIT 5;';
+    const sql = 'SELECT alarmId, status, userImage, createdAt, Post_postId FROM Alarm WHERE User_userId = ? and isChecked = 0 LIMIT 5;';
     
     db.query(sql, user.userId, (err, status) => {
         if (err) console.log(err);
@@ -239,6 +239,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
 
 //알람확인
 router.put('/ischecked', authMiddleware, (req, res) => {
+    
     const userId = res.locals.user.userId;
     const sql =
         'SELECT * FROM Alarm WHERE User_userId = ? and isChecked = 0';
