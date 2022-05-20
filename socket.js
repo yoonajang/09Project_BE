@@ -98,8 +98,6 @@ module.exports = (server) => {
                                         db.query('SELECT User_userId FROM Post WHERE postId = ?', postId, (err, bossId) => {
                                             const userLists  = [param.loggedUser, noPick, Pick, bossId]
 
-                                            console.log(userLists)
-
                                             io.to(postid).emit(
                                                 'connected',
                                                 userName +

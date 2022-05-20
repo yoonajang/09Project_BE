@@ -158,13 +158,6 @@ router.post('/signup', (req, res, next) => {
                     (err, user) => { 
                         const authNum = user[0].authNum
 
-                        db.query(sql, email, (err, data) => {
-                            if (data.length === 0) {
-                                console.log(err);
-                                res.send({ msg: 'success' });
-                            }
-                        });
-
                         if (data.length === 0 ) {
                             db.query(
                                 'INSERT AuthNum(`authNum`, `userEmail`,`count`) VALUES (?,?,?)',
