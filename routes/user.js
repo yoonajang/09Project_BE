@@ -246,6 +246,8 @@ router.get('/islogin', authMiddleware, (req, res) => {
             const leaveChat = rows[1];
             const blockChat = rows[2];
             const addDeal = rows[3];
+
+            const alarm = [sendMessage, leaveChat, blockChat, addDeal ]
             
             res.send({
                 userInfo: {
@@ -255,7 +257,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
                     userImage: user.userImage,
                     tradeCount: user.tradeCount,
                 },
-                alarm: rows            
+                alarm: alarm            
             });
 
         }
