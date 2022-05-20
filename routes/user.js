@@ -222,11 +222,12 @@ router.get('/islogin', authMiddleware, (req, res) => {
     const findAlarm = 
         'SELECT alarmId, status, userImage, createdAt, Post_postId, type FROM Alarm WHERE User_userId=? AND isChecked = 0 ;';
 
-    db.query(findAlarm, userId, (err, foundAlarm) => {
+    db.query(findAlarm, userId, (err, alarm) => {
         if (err) {
             console.log(err);
         } else {
-            const alarm = foundAlarm[0]
+            console.log(alarm)
+            // const alarm = foundAlarm
             
             res.send({
                 userInfo: {
@@ -236,7 +237,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
                     userImage: user.userImage,
                     tradeCount: user.tradeCount,
                 },
-                alarm: alarm            
+                alarm            
             });
 
         }
