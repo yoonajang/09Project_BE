@@ -15,6 +15,9 @@ module.exports = () => {
 
             async (accessToken, refreshToken, profile, done) => {
                 console.log('try in', profile,'<<<<<<<');
+                console.log( profile._json, '제이슨')
+                console.log( profile._json.properties, '프로퍼티')
+                console.log( profile.properties, '프로퍼티')
 
                 const userEmail = profile._json.kakao_account.email;
                 const userImage = profile._json.properties.profile_image
@@ -32,6 +35,8 @@ module.exports = () => {
                         console.log(err);
                         done(err);
                     }
+
+                    console.log(results, '유저가 있는지는 확인해야지.')
 
                     // done(null,results[0]);
                     if (results.length === 0) {
