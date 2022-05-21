@@ -637,12 +637,10 @@ module.exports = (server) => {
     
         // 채팅방 나가기
         socket.on('close chatroom', (postid, user) => {
-            console.log(postid, user)
+            
             const userId = user.userId
             const userName = user.userName
-            const postId = postid.replace('p', '');
-
-            console.log(userId, userName, postId)
+            const postId = Number(postid.replace('p', ''));
     
             db.query(
                 'UPDATE JoinPost SET isConnected = 0 WHERE User_userId=? and Post_postId =?;', 
