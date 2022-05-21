@@ -109,7 +109,7 @@ module.exports = (server) => {
                         } else {
                             console.log(userId, 'fail!!!!!!!!!!!!!!!!!!!!!!!')
                             const status = 'fail';
-                            io.emit('block', 'fail');
+                            io.to(userId).emit('block', 'fail');
 
                             // db.query('SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;', postId,(err, noPick) => {
 
