@@ -256,14 +256,13 @@ module.exports = (server) => {
 
                                             db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
   
-                                                // socket.to(joinUserId).emit('send message alarm',messageAlarm);   
+                                                socket.to(joinUserId).emit('send message alarm',messageAlarm);   
                                                 
                                             })
                                         })
 
-                                        socket.to(postid).emit('receive message', param.newMessage);
-
                                     }
+                                    socket.to(postid).emit('receive message', param.newMessage);
                                     
                                 });           
                             });
