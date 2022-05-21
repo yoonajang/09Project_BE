@@ -241,7 +241,9 @@ module.exports = (server) => {
                                         const insertAlarm =
                                             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)'
 
-                                        db.query(insertAlarm, params, (err, Inserted) => {
+                                        const alarmParams = [ 0, status, joinUserEmail, joinUserId , joinUserName, joinUserImage, postId, 'sendMessage', 0]
+
+                                        db.query(insertAlarm, alarmParams, (err, Inserted) => {
                                             if (err) console.log(err);
 
                                             const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
@@ -252,7 +254,7 @@ module.exports = (server) => {
                                                 
                                             })
                                         })
-                                        
+
                                         socket.to(user.User_userId).emit('receive message', param.newMessage);
 
                                     }
