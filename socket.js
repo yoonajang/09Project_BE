@@ -358,6 +358,7 @@ module.exports = (server) => {
             });
         });
 
+        
         //찐참여자 선택 취소 (by 본인) //이벤트명 다시설정!!
         socket.on('cancel_my_participant', param => {
 

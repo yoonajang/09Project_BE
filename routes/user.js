@@ -286,7 +286,7 @@ router.patch('/ischecked', authMiddleware, (req, res) => {
                     res.send({ msg: 'success'});
             });
         } else {
-            res.send({ msg: 'fail' });
+            res.send({ msg: 'empty' });
         }
     });
 });
