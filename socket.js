@@ -214,7 +214,16 @@ module.exports = (server) => {
                                         db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
                                             
                                             // 알림 없으면 알림 생성
-                                            if(foundUser.length === 0){
+                                            if(foundUser.status === status && foundUser.User_userId === joinUserId){
+                                                const updateAlarm =
+                                                    'UPDATE Alarm SET count = count+1 WHERE status=? AND User_userId=?';
+
+                                                db.query(updateAlarm, [status,joinUserId], (err, Inserted) => {
+                                                    if (err) console.log(err);
+                                                })
+                                                           
+                                            // 알림 있으면 count = +1
+                                            } else {                                                
                                                 const insertAlarm =
                                                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)';
 
@@ -223,16 +232,6 @@ module.exports = (server) => {
                                                 db.query(insertAlarm, alarmParams, (err, Inserted) => {
                                                     if (err) console.log(err);
                                                 })
-                                                           
-                                            // 알림 있으면 count = +1
-                                            } else {
-                                                const updateAlarm =
-                                                    'UPDATE Alarm SET count = count+1 WHERE status=? AND User_userId=?';
-
-                                                db.query(updateAlarm, [status,joinUserId], (err, Inserted) => {
-                                                    if (err) console.log(err);
-                                                })
-
                                             }
                                         })
 
