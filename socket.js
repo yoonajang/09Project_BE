@@ -450,7 +450,7 @@ module.exports = (server) => {
         socket.on('leave chatroom', (postid, user) => {
             const postId = Number(postid.replace('p', ''));
             const { userId, userName, userEmail, userImage } = user
-            console.log(userId, userName, userEmail, userImage)
+            
             const unjoinedInfo = { userId, userName, userEmail, userImage }
 
             
@@ -462,14 +462,17 @@ module.exports = (server) => {
                 
                 if (selectedStatus === 1) {
                     // 방장찾기
-                    const findBoss = 'SELECT P.postId, P.User_userId, P.title FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title'
+                    const findBoss = 'SELECT P.postId, P.User_userId, P.title, U.userName, U.userEmail, U.userImage FROM `Post` P JOIN User U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title'
     
                     db.query(findBoss, [postId, userId], (err, foundBoss) => {
                         const bossId = foundBoss[0].User_userId
+                        const bossName = foundBoss[0].userName
+                        const bossEmail = foundBoss[0].userEmail
+                        const bossImage = foundBoss[0].userImage
                         const title = foundBoss[0].title
 
                         // 방장 정보찾기
-                        db.query('SELECT User_userId, isLogin FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [postId, bossId], (err, bossInfo) => {
+                        db.query('SELECT isLogin FROM `JoinPost` WHERE Post_postId=? AND User_userId=?', [postId, bossId], (err, bossInfo) => {
                             const bossStatus = bossInfo[0].isLogin
                             const status = title + ' 게시물에서 ' + userName +'님의 거래가 취소되었습니다.' 
 
@@ -495,7 +498,7 @@ module.exports = (server) => {
 
                             })
     
-                            const insertParam = [0,status, userEmail, userId, userName, userImage, postId, "leaveChat"]
+                            const insertParam = [0,status, bossEmail, bossId, bossName, bossImage, postId, "leaveChat"]
                             const insertAlarm =
                                 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`) VALUES (?,?,?,?,?,?,?,?)';
     
