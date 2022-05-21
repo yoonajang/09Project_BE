@@ -236,6 +236,7 @@ module.exports = (server) => {
                                         // 알림찾기
                                         db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
                                             console.log(status, joinUserId)
+                                            console.log(foundUser.length === 0, foundUser.length)
                                             // 알림 있으면 count = +1
                                             console.log(foundUser,2)
                                             // console.log(foundUser[0].status,status, foundUser[0].status===status)
