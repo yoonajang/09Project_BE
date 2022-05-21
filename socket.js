@@ -189,6 +189,7 @@ module.exports = (server) => {
                                             userId,
                                             userName,
                                             userImage,
+                                            postId,
                                             'sendMessage'
                                           ];
                             
