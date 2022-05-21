@@ -214,6 +214,8 @@ module.exports = (server) => {
                                         db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
                                             
                                             // 알림 없으면 알림 생성
+                                            console.log(foundUser.status,status, foundUser.status===status)
+                                            console.log(foundUser.User_userId,joinUserId, foundUser.User_userId === joinUserId)
                                             if(foundUser.status === status && foundUser.User_userId === joinUserId){
                                                 const updateAlarm =
                                                     'UPDATE Alarm SET count = count+1 WHERE status=? AND User_userId=?';
