@@ -27,6 +27,29 @@ module.exports = (server) => {
     
             socket.join(userId);
         });
+        
+
+        // 채팅방 나가기
+        socket.on('closeChatroom', (postid, user) => {
+            console.log(postid, user)
+            const userId = user.userId
+            const userName = user.userName
+            const postId = Number(postid.replace('p', ''));
+    
+            db.query(
+                'UPDATE JoinPost SET isConnected = 0 WHERE User_userId=? and Post_postId =?;', 
+                [userId, postId],
+                (err, rows) => {
+                    if (err) console.log(err);
+                
+                // io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
+                // socket.leave(postid)
+
+            });
+
+            io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
+            socket.leave(postid)
+        });
     
         // 채팅시작
         socket.on('startchat', param => {
@@ -562,27 +585,27 @@ module.exports = (server) => {
         })
 
 
-        // 채팅방 나가기
-        socket.on('closeChatroom', (postid, user) => {
-            console.log(postid, user)
-            const userId = user.userId
-            const userName = user.userName
-            const postId = Number(postid.replace('p', ''));
+        // // 채팅방 나가기
+        // socket.on('closeChatroom', (postid, user) => {
+        //     console.log(postid, user)
+        //     const userId = user.userId
+        //     const userName = user.userName
+        //     const postId = Number(postid.replace('p', ''));
     
-            db.query(
-                'UPDATE JoinPost SET isConnected = 0 WHERE User_userId=? and Post_postId =?;', 
-                [userId, postId],
-                (err, rows) => {
-                    if (err) console.log(err);
+        //     db.query(
+        //         'UPDATE JoinPost SET isConnected = 0 WHERE User_userId=? and Post_postId =?;', 
+        //         [userId, postId],
+        //         (err, rows) => {
+        //             if (err) console.log(err);
                 
-                // io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
-                // socket.leave(postid)
+        //         // io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
+        //         // socket.leave(postid)
 
-            });
+        //     });
 
-            io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
-            socket.leave(postid)
-        });
+        //     io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
+        //     socket.leave(postid)
+        // });
 
 
         // 강퇴 (by 방장 > 작업필요)
