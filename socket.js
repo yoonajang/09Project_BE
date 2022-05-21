@@ -183,17 +183,8 @@ module.exports = (server) => {
                             console.log(foundTitle,foundTitle[0].title, '<<<<<<<<<<<<<' )
                             const title = foundTitle[0].title
                             const status =  title + ' 게시물에 메시지가 도착했습니다.';
-                            const params = [
-                                            0,
-                                            status,
-                                            userEmail,
-                                            userId,
-                                            userName,
-                                            userImage,
-                                            postId,
-                                            'sendMessage'
-                                          ];
-                            
+                            console.log(status,'status가 없는지 확인')
+                                                    
                             const findUser = 
                                     'SELECT JP.User_userId, JP.isLogin, JP.isConnected, U.userName, U.userEmail, U.userImage FROM `JoinPost` JP JOIN `User` U ON JP.User_userId = U.userId WHERE JP.Post_postId = ?;'                
                             db.query(findUser, postId, (err, foundUser) => {
@@ -215,9 +206,9 @@ module.exports = (server) => {
                                         db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
                                             
                                             // 알림 있으면 count = +1
-                                            console.log(foundUser)
-                                            console.log(foundUser[0].status,status, foundUser[0].status===status)
-                                            console.log(foundUser[0].User_userId,joinUserId, foundUser[0].User_userId === joinUserId)
+                                            // console.log(foundUser)
+                                            // console.log(foundUser[0].status,status, foundUser[0].status===status)
+                                            // console.log(foundUser[0].User_userId,joinUserId, foundUser[0].User_userId === joinUserId)
                                             if(foundUser[0].status === status && foundUser[0].User_userId === joinUserId){
                                                 const updateAlarm =
                                                     'UPDATE Alarm SET count = count+1 WHERE Post_postId=? AND User_userId=? AND type="sendMessage"';
@@ -246,9 +237,9 @@ module.exports = (server) => {
                                         db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
                                             
                                             // 알림 있으면 count = +1
-                                            console.log(foundUser)
-                                            console.log(foundUser[0].status,status, foundUser[0].status===status)
-                                            console.log(foundUser[0].User_userId,joinUserId, foundUser[0].User_userId === joinUserId)
+                                            // console.log(foundUser)
+                                            // console.log(foundUser[0].status,status, foundUser[0].status===status)
+                                            // console.log(foundUser[0].User_userId,joinUserId, foundUser[0].User_userId === joinUserId)
                                             if(foundUser[0].status === status && foundUser[0].User_userId === joinUserId){
                                                 const updateAlarm =
                                                     'UPDATE Alarm SET count = count+1 WHERE Post_postId=? AND User_userId=? AND type="sendMessage"';
