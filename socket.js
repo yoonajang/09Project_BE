@@ -202,38 +202,57 @@ module.exports = (server) => {
                                 foundUser.forEach((user) => {
                                     console.log(user)
 
-                                    // const joinUserId = user.
-                                    // const joinUserName =
+                                    const joinUserId = user.User_userId
+                                    const joinUserName = user.userName
+                                    const joinUserEmail = user.userEmail
+                                    const joinUserImage = user.userImage
                                     
+                                    // 로그인이 안되었을 경우,
+                                    if (user.isLogin === 0) {
 
-                                    if (user.isLogin === 0 ) {
-                                        const insertAlarm =
-                                            'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`) VALUES (?,?,?,?,?,?,?,?)';
-
-
-
-                                            db.query(insertAlarm, params, (err, Inserted) => {
-                                                if (err) console.log(err);
-
+                                        // 알림찾기
+                                        db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
                                             
-                                            })
+                                            // 알림 없으면 알림 생성
+                                            if(foundUser.length === 0){
+                                                const insertAlarm =
+                                                    'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)';
+
+                                                const alarmParams = [ 0, status, joinUserEmail, joinUserId , joinUserName, joinUserImage, postId, 'sendMessage', 0]
+
+                                                db.query(insertAlarm, alarmParams, (err, Inserted) => {
+                                                    if (err) console.log(err);
+                                                })
+                                                           
+                                            // 알림 있으면 count = +1
+                                            } else {
+                                                const updateAlarm =
+                                                    'UPDATE Alarm SET count = count+1 WHERE status=? AND User_userId=?';
+
+                                                db.query(updateAlarm, [status,joinUserId], (err, Inserted) => {
+                                                    if (err) console.log(err);
+                                                })
+
+                                            }
+                                        })
 
                                     // 로그인되어있지만, 채팅방 이용하지 않는 사람에게 메시지 보내기
                                     } else if(user.isLogin === 1 && user.isConnected === 0){
                                         const insertAlarm =
-                                            'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`) VALUES (?,?,?,?,?,?,?,?)'
+                                            'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)'
 
-                                            db.query(insertAlarm, params, (err, Inserted) => {
-                                                if (err) console.log(err);
+                                        db.query(insertAlarm, params, (err, Inserted) => {
+                                            if (err) console.log(err);
 
-                                                const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
+                                            const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
 
-                                                db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
-                                                    
-                                                    socket.to(user.User_userId).emit('send message alarm',messageAlarm);   
-                                                    
-                                                })
+                                            db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
+                                                
+                                                socket.to(user.User_userId).emit('send message alarm',messageAlarm);   
+                                                
                                             })
+                                        })
+                                        
                                         socket.to(user.User_userId).emit('receive message', param.newMessage);
 
                                     }
