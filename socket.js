@@ -561,10 +561,9 @@ module.exports = (server) => {
     
         })
 
-        console.log('채팅방나가기가 되나요?')
 
         // 채팅방 나가기
-        socket.on('close chatroom', (postid, user) => {
+        socket.on('closeChatroom', (postid, user) => {
             console.log(postid, user)
             const userId = user.userId
             const userName = user.userName
