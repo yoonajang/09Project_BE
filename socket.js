@@ -199,7 +199,7 @@ module.exports = (server) => {
                                     if (user.isLogin === 0) {
 
                                          // 알림찾기
-                                        db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
+                                        db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=? AND isChecked=0', [status,joinUserId], (err, foundUser) => {
                                             
                                             // 알림 없으면 알림 생성
                                             if(foundUser.length === 0){                                 
@@ -235,11 +235,11 @@ module.exports = (server) => {
                                     // 로그인되어있지만, 채팅방 이용하지 않는 사람에게 메시지 보내기
                                     } else if(user.isLogin === 1 && user.isConnected === 0){
                                         // 알림찾기
-                                        db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
+                                        db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=? AND isChecked=0', [status,joinUserId], (err, foundUser) => {
                                             
                                             // 알림 없으면 알림 생성
                                             if(foundUser.length === 0){
-                                                                                            
+
                                                 const insertAlarm =
                                                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)';
 
