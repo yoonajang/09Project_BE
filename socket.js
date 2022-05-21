@@ -649,9 +649,9 @@ module.exports = (server) => {
                     if (err) console.log(err);
                 },
             );
-    
-            socket.leave(postid)
+
             io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
+            socket.leave(postid)
         });
     
         // 브라우저 종료
@@ -668,7 +668,7 @@ module.exports = (server) => {
             );
         });
     
-        //socket.close()
+        //socket.off()
     });
 
 })
