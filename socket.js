@@ -255,7 +255,7 @@ module.exports = (server) => {
 
                                             db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
   
-                                                socket.to(joinUserId).emit('send message alarm',messageAlarm);   
+                                                socket.to(user.User_userId).emit('send message alarm',messageAlarm);   
                                                 
                                             })
                                         })
