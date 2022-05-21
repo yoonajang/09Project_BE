@@ -255,6 +255,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
                             addDeal: addDeal,
                             byebye: byebye }
             console.log(alarm)
+            
             res.send({
                 userInfo: {
                     userId: user.userId,

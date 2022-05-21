@@ -450,7 +450,7 @@ module.exports = (server) => {
         socket.on('leave chatroom', (postid, user) => {
             const postId = Number(postid.replace('p', ''));
             const { userId, userName, userEmail, userImage } = user
-            CON
+            console.log(userId, userName, userEmail, userImage)
             const unjoinedInfo = { userId, userName, userEmail, userImage }
 
             
