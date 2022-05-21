@@ -650,7 +650,7 @@ module.exports = (server) => {
                 },
             );
 
-            io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
+            socket.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
             socket.leave(postid)
         });
     
