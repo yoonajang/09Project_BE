@@ -240,6 +240,7 @@ module.exports = (server) => {
 
                                     // 로그인되어있지만, 채팅방 이용하지 않는 사람에게 메시지 보내기
                                     } else if(user.isLogin === 1 && user.isConnected === 0){
+                                        console.log(user.User_userId, joinUserId,'누가 여기 들어옴?')
                                         const insertAlarm =
                                             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)'
 
