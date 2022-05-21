@@ -194,7 +194,7 @@ module.exports = (server) => {
                                           ];
                             
                             const findUser = 
-                                    'SELECT JP.User_userId, JP.isLogin, JP.isConnected FROM `JoinPost` JP WHERE JP.Post_postId = 202;'                   
+                                    'SELECT JP.User_userId, JP.isLogin, JP.isConnected, U.userName, U.userEmail, U.userImage FROM `JoinPost` JP JOIN `User` U ON JP.User_userId = U.userId WHERE JP.Post_postId = ?;'                
                             db.query(findUser, postId, (err, foundUser) => {
                                 if(err) console.log(err) 
 
@@ -202,9 +202,15 @@ module.exports = (server) => {
                                 foundUser.forEach((user) => {
                                     console.log(user)
 
+                                    // const joinUserId = user.
+                                    // const joinUserName =
+                                    
+
                                     if (user.isLogin === 0 ) {
                                         const insertAlarm =
                                             'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`) VALUES (?,?,?,?,?,?,?,?)';
+
+
 
                                             db.query(insertAlarm, params, (err, Inserted) => {
                                                 if (err) console.log(err);
