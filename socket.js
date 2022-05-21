@@ -254,13 +254,13 @@ module.exports = (server) => {
                                             const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
 
                                             db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
-                                                
-                                                socket.to(userId).emit('send message alarm',messageAlarm);   
+  
+                                                socket.to(joinUserId).emit('send message alarm',messageAlarm);   
                                                 
                                             })
                                         })
 
-                                        socket.to(userId).emit('receive message', param.newMessage);
+                                        socket.to(postid).emit('receive message', param.newMessage);
 
                                     }
                                     
