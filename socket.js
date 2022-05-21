@@ -206,8 +206,7 @@ module.exports = (server) => {
                                         db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
                                             
                                             // 알림 없으면 알림 생성
-                                            if(foundUser.length === 0){
-                                                console.log(foundUser)                                             
+                                            if(foundUser.length === 0){                                 
                                                 const insertAlarm =
                                                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)';
 
