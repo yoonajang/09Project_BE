@@ -198,8 +198,9 @@ module.exports = (server) => {
                             db.query(findUser, postId, (err, foundUser) => {
                                 if(err) console.log(err) 
 
-                                console.log(user)
+                                console.log(foundUser)
                                 foundUser.forEach((user) => {
+                                    console.log(user)
 
                                     if (user.isLogin === 0 ) {
                                         const insertAlarm =
