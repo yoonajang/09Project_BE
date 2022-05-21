@@ -68,68 +68,62 @@ module.exports = (server) => {
                     if (foundJoin[0].count >= foundJoin[0].headCount){
                         if (foundJoin[0].isJoin === 1){
 
-                            // socket.join(postid)
+                            socket.join(postid)
 
-                            // const socketId = socket.id;
-                            // db.query(
-                            //     'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
-                            //     [socketId, userId, postId],
-                            //     (err, rows) => {
-                            //         if (err) console.log(err);
-                            //     },
-                            // );
+                            const socketId = socket.id;
+                            db.query(
+                                'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
+                                [socketId, userId, postId],
+                                (err, rows) => {
+                                    if (err) console.log(err);
+                                },
+                            );
                     
-                            // db.query(
-                            //     'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
-                            //     postId,
-                            //     (err, noPick) => {
-                            //         db.query(
-                            //             'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
-                            //             postId,
-                            //             (err, Pick) => {
-                            //                 db.query(
-                            //                     'SELECT User_userId FROM Post WHERE postId = ?',
-                            //                     postId,
-                            //                     (err, bossId) => {
-                            //                         const userLists  = [param.loggedUser, noPick, Pick, bossId]
+                            db.query(
+                                'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
+                                postId,
+                                (err, noPick) => {
+                                    db.query(
+                                        'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
+                                        postId,
+                                        (err, Pick) => {
+                                            db.query(
+                                                'SELECT User_userId FROM Post WHERE postId = ?',
+                                                postId,
+                                                (err, bossId) => {
+                                                    const userLists  = [param.loggedUser, noPick, Pick, bossId]
     
-                            //                         io.to(postid).emit(
-                            //                             'connected',
-                            //                             userName +
-                            //                                 ' 님이 입장했습니다.',
-                            //                             userLists
-                            //                      );
+                                                    io.to(postid).emit(
+                                                        'connected',
+                                                        userName +
+                                                            ' 님이 입장했습니다.',
+                                                        userLists
+                                                 );
     
-                            //                 })
+                                            })
     
-                            //             },
-                            //         );
-                            //     },
-                            // );
+                                        },
+                                    );
+                                },
+                            );
                         } else {
                             console.log(userId, 'fail!!!!!!!!!!!!!!!!!!!!!!!')
                             const status = 'fail';
 
-                            // console.log(socket.rooms)
-                            // socket.join(userId)
-                            // console.log(socket.rooms)
-                            io.to(userId).emit('block', 'fail');
-                            // io.emit('block', 'fail');
+                            db.query('SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;', postId,(err, noPick) => {
 
-                            // db.query('SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;', postId,(err, noPick) => {
+                                db.query(
+                                    'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;', postId, (err, Pick) => {
 
-                            //     db.query(
-                            //         'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;', postId, (err, Pick) => {
+                                        db.query('SELECT User_userId FROM Post WHERE postId = ?', postId, (err, bossId) => {
+                                            const userLists  = [param.loggedUser, noPick, Pick, bossId]
 
-                            //             db.query('SELECT User_userId FROM Post WHERE postId = ?', postId, (err, bossId) => {
-                            //                 const userLists  = [param.loggedUser, noPick, Pick, bossId]
+                                            io.to(userId).emit('block', 'fail');
 
-                            //                 socket.to(userId).emit('block', 'fail');
-
-                            //             })
-                            //     })
+                                        })
+                                })
                                  
-                            // })
+                            })
                         }  
                     } else if (foundJoin[0].headCount > foundJoin[0].count) {
                         console.log(33333333333333333333333333)
