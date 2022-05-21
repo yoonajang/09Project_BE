@@ -180,19 +180,15 @@ module.exports = (server) => {
                     db.query(findTitle, postId, (err, foundTitle) => {
                         if (err) console.log(err);
                         else {
-                            console.log(foundTitle,foundTitle[0].title, '<<<<<<<<<<<<<' )
                             const title = foundTitle[0].title
                             const status =  title + ' 게시물에 메시지가 도착했습니다.';
-                            console.log(status,'status가 없는지 확인')
                                                     
                             const findUser = 
                                     'SELECT JP.User_userId, JP.isLogin, JP.isConnected, U.userName, U.userEmail, U.userImage FROM `JoinPost` JP JOIN `User` U ON JP.User_userId = U.userId WHERE JP.Post_postId = ?;'                
                             db.query(findUser, postId, (err, foundUser) => {
                                 if(err) console.log(err) 
 
-                                // console.log(foundUser)
                                 foundUser.forEach((user) => {
-                                    // console.log(user)
 
                                     const joinUserId = user.User_userId
                                     const joinUserName = user.userName
@@ -243,7 +239,7 @@ module.exports = (server) => {
                                             
                                             // 알림 없으면 알림 생성
                                             if(foundUser.length === 0){
-                                                console.log(foundUser)                                             
+                                                                                            
                                                 const insertAlarm =
                                                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)';
 
