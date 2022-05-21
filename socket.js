@@ -217,7 +217,7 @@ module.exports = (server) => {
                                             // 알림 없으면 알림 생성
                                             console.log(foundUser.status,status, foundUser.status===status)
                                             console.log(foundUser.User_userId,joinUserId, foundUser.User_userId === joinUserId)
-                                            if(foundUser.status === status && foundUser.User_userId === joinUserId){
+                                            if(foundUser[0].status === status && foundUser[0].User_userId === joinUserId){
                                                 const updateAlarm =
                                                     'UPDATE Alarm SET count = count+1 WHERE status=? AND User_userId=?';
 
@@ -250,7 +250,7 @@ module.exports = (server) => {
 
                                             const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
 
-                                            db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
+                                            db.query(findAlarm, [postId, Inserted[0].insertId], (err, messageAlarm) => {
                                                 
                                                 socket.to(user.User_userId).emit('send message alarm',messageAlarm);   
                                                 
