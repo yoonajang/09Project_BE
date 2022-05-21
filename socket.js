@@ -11,7 +11,7 @@ module.exports = (server) => {
     });
 
     io.on('connection', socket => {
-        // console.log(socket.id, '연결성공');
+        console.log(socket.id, '연결성공');
     
         socket.on('socket is connected', loggedUser => {
             const socketId = socket.id
