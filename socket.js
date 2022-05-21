@@ -180,6 +180,7 @@ module.exports = (server) => {
                     db.query(findTitle, postId, (err, foundTitle) => {
                         if (err) console.log(err);
                         else {
+                            console.log(foundTitle,foundTitle[0].title, '<<<<<<<<<<<<<' )
                             const title = foundTitle[0].title
                             const status =  title + ' 게시물에 메시지가 도착했습니다.';
                             const params = [
