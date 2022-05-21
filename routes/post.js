@@ -19,6 +19,7 @@ router.get('/:postId', (req, res) => {
 
     db.query(sql, postId, (err, data) => {
         if (err) console.log(err);
+        console.log(headList)
         let head = data[0].headList;
         const bossId = data[0].User_userId
         let newList =[];
