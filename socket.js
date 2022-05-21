@@ -248,9 +248,12 @@ module.exports = (server) => {
                                         db.query(insertAlarm, alarmParams, (err, Inserted) => {
                                             if (err) console.log(err);
 
+                                            console.log(Inserted,'줘야하는 값')
+                    
+
                                             const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
 
-                                            db.query(findAlarm, [postId, Inserted[0].insertId], (err, messageAlarm) => {
+                                            db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
                                                 
                                                 socket.to(user.User_userId).emit('send message alarm',messageAlarm);   
                                                 
