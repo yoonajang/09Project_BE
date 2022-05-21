@@ -218,7 +218,7 @@ module.exports = (server) => {
                                                 })
                                                            
                                             // 알림 없으면 알림 생성
-                                            } else if (foundUser[0].status !== status){  
+                                            } else {  
                                                 console.log(foundUser)                                             
                                                 const insertAlarm =
                                                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)';
@@ -249,7 +249,7 @@ module.exports = (server) => {
                                                 })
                                                            
                                             // 알림 없으면 알림 생성
-                                            } else if (foundUser[0].status !== status){  
+                                            } else {  
                                                 console.log(foundUser)                                             
                                                 const insertAlarm =
                                                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)';
