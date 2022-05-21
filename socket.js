@@ -289,7 +289,7 @@ module.exports = (server) => {
         // 찐참여자 선택 (by 방장) 
         socket.on('add_new_participant', param => {
             const postid = param.postid;
-            const postId = postid.replace('p', '');
+            const postId = Number(postid.replace('p', ''));
             const userId = param.selectedUser.User_userId;
             const userEmail = param.selectedUser.User_userEmail;
             const userName = param.selectedUser.User_userName;
@@ -329,7 +329,7 @@ module.exports = (server) => {
             const findPost =
                 'SELECT P.User_userId, P.title, JP.isLogin joinedLogin FROM `Post` P JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId =? AND JP.User_userId = ? GROUP BY P.User_userId, P.title, JP.isLogin ';
     
-            db.query(findPost, [Number(postId), userId], (err, foundPost) => {
+            db.query(findPost, [postId, userId], (err, foundPost) => {
                 const title = foundPost[0].title
                 const joinedLogin = foundPost[0].joinedLogin
     
@@ -339,7 +339,7 @@ module.exports = (server) => {
                     const insertAlarm =
                         'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`) VALUES (?,?,?,?,?,?,?,?)';
                     
-                    const insertParam = [1, status, userEmail, userId, userName, userImage, postId,'addDeal']
+                    const insertParam = [0, status, userEmail, userId, userName, userImage, postId,'addDeal']
                 
                     db.query(insertAlarm, insertParam, (err, Inserted) => {
                         if (err) console.log(err);
@@ -352,7 +352,7 @@ module.exports = (server) => {
                     const insertAlarm =
                         'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`) VALUES (?,?,?,?,?,?,?,?)';
                     
-                    const insertParam = [1, status, userEmail, userId, userName, userImage, postId,'addDeal']
+                    const insertParam = [0, status, userEmail, userId, userName, userImage, postId,'addDeal']
     
                     db.query(insertAlarm, insertParam , (err, Inserted) => {
                         if (err) console.log(err);
@@ -366,7 +366,7 @@ module.exports = (server) => {
         //찐참여자 선택 취소 (by 방장)
         socket.on('cancel_new_participant', param => {
             const postid = param.postid;
-            const postId = postid.replace('p', '');
+            const postId = Number(postid.replace('p', ''));
             const userId = param.selectedUser.User_userId;
     
             const sql_1 = 
@@ -404,7 +404,7 @@ module.exports = (server) => {
         socket.on('cancel_my_participant', param => {
 
             const postid = param.postid;
-            const postId = postid.replace('p', '');
+            const postId = Number(postid.replace('p', ''));
             const userId = param.selectedUser.User_userId;
             const userName = param.selectedUser.User_userName;
     
