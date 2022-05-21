@@ -255,12 +255,12 @@ module.exports = (server) => {
 
                                             db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
                                                 
-                                                socket.to(user.User_userId).emit('send message alarm',messageAlarm);   
+                                                socket.to(userId).emit('send message alarm',messageAlarm);   
                                                 
                                             })
                                         })
 
-                                        socket.to(user.User_userId).emit('receive message', param.newMessage);
+                                        socket.to(userId).emit('receive message', param.newMessage);
 
                                     }
                                     
