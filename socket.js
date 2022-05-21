@@ -260,11 +260,10 @@ module.exports = (server) => {
                                                 
                                             })
                                         })
-
                                     }
-                                    socket.to(postid).emit('receive message', param.newMessage);
                                     
-                                });           
+                                }); 
+                                socket.to(postid).emit('receive message', param.newMessage);          
                             });
                         }
                     });
