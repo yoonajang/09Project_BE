@@ -98,7 +98,7 @@ module.exports = (server) => {
                                                         userName +
                                                             ' 님이 입장했습니다.',
                                                         userLists
-                                                    );
+                                                 );
     
                                             })
     
@@ -107,7 +107,7 @@ module.exports = (server) => {
                                 },
                             );
                         } else {
-                        
+                            console.log(userId, 'fail!!!!!!!!!!!!!!!!!!!!!!!')
                             const status = 'fail';
 
                             socket.join(userId);
@@ -584,30 +584,6 @@ module.exports = (server) => {
     
         })
 
-
-        // // 채팅방 나가기
-        // socket.on('closeChatroom', (postid, user) => {
-        //     console.log(postid, user)
-        //     const userId = user.userId
-        //     const userName = user.userName
-        //     const postId = Number(postid.replace('p', ''));
-    
-        //     db.query(
-        //         'UPDATE JoinPost SET isConnected = 0 WHERE User_userId=? and Post_postId =?;', 
-        //         [userId, postId],
-        //         (err, rows) => {
-        //             if (err) console.log(err);
-                
-        //         // io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
-        //         // socket.leave(postid)
-
-        //     });
-
-        //     io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
-        //     socket.leave(postid)
-        // });
-
-
         // 강퇴 (by 방장 > 작업필요)
         // socket.on('kickout chatroom', (postid, user) => {
 
@@ -681,27 +657,6 @@ module.exports = (server) => {
         //     });
         // });
     
-        // // 채팅방 나가기
-        // socket.on('close chatroom', (postid, user) => {
-        //     console.log(postid, user)
-        //     const userId = user.userId
-        //     const userName = user.userName
-        //     const postId = Number(postid.replace('p', ''));
-    
-        //     db.query(
-        //         'UPDATE JoinPost SET isConnected = 0 WHERE User_userId=? and Post_postId =?;', 
-        //         [userId, postId],
-        //         (err, rows) => {
-        //             if (err) console.log(err);
-                
-        //         // io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
-        //         // socket.leave(postid)
-
-        //     });
-
-        //     io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
-        //     socket.leave(postid)
-        // });
     
         // 브라우저 종료
         socket.on('disconnect', () => {
