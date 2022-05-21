@@ -159,7 +159,7 @@ module.exports = (server) => {
             // console.log('메세지');
 
             const postid = param.newMessage.Post_postId;
-            const postId = postid.replace('p', '');
+            const postId = Number(postid.replace('p', ''));
             const userId = param.newMessage.User_userId;
             const userName = param.newMessage.User_userName;
             const userEmail = param.newMessage.User_userEmail;
@@ -214,18 +214,18 @@ module.exports = (server) => {
                                         // 알림찾기
                                         db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
                                             
-                                            // 알림 없으면 알림 생성
+                                            // 알림 있으면 count = +1
                                             console.log(foundUser[0].status,status, foundUser[0].status===status)
                                             console.log(foundUser[0].User_userId,joinUserId, foundUser[0].User_userId === joinUserId)
                                             if(foundUser[0].status === status && foundUser[0].User_userId === joinUserId){
                                                 const updateAlarm =
-                                                    'UPDATE Alarm SET count = count+1 WHERE status=? AND User_userId=?';
+                                                    'UPDATE Alarm SET count = count+1 WHERE Post_postId=? AND User_userId=? AND type="sendMessage"';
 
-                                                db.query(updateAlarm, [status,joinUserId], (err, Inserted) => {
+                                                db.query(updateAlarm, [postId,joinUserId], (err, Inserted) => {
                                                     if (err) console.log(err);
                                                 })
                                                            
-                                            // 알림 있으면 count = +1
+                                            // 알림 없으면 알림 생성
                                             } else {                                                
                                                 const insertAlarm =
                                                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)';
