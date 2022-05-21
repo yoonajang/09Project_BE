@@ -54,17 +54,17 @@ module.exports = (server) => {
         // 채팅시작
         socket.on('startchat', param => {
             // console.log('채팅시작');
-    
+            console.log(param)
             const postid = param.postid;
             const postId = Number(postid.replace('p', ''));
             const { userId, userName } = param.loggedUser;
-
+            console.log(postid, postId, userId, userName)
             // 수정됨.
             const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick, COUNT(CASE WHEN JP.isPick =1 then 1 end) count, EXISTS (SELECT JP.User_userId, JP.Post_postId FROM `JoinPost`JP where JP.User_userId=? AND JP.Post_postId  =? AND JP.isPick=1) isJoin FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId =?'
 
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
-
+                    console.log(foundJoin)
                     if (foundJoin[0].count >= foundJoin[0].headCount){
                         if (foundJoin[0].isJoin === 1){
 
