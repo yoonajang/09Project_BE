@@ -27,7 +27,7 @@ module.exports = (server) => {
     
             socket.join(userId);
         });
-        
+
 
         // 채팅방 나가기
         socket.on('closeChatroom', (postid, user) => {
@@ -48,7 +48,7 @@ module.exports = (server) => {
             });
 
             io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
-            socket.leave(postid)
+            // socket.leave(postid)
         });
     
         // 채팅시작
