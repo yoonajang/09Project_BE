@@ -235,22 +235,13 @@ module.exports = (server) => {
                                     } else if(user.isLogin === 1 && user.isConnected === 0){
                                         // 알림찾기
                                         db.query('SELECT status, User_userId FROM Alarm WHERE status=? AND User_userId=?', [status,joinUserId], (err, foundUser) => {
-                                            console.log(status, joinUserId)
+                                            
                                             console.log(foundUser.length === 0, foundUser.length)
-                                            // 알림 있으면 count = +1
+                            
                                             console.log(foundUser,2)
-                                            // console.log(foundUser[0].status,status, foundUser[0].status===status)
-                                            // console.log(foundUser[0].User_userId,joinUserId, foundUser[0].User_userId === joinUserId)
-                                            if(foundUser[0].status === status && foundUser[0].User_userId === joinUserId){
-                                                const updateAlarm =
-                                                    'UPDATE Alarm SET count = count+1 WHERE Post_postId=? AND User_userId=? AND type="sendMessage"';
-
-                                                db.query(updateAlarm, [postId,joinUserId], (err, Inserted) => {
-                                                    if (err) console.log(err);
-                                                })
-                                                           
+                                           
                                             // 알림 없으면 알림 생성
-                                            } else {  
+                                            if(foundUser.length === 0){
                                                 console.log(foundUser)                                             
                                                 const insertAlarm =
                                                     'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)';
@@ -269,7 +260,16 @@ module.exports = (server) => {
                                                     })
 
                                                 })
-                                            }
+                                            // 알림 있으면 count = +1    
+                                            } else if(foundUser[0].status === status && foundUser[0].User_userId === joinUserId){
+                                                const updateAlarm =
+                                                    'UPDATE Alarm SET count = count+1 WHERE Post_postId=? AND User_userId=? AND type="sendMessage"';
+
+                                                db.query(updateAlarm, [postId,joinUserId], (err, Inserted) => {
+                                                    if (err) console.log(err);
+                                                })
+                                     
+                                            } 
                                         })  
                                     }
                                     
