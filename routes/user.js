@@ -243,6 +243,8 @@ router.get('/islogin', authMiddleware, (req, res) => {
         if (err) {
             console.log(err);
         } else {
+            console.log(rows)
+            
             const sendMessage = rows[0];
             const leaveChat = rows[1];
             const blockChat = rows[2];
@@ -255,7 +257,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
                             addDeal: addDeal,
                             byebye: byebye }
             console.log(alarm)
-            
+
             res.send({
                 userInfo: {
                     userId: user.userId,

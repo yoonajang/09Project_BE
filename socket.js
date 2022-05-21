@@ -400,51 +400,51 @@ module.exports = (server) => {
         });
 
 
-        //찐참여자 선택 취소 (by 본인) //이벤트명 다시설정!!
-        socket.on('cancel_my_participant', param => {
+        // //찐참여자 선택 취소 (by 본인) //이벤트명 다시설정!!
+        // socket.on('cancel_my_participant', param => {
 
-            const postid = param.postid;
-            const postId = Number(postid.replace('p', ''));
-            const userId = param.selectedUser.User_userId;
-            const userName = param.selectedUser.User_userName;
+        //     const postid = param.postid;
+        //     const postId = Number(postid.replace('p', ''));
+        //     const userId = param.selectedUser.User_userId;
+        //     const userName = param.selectedUser.User_userName;
     
-            const sql_1 = 
-                'UPDATE JoinPost SET isPick = 0, updatedAt = now() WHERE Post_postId=? and User_userId=?;';
-            const data = [postId, userId];
-            const sql_1s = mysql.format(sql_1, data);
+        //     const sql_1 = 
+        //         'UPDATE JoinPost SET isPick = 0, updatedAt = now() WHERE Post_postId=? and User_userId=?;';
+        //     const data = [postId, userId];
+        //     const sql_1s = mysql.format(sql_1, data);
     
-            const sql_2 =
-                'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName ORDER BY JP.updatedAt DESC;';
-            const sql_2s = mysql.format(sql_2, postId);
+        //     const sql_2 =
+        //         'SELECT JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.joinId, JP.createdAt, JP.isPick, JP.userImage, JP.isLogin, JP.socketId, JP.Post_postId, JP.User_userId, JP.User_userEmail, JP.User_userName ORDER BY JP.updatedAt DESC;';
+        //     const sql_2s = mysql.format(sql_2, postId);
     
-            const sql_3 =
-                'SELECT * FROM `JoinPost` JP WHERE JP.isPick = 0 and JP.Post_postId = ? ORDER BY JP.updatedAt DESC;';
-            const sql_3s = mysql.format(sql_3, postId);
+        //     const sql_3 =
+        //         'SELECT * FROM `JoinPost` JP WHERE JP.isPick = 0 and JP.Post_postId = ? ORDER BY JP.updatedAt DESC;';
+        //     const sql_3s = mysql.format(sql_3, postId);
             
-            const sql_4 =
-                'SELECT User_userId, title FROM Post WHERE postId = ?';
-            const sql_4s = mysql.format(sql_3, postId);
+        //     const sql_4 =
+        //         'SELECT User_userId, title FROM Post WHERE postId = ?';
+        //     const sql_4s = mysql.format(sql_3, postId);
     
-            db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, rows) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    const headList = rows[1];
-                    const waitList = rows[2];
-                    const bossId = rows[3].User_userId
-                    const status = title + ' 게시물에서 '+ userName +'님이 참여를 취소하셨습니다.' 
+        //     db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, rows) => {
+        //         if (err) {
+        //             console.log(err);
+        //         } else {
+        //             const headList = rows[1];
+        //             const waitList = rows[2];
+        //             const bossId = rows[3].User_userId
+        //             const status = title + ' 게시물에서 '+ userName +'님이 참여를 취소하셨습니다.' 
 
-                    socket.to(bossId).emit(`canceled_my_participant`, status)
-                    socket
-                        .to(postid)
-                        .emit(
-                            'receive_participant_list_after_canceled',
-                            headList,
-                            waitList,
-                        );
-                }
-            });
-        });
+        //             socket.to(bossId).emit(`canceled_my_participant`, status)
+        //             socket
+        //                 .to(postid)
+        //                 .emit(
+        //                     'receive_participant_list_after_canceled',
+        //                     headList,
+        //                     waitList,
+        //                 );
+        //         }
+        //     });
+        // });
     
         // 방나가기 버튼 눌렀을 때, 
         socket.on('leave chatroom', (postid, user) => {
@@ -495,7 +495,7 @@ module.exports = (server) => {
 
                             })
     
-                            const insertParam = [0,status, userEmail, userId, userName, userImage, postId, 'leaveChat']
+                            const insertParam = [0,status, userEmail, userId, userName, userImage, postId, "leaveChat"]
                             const insertAlarm =
                                 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`) VALUES (?,?,?,?,?,?,?,?)';
     
@@ -560,77 +560,77 @@ module.exports = (server) => {
 
 
         // 강퇴 (by 방장 > 작업필요)
-        socket.on('kickout chatroom', (postid, user) => {
+        // socket.on('kickout chatroom', (postid, user) => {
 
-            console.log(postid, user, KI)
-            const deleteJP =
-                'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?';
-            db.query(deleteJP, [postid, user], (err, deletedJP) => {
-                if (err) console.log(err);
+        //     console.log(postid, user, KI)
+        //     const deleteJP =
+        //         'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?';
+        //     db.query(deleteJP, [postid, user], (err, deletedJP) => {
+        //         if (err) console.log(err);
     
-                const findTitle = 'SELECT title FROM `Post` WHERE `Post_postId`=?';
-                db.query(findTitle, [postid, user], (err, foundTitle) => {
-                    if (err) console.log(err);
-                    else {
-                        const status = title + ' 게시물의 거래가 취소되었습니다.';
+        //         const findTitle = 'SELECT title FROM `Post` WHERE `Post_postId`=?';
+        //         db.query(findTitle, [postid, user], (err, foundTitle) => {
+        //             if (err) console.log(err);
+        //             else {
+        //                 const status = title + ' 게시물의 거래가 취소되었습니다.';
     
-                        const findIsLogin =
-                            'SELECT isLogin, socketId FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?';
-                        db.query(
-                            findIsLogin,
-                            [postid, user],
-                            (err, foundIsLogin) => {
-                                const isLogin = foundIsLogin[0].isLogin;
-                                const socketId = foundIsLogin[0].socketId;
+        //                 const findIsLogin =
+        //                     'SELECT isLogin, socketId FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?';
+        //                 db.query(
+        //                     findIsLogin,
+        //                     [postid, user],
+        //                     (err, foundIsLogin) => {
+        //                         const isLogin = foundIsLogin[0].isLogin;
+        //                         const socketId = foundIsLogin[0].socketId;
     
-                                if (isLogin === 1) {
-                                    socket
-                                        .to(user)
-                                        .emit(
-                                            'kickedout chatroom',
-                                            userName + ' 님이 나가셨습니다.',
-                                        ); 
-                                } else {
-                                    const findUser =
-                                        'SELECT userEmail, userId, userName, userImage FROM `User` WHERE `User_userId`=?';
+        //                         if (isLogin === 1) {
+        //                             socket
+        //                                 .to(user)
+        //                                 .emit(
+        //                                     'kickedout chatroom',
+        //                                     userName + ' 님이 나가셨습니다.',
+        //                                 ); 
+        //                         } else {
+        //                             const findUser =
+        //                                 'SELECT userEmail, userId, userName, userImage FROM `User` WHERE `User_userId`=?';
     
-                                    db.query(findUser, params, (err, foundUser) => {
-                                        if (err) console.log(err);
+        //                             db.query(findUser, params, (err, foundUser) => {
+        //                                 if (err) console.log(err);
                                         
-                                        const userEmail = foundUser[0].userEmail;
-                                        const userId = foundUser[0].userId;
-                                        const userName = foundUser[0].userName;
-                                        const userImage = foundUser[0].userImage;
+        //                                 const userEmail = foundUser[0].userEmail;
+        //                                 const userId = foundUser[0].userId;
+        //                                 const userName = foundUser[0].userName;
+        //                                 const userImage = foundUser[0].userImage;
     
-                                        const InsertAlarm =
-                                            'INSERT INTO Alarm  (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`) VALUES (?,?,?,?,?,?,?,?)';
-                                        const params = [
-                                            0,
-                                            status,
-                                            userEmail,
-                                            userId,
-                                            userName,
-                                            userImage,
-                                            postId,
-                                            'byebye'
-                                        ];
+        //                                 const InsertAlarm =
+        //                                     'INSERT INTO Alarm  (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`) VALUES (?,?,?,?,?,?,?,?)';
+        //                                 const params = [
+        //                                     0,
+        //                                     status,
+        //                                     userEmail,
+        //                                     userId,
+        //                                     userName,
+        //                                     userImage,
+        //                                     postId,
+        //                                     'byebye'
+        //                                 ];
     
-                                        db.query(
-                                            InsertAlarm,
-                                            params,
-                                            (err, InsertedAlarm) => {
-                                                if (err) console.log(err);
+        //                                 db.query(
+        //                                     InsertAlarm,
+        //                                     params,
+        //                                     (err, InsertedAlarm) => {
+        //                                         if (err) console.log(err);
                                                 
-                                            },
-                                        );
-                                    });
-                                }
-                            },
-                        );
-                    }
-                });
-            });
-        });
+        //                                     },
+        //                                 );
+        //                             });
+        //                         }
+        //                     },
+        //                 );
+        //             }
+        //         });
+        //     });
+        // });
     
         // 채팅방 나가기
         socket.on('close chatroom', (postid, user) => {
