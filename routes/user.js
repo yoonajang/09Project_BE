@@ -249,13 +249,12 @@ router.get('/islogin', authMiddleware, (req, res) => {
             const addDeal = rows[3];
             const byebye = rows[4];
             
-            console.log(alarm)
             const alarm = { sendMessage: sendMessage, 
                             leaveChat: leaveChat,
                             blockChat: blockChat,
                             addDeal: addDeal,
                             byebye: byebye }
-            
+            console.log(alarm)
             res.send({
                 userInfo: {
                     userId: user.userId,
