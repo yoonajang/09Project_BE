@@ -248,7 +248,8 @@ router.get('/islogin', authMiddleware, (req, res) => {
             const blockChat = rows[2];
             const addDeal = rows[3];
             const byebye = rows[4];
-
+            
+            console.log(alarm)
             const alarm = { sendMessage: sendMessage, 
                             leaveChat: leaveChat,
                             blockChat: blockChat,

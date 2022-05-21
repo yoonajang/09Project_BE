@@ -450,6 +450,7 @@ module.exports = (server) => {
         socket.on('leave chatroom', (postid, user) => {
             const postId = Number(postid.replace('p', ''));
             const { userId, userName, userEmail, userImage } = user
+            CON
             const unjoinedInfo = { userId, userName, userEmail, userImage }
 
             
@@ -561,7 +562,7 @@ module.exports = (server) => {
         // 강퇴 (by 방장 > 작업필요)
         socket.on('kickout chatroom', (postid, user) => {
 
-            console.log(postid, user)
+            console.log(postid, user, KI)
             const deleteJP =
                 'DELETE FROM `JoinPost` WHERE `Post_postId`=? and `User_userId`=?';
             db.query(deleteJP, [postid, user], (err, deletedJP) => {
