@@ -647,11 +647,15 @@ module.exports = (server) => {
                 [userId, postId],
                 (err, rows) => {
                     if (err) console.log(err);
-                },
-            );
+                
 
-            socket.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
-            socket.leave(postid)
+                io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
+                socket.leave(postid)
+
+            });
+
+            // io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
+            // socket.leave(postid)
         });
     
         // 브라우저 종료
