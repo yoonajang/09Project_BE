@@ -11,7 +11,8 @@ const upload = require('../S3/s3');
 
 
 router.get('/', (req, res) => {
-    res.status(200)
+    const path = require("path")
+    res.sendFile(path.join(__dirname + '/../src/'))
 })
 
 
