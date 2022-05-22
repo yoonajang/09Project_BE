@@ -8,9 +8,9 @@ node_modules
 s3config.json
 
 # Key 파일
-ca_bundle.crt
-certificate.crt
-private.key
+redpingpong_shop_ca.pem
+redpingpong_shop_crt.pem
+redpingpong_shop.key
 
 # TEMP
 createTable.sql
