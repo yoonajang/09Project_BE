@@ -21,11 +21,11 @@ moment.tz.setDefault('Asia/seoul');
 kakaoPassport();
 app.use(cors()); 
 
-// const credentials = {
-//     key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
-//     cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8'),
-//     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
-// };
+const credentials = {
+    key: fs.readFileSync(__dirname + '/redpingpong_shop', 'utf8'),
+    cert: fs.readFileSync(__dirname + '/redpingpong_shop__crt', 'utf8'),
+    ca: fs.readFileSync(__dirname + '/redpingpong_shop__ca', 'utf8'),
+};
 
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
