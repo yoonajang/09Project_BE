@@ -57,11 +57,11 @@ app_http.use((req, res, next) => {
 });
 
 app.get(
-    '/.well-known/pki-validation/FEFFF8AAD41B2BDD0AC37B8AE376E000.txt',
+    '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
     (req, res) => {
         res.sendFile(
             __dirname +
-                '/.well-known/pki-validation/FEFFF8AAD41B2BDD0AC37B8AE376E000.txt',
+                '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
         );
     },
 );
