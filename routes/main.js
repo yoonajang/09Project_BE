@@ -11,10 +11,8 @@ const upload = require('../S3/s3');
 
 
 router.get('/', (req, res) => {
-
+    res.status(200)
 })
-
-
 
 
 // 메인페이지 게시글 불러오기
