@@ -22,9 +22,9 @@ kakaoPassport();
 app.use(cors()); 
 
 const credentials = {
-    key: fs.readFileSync(__dirname + '/redpingpong_shop', 'utf8'),
-    cert: fs.readFileSync(__dirname + '/redpingpong_shop__crt', 'utf8'),
-    ca: fs.readFileSync(__dirname + '/redpingpong_shop__ca', 'utf8'),
+    key: fs.readFileSync(__dirname + '/redpingpong_shop.key', 'utf8'),
+    cert: fs.readFileSync(__dirname + '/redpingpong_shop__crt.pem', 'utf8'),
+    ca: fs.readFileSync(__dirname + '/redpingpong_shop__ca.pem', 'utf8'),
 };
 
 // 미들웨어 (가장 상위에 위치)
