@@ -147,7 +147,7 @@ router.post('/emailcheck', (req, res) => {
     const sql = 'select * from User where userEmail=?';
 
     db.query(sql, [email], (err, data) => {
-        console.log(data, data.length===0, '중복확인')
+     
         if (data.length === 0) {
             console.log(err);
             res.send({ msg: 'success' });

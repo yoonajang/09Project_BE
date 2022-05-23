@@ -12,7 +12,7 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     const userId = res.locals.user.userId;
     const userImage = req.file.transforms[1].location;
     const reUserImage = req.file.transforms[0].location;
-    console.log(userImage, reUserImage);
+ 
     try {
         const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
         db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
