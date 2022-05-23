@@ -1,8 +1,16 @@
+# Folder
 node_modules
+
+# ENV
 .env
-ca_bundle.crt
-certificate.crt
-private.key
+
+# S3
 s3config.json
 
+# Key 파일
+redpingpong_shop_ca.pem
+redpingpong_shop_crt.pem
+redpingpong_shop.key
+
+# TEMP
 createTable.sql

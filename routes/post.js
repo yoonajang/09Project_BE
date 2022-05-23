@@ -22,21 +22,16 @@ router.get('/:postId', (req, res) => {
         let head = data[0].headList;
         const bossId = data[0].User_userId
         let newList =[];
-        console.log(head)
         
         if (isNaN(Number(head))) {
-            console.log(1)
             data[0].headList = head.split(',').map(Number).filter (id => id !== bossId);
         } else {
             if (Number(head) === bossId) {
-                console.log(2)
                 data[0].headList = newList;
             } else if (head === null){
-                console.log(3)
                 data[0].headList = newList;
             }      
         } 
-        console.log(data)
         res.send({ msg: 'success', data });
     });
 });
@@ -59,7 +54,6 @@ router.post(
             lat,
             lng,
         } = req.body;
-        console.log(endTime, 'endTime')
 
         const writer = res.locals.user.userName;
         const User_userId = res.locals.user.userId;

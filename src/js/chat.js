@@ -25,7 +25,6 @@ sendButton.addEventListener('click', send);
 
 socket.on('chatting', data => {
     //서버로부터 데이터 받기
-    console.log(data);
     const { name, msg, time } = data;
     const item = new LiModel(name, msg, time); //LiModel 인스턴스화(초기화)
     item.makeLi();
@@ -51,4 +50,3 @@ function LiModel(name, msg, time) {
     };
 }
 
-console.log(socket);
