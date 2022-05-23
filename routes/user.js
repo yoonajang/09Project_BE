@@ -191,7 +191,7 @@ router.post('/login', (req, res) => {
                     // 알림
                     // SendMessage (게시물당 1개씩 알림보내기)
                     const sql_1 = 
-                    'SELECT A.alarmId, A.status, A.userImage, A.createdAt, A.Post_postId, A.type FROM Alarm A WHERE A.User_userId=10 AND A.type="sendMessage" AND A.isChecked = 0 GROUP BY A.type, A.Post_postId;';
+                        'SELECT A.alarmId, A.status, A.userImage, A.createdAt, A.Post_postId, A.type FROM Alarm A WHERE A.User_userId=10 AND A.type="sendMessage" AND A.isChecked = 0 GROUP BY A.type, A.Post_postId;';
                     const sql_1s = mysql.format(sql_1, userId);
 
                     // leaveChat (모든 알림 다보내기)
@@ -228,7 +228,7 @@ router.post('/login', (req, res) => {
                                 userId: data[0].userId,
                                 userEmail: data[0].userEmail,
                                 userName: data[0].userName,
-                                userImage: data[0].reUserImage,
+                                userImage: data[0].userImage,
                                 tradeCount: data[0].tradeCount,
                             };
                             
