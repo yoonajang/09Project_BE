@@ -232,7 +232,7 @@ router.post('/login', (req, res) => {
                                 userId: data[0].userId,
                                 userEmail: data[0].userEmail,
                                 userName: data[0].userName,
-                                userImage: data[0].userImage,
+                                userImage: data[0].reUserImage,
                                 tradeCount: data[0].tradeCount,
                             };
                             const token = jwt.sign(
@@ -303,13 +303,15 @@ router.get('/islogin', authMiddleware, (req, res) => {
                             blockChat: blockChat,
                             addDeal: addDeal,
                             byebye: byebye }
-
+            
+        
+            console.log('로그인 여부확인', user.reUserImage, user)
             res.send({
                 userInfo: {
                     userId: user.userId,
                     userEmail: user.userEmail,
                     userName: user.userName,
-                    userImage: user.userImage,
+                    userImage: user.reUserImage,
                     tradeCount: user.tradeCount,
                 },
                 alarm: alarm            
