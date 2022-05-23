@@ -21,11 +21,11 @@ moment.tz.setDefault('Asia/seoul');
 kakaoPassport();
 app.use(cors()); 
 
-const credentials = {
-    key: fs.readFileSync(__dirname + '/redpingpong_shop.key', 'utf8'),
-    cert: fs.readFileSync(__dirname + '/redpingpong_shop__crt.pem', 'utf8'),
-    ca: fs.readFileSync(__dirname + '/redpingpong_shop__ca.pem', 'utf8'),
-};
+// const credentials = {
+//     key: fs.readFileSync(__dirname + '/redpingpong_shop.key', 'utf8'),
+//     cert: fs.readFileSync(__dirname + '/redpingpong_shop__crt.pem', 'utf8'),
+//     ca: fs.readFileSync(__dirname + '/redpingpong_shop__ca.pem', 'utf8'),
+// };
 
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
@@ -35,6 +35,7 @@ const requestMiddleware = (req, res, next) => {
     next();
 };
 
+app.get("/", (req, res) => { res.status(200).json({ msg: "good" }); });
 app.use(helmet());
 app.use(express.static('static'));
 app.use(express.urlencoded({ extended: false }));
@@ -46,36 +47,37 @@ app.use('/', routers);
 
 
 
-app_http.use((req, res, next) => {
-    if (req.secure) {
-        next();
-    } else {
-        const to = `https://${req.hostname}:${httpsPort}${req.url}`;
-        // console.log(to);
-        res.redirect(to);
-    }
-});
+// app_http.use((req, res, next) => {
+//     if (req.secure) {
+//         next();
+//     } else {
+//         const to = `https://${req.hostname}:${httpsPort}${req.url}`;
+//         // console.log(to);
+//         res.redirect(to);
+//     }
+// });
 
-app.get(
-    '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
-    (req, res) => {
-        res.sendFile(
-            __dirname +
-                '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
-        );
-    },
-);
+// app.get(
+//     '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
+//     (req, res) => {
+//         res.sendFile(
+//             __dirname +
+//                 '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
+//         );
+//     },
+// );
 
-const httpServer = http.createServer(app_http);
-const httpsServer = https.createServer(credentials, app);
-SocketIO(httpsServer);
+// const httpServer = http.createServer(app_http);
+const httpServer = http.createServer(app);
+// const httpsServer = https.createServer(credentials, app);
+SocketIO(httpServer);
 
 console.log(moment().format("YY-MM-DD HH:mm:ss"))
 httpServer.listen(httpPort, () => {
     console.log(`${httpPort}`,'http서버가 켜졌어요!');
 });
 
-httpsServer.listen(httpsPort, () => {
-    console.log(`${httpPort}`, 'https서버가 켜졌어요!');
-});
+// httpsServer.listen(httpsPort, () => {
+//     console.log(`${httpPort}`, 'https서버가 켜졌어요!');
+// });
 
