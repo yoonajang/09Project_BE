@@ -26,8 +26,7 @@ const upload = multer({
                 cb(null, Date.now().toString() + '_origin' + extension);
               },
               transform: function (req, file, cb) {
-                // cb(null, sharp().jpeg());
-                cb(null, sharp().png().toFile());
+                cb(null, sharp().jpeg());
               }, 
             },
             {
