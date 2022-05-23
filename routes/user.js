@@ -332,10 +332,10 @@ router.patch('/ischecked', authMiddleware, (req, res) => {
 
     db.query(sql, userId, (err, rows) => {
         if (rows.length !== 0) {
-            const sql =
+            const updateSql =
                 'UPDATE Alarm SET isChecked = 1 WHERE User_userId=?';
 
-            db.query(sql, userId, (err, data) => {
+            db.query(updateSql, userId, (err, data) => {
                 if (err) console.log(err);
                     res.send({ msg: 'success'});
             });
