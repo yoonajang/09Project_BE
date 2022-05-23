@@ -8,6 +8,8 @@ module.exports = (server) => {
             origin: '*',
             methods: ['GET', 'POST'],
         },
+        pingInterval: 10000,
+        pingTimeout: 5000,
     });
 
     io.on('connection', socket => {
@@ -185,7 +187,7 @@ module.exports = (server) => {
                             const status =  title + ' 게시물에 메시지가 도착했습니다.';
                                                     
                             const findUser = 
-                                    'SELECT JP.User_userId, JP.isLogin, JP.isConnected, U.userName, U.userEmail, U.userImage FROM `JoinPost` JP JOIN `User` U ON JP.User_userId = U.userId WHERE JP.Post_postId = ?;'                
+                                    'SELECT JP.User_userId, JP.isLogin, JP.isConnected, U.userName, U.userEmail, U.reUserImage userImage FROM `JoinPost` JP JOIN `User` U ON JP.User_userId = U.userId WHERE JP.Post_postId = ?;'                
                             db.query(findUser, postId, (err, foundUser) => {
                                 if(err) console.log(err) 
 
@@ -463,7 +465,7 @@ module.exports = (server) => {
                 
                 if (selectedStatus === 1) {
                     // 방장찾기
-                    const findBoss = 'SELECT P.postId, P.User_userId, P.title, U.userName, U.userEmail, U.userImage FROM `Post` P JOIN User U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title'
+                    const findBoss = 'SELECT P.postId, P.User_userId, P.title, U.userName, U.userEmail, U.reUserImage userImage FROM `Post` P JOIN User U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE P.postId= ? AND JP.User_userId= ? GROUP BY P.postId, P.User_userId, P.title'
     
                     db.query(findBoss, [postId, userId], (err, foundBoss) => {
                         const bossId = foundBoss[0].User_userId
