@@ -305,7 +305,7 @@ router.get('/islogin', authMiddleware, (req, res) => {
                             byebye: byebye }
             
         
-            console.log('로그인 여부확인', user.reUserImage, user)
+            console.log('로그인 여부확인', user.reUserImage, user,'<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
             res.send({
                 userInfo: {
                     userId: user.userId,
