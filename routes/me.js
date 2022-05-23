@@ -6,7 +6,7 @@ const path = require('path');
 let appDir = path.dirname(require.main.filename);
 const upload = require('../S3/s3');
 
-const profile = require('../src/');
+// const profile = require('../src/');
 
 
 // 유저 프로필 수정
