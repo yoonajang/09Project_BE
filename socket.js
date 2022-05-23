@@ -185,7 +185,7 @@ module.exports = (server) => {
                             const status =  title + ' 게시물에 메시지가 도착했습니다.';
                                                     
                             const findUser = 
-                                    'SELECT JP.User_userId, JP.isLogin, JP.isConnected, U.userName, U.userEmail, U.reUserImage FROM `JoinPost` JP JOIN `User` U ON JP.User_userId = U.userId WHERE JP.Post_postId = ?;'                
+                                    'SELECT JP.User_userId, JP.isLogin, JP.isConnected, U.userName, U.userEmail, U.userImage FROM `JoinPost` JP JOIN `User` U ON JP.User_userId = U.userId WHERE JP.Post_postId = ?;'                
                             db.query(findUser, postId, (err, foundUser) => {
                                 if(err) console.log(err) 
 
@@ -194,7 +194,7 @@ module.exports = (server) => {
                                     const joinUserId = user.User_userId
                                     const joinUserName = user.userName
                                     const joinUserEmail = user.userEmail
-                                    const joinUserImage = user.reUserImage
+                                    const joinUserImage = user.userImage
                                     
                                     // 로그인이 안되었을 경우,
                                     if (user.isLogin === 0) {

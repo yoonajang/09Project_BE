@@ -309,13 +309,12 @@ router.get('/islogin', authMiddleware, (req, res) => {
                             byebye: byebye }
             
         
-            console.log('로그인 여부확인', user.reUserImage, user,'<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
             res.send({
                 userInfo: {
                     userId: user.userId,
                     userEmail: user.userEmail,
                     userName: user.userName,
-                    userImage: user.reUserImage,
+                    userImage: user.userImage,
                     tradeCount: user.tradeCount,
                 },
                 alarm: alarm            
