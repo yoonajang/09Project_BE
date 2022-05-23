@@ -185,6 +185,14 @@ router.post('/login', (req, res) => {
             bcrypt.compare(param[1], data[0].password, (err, result) => {
                 if (result) {
 
+                    const userInfo = {
+                        userId: data[0].userId,
+                        userEmail: data[0].userEmail,
+                        userName: data[0].userName,
+                        userImage: data[0].reUserImage,
+                        tradeCount: data[0].tradeCount,
+                    };
+
                     // 알림
                     // SendMessage (게시물당 1개씩 알림보내기)
                     const sql_1 = 
@@ -227,14 +235,6 @@ router.post('/login', (req, res) => {
                                             addDeal: addDeal,
                                             byebye: byebye }
 
-
-                            const userInfo = {
-                                userId: data[0].userId,
-                                userEmail: data[0].userEmail,
-                                userName: data[0].userName,
-                                userImage: data[0].reUserImage,
-                                tradeCount: data[0].tradeCount,
-                            };
                             const token = jwt.sign(
                                 { userId: data[0].userId },
                                 process.env.JWT_SECRET,
