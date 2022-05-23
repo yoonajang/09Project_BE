@@ -56,12 +56,12 @@ module.exports = (server) => {
         // 채팅시작
         socket.on('startchat', param => {
             // console.log('채팅시작');
-            console.log(param)
+       
             const postid = param.postid;
             const postId = Number(postid.replace('p', ''));
             const { userId, userName } = param.loggedUser;
-            console.log(postid, postId, userId, userName)
-            // 수정됨.
+       
+  
             const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick, COUNT(CASE WHEN JP.isPick =1 then 1 end) count, EXISTS (SELECT JP.User_userId, JP.Post_postId FROM `JoinPost`JP where JP.User_userId=? AND JP.Post_postId  =? AND JP.isPick=1) isJoin FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId =?'
 
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
@@ -214,7 +214,7 @@ module.exports = (server) => {
                                                 db.query(insertAlarm, alarmParams, (err, Inserted) => {
                                                     if (err) console.log(err);
 
-                                                    const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
+                                                    const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage'
 
                                                     db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
         
@@ -251,7 +251,7 @@ module.exports = (server) => {
                                                 db.query(insertAlarm, alarmParams, (err, Inserted) => {
                                                     if (err) console.log(err);
 
-                                                    const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId'
+                                                    const findAlarm = 'SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage'
 
                                                     db.query(findAlarm, [postId, Inserted.insertId], (err, messageAlarm) => {
         
@@ -347,7 +347,7 @@ module.exports = (server) => {
                     db.query(insertAlarm, insertParam, (err, Inserted) => {
                         if (err) console.log(err);
     
-                        db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
+                        db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image', [postId, Inserted.insertId], (err, messageAlarm) => {
                             socket.to(userId).emit('added_new_participant',messageAlarm);
                         })
                     });
@@ -515,7 +515,7 @@ module.exports = (server) => {
                                 db.query(insertAlarm, insertParam, (err, Inserted) => {
                                     if (err) console.log(err);
     
-                                    db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId', [postId, Inserted.insertId], (err, messageAlarm) => {
+                                    db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image', [postId, Inserted.insertId], (err, messageAlarm) => {
                                         socket.to(bossId).emit('leaved chatroom',messageAlarm);
                                     })
     
