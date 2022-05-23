@@ -208,10 +208,29 @@ router.post('/login', (req, res) => {
 });
 
 
+
+// 유저 프로필 수정
+router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
+        const userId = res.locals.user.userId;
+        const userImage = req.file.transforms[1].location;
+        const reUserImage = req.file.transforms[0].location;
+        console.log(userImage, reUserImage);
+        try {
+            const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
+            db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
+                res.send({ msg: '글 등록 성공' });
+            });
+        } catch (error) {
+            res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
+        }
+    },
+);
+
 // 로그인 여부확인
 router.get('/islogin', authMiddleware, (req, res) => {
     const { user } = res.locals
     const userId = res.locals.user.userId;
+
 
     // SendMessage (게시물당 1개씩 알림보내기)
     const sql_1 = 

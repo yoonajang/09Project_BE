@@ -5,15 +5,150 @@ const mysql = require('mysql');
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
+const multerS3 = require('multer-s3-transform');
 
 const authMiddleware = require('../middlewares/auth');
 const upload = require('../S3/s3');
 
 
+
+//게시글 작성
+router.post(
+    '/postadd',
+    authMiddleware,
+    upload.single('image'),
+    (req, res, next) => {
+        const {
+            title,
+            content,
+            price,
+            headCount,
+            category,
+            endTime,
+            address,
+            lat,
+            lng,
+        } = req.body;
+
+        const writer = res.locals.user.userName;
+        const User_userId = res.locals.user.userId;
+
+        const image = req.file.transforms[1].location;
+        const reImage = req.file.transforms[0].location;
+        console.log(req.file)
+        const today = moment();
+        const endtime = today.add(endTime, 'days').format();
+
+        const datas = [
+            title,
+            content,
+            price,
+            headCount,
+            category,
+            endtime,
+            address,
+            lat,
+            lng,
+            writer,
+            User_userId,
+            image,
+            reImage,
+        ];
+
+        const sql =
+            'INSERT INTO Post (`title`, `content`, `price`, `headCount`, `category`, `endTime`, `address`, `lat`, `lng`, `writer`, `User_userId`, `image`, `reImage`, `isDone`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,false)';
+
+        db.query(sql, datas, (err, rows) => {
+            if (err) {
+                console.log(err);
+                res.status(201).send({ msg: 'fail' });
+            } else {
+                console.log(rows.insertId);
+                db.query(
+                    'SELECT * FROM Post WHERE `postId`=?',
+                    rows.insertId,
+                    (err, row) => {
+                        res.status(201).send({ msg: 'success', row });
+                    },
+                );
+            }
+        });
+    },
+);
+
+//게시글 삭제
+router.delete('/:postId', authMiddleware, (req, res, next) => {
+    const postId = req.params.postId;
+    const sql = 'DELETE FROM Post WHERE postId=?';
+
+    db.query(sql, postId, function (err, result) {
+        if (err) {
+            console.log(err);
+            res.status(201).send({ msg: 'fail' });
+        } else {
+            res.status(201).send({ msg: 'success' });
+        }
+    });
+});
+
+//채팅 시작하기
+router.get('/getchat/:postid', authMiddleware, (req, res) => {
+    const postId = req.params.postid;
+    const userEmail = res.locals.user.userEmail;
+    const userName = res.locals.user.userName;
+    const reUserImage = res.locals.user.reUserImage;
+    const userId = res.locals.user.userId;
+
+    //waitingUser table 데이터 넣기
+    const sql =
+        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, reUserImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
+    const params = [
+        postId,
+        userEmail,
+        userName,
+        reUserImage,
+        userId,
+        'false',
+        userId,
+        postId,
+    ];
+    const sqls = mysql.format(sql, params);
+    //waitingUser table 데이터 불러오기
+    const sql_1 = 'SELECT * FROM JoinPost WHERE Post_postId=?;';
+    const sql_1s = mysql.format(sql_1, postId);
+    //Chat table 데이터 가져오기
+    const sql_2 =
+        'SELECT * FROM Chat WHERE Post_postId=? ORDER BY createdAt ASC;';
+    const sql_2s = mysql.format(sql_2, postId);
+    //게시글 작성자 정보 가져오기
+    const sql_3 = 'SELECT User_userId FROM Post WHERE postId=?;';
+    const sql_3s = mysql.format(sql_3, postId);
+    //찐참여자 목록 가져오기
+    const sql_4 = 'SELECT * FROM JoinPost WHERE isPick = 1 and Post_postId = ?;';
+    const sql_4s = mysql.format(sql_4, postId);
+
+    db.query(sqls + sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
+        if (err) console.log(err);
+        else {
+            const userInfo = results[1];
+            const chatInfo = results[2];
+            const chatAdmin = results[3];
+            const headList = results[4];
+            return res.status(200).send({
+                data: { userInfo, chatInfo, chatAdmin, headList },
+                message: '채팅 참여자와 메세지 정보가 전달되었습니다',
+            });
+        }
+    });
+});
+
+//----------------메인 게시글-----------------//
+
 router.get('/', (req, res) => {
     const path = require("path")
     res.sendFile(path.join(__dirname + '/../src/'))
 })
+
 
 
 // 메인페이지 게시글 불러오기
@@ -35,7 +170,7 @@ router.post('/postlist', (req, res) => {
 
     if (userId) {
         const sql =
-            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike, (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) distance FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.`postId` = JP.`Post_postId` and JP.`isPick`=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.`Post_postId` = P.`postId` and L.`User_userId`=? WHERE (`address` like ? OR (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) < ? ) AND isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
+            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike, (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) distance FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.`postId` = JP.`Post_postId` and JP.`isPick`=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.`Post_postId` = P.`postId` and L.`User_userId`=? WHERE (`address` like ? OR (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) < ? ) AND isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
 
         const params = [
             lat,
@@ -71,7 +206,7 @@ router.post('/postlist', (req, res) => {
         });
     } else {
         const sql =
-            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList,(6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) distance FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE (`address` like ? OR (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) < ? ) AND isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
+            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U.userId SEPARATOR ',') headList,(6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) distance FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE (`address` like ? OR (6371*acos(cos(radians(?))*cos(radians(P.lat))*cos(radians(P.lng)-radians(?)) +sin(radians(?))*sin(radians(P.lat)))) < ? ) AND isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
 
         const params = [lat, lng, lat, findAddr + '%', lat, lng, lat, km];
 
