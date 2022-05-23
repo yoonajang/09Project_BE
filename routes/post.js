@@ -4,6 +4,7 @@ const db = require('../config');
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
+const multerS3 = require('multer-s3-transform');
 
 const authMiddleware = require('../middlewares/auth');
 const upload = require('../S3/s3');
@@ -58,7 +59,8 @@ router.post(
         const writer = res.locals.user.userName;
         const User_userId = res.locals.user.userId;
 
-        const image = req.file?.location;
+        const image = req.file.transforms[1].location;
+        const reImage = req.file.transforms[0].location;
         const endTimeAdd = moment(endTime).add("1439","m").format("YYYY-MM-DD HH:mm:ss")
 
         const datas = [
@@ -74,6 +76,7 @@ router.post(
             writer,
             User_userId,
             image,
+            reImage,
         ];
 
         const sql =
