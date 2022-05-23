@@ -247,11 +247,12 @@ router.put('/ischecked', authMiddleware, (req, res) => {
 // 유저 프로필 수정
 router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
         const userId = res.locals.user.userId;
-        const userImage = req.file?.location;
-        // console.log(userId, userImage);
+        const userImage = req.file.transforms[1].location;
+        const reUserImage = req.file.transforms[0].location;
+        console.log(userImage, reUserImage);
         try {
-            const sql = ' UPDATE User SET userImage=? WHERE userId=?';
-            db.query(sql, [userImage, userId], (err, rows) => {
+            const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
+            db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
                 res.send({ msg: '글 등록 성공' });
             });
         } catch (error) {

@@ -5,6 +5,7 @@ const mysql = require('mysql');
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
+const multerS3 = require('multer-s3-transform');
 
 const authMiddleware = require('../middlewares/auth');
 
@@ -31,7 +32,9 @@ router.post(
         const writer = res.locals.user.userName;
         const User_userId = res.locals.user.userId;
 
-        const image = req.file?.location;
+        const image = req.file.transforms[1].location;
+        const reImage = req.file.transforms[0].location;
+        console.log(req.file)
         const today = moment();
         const endtime = today.add(endTime, 'days').format();
 
@@ -48,10 +51,11 @@ router.post(
             writer,
             User_userId,
             image,
+            reImage,
         ];
 
         const sql =
-            'INSERT INTO Post (`title`, `content`, `price`, `headCount`, `category`, `endTime`, `address`, `lat`, `lng`, `writer`, `User_userId`, `image`, `isDone`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,false)';
+            'INSERT INTO Post (`title`, `content`, `price`, `headCount`, `category`, `endTime`, `address`, `lat`, `lng`, `writer`, `User_userId`, `image`, `reImage`, `isDone`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,false)';
 
         db.query(sql, datas, (err, rows) => {
             if (err) {
@@ -91,17 +95,17 @@ router.get('/getchat/:postid', authMiddleware, (req, res) => {
     const postId = req.params.postid;
     const userEmail = res.locals.user.userEmail;
     const userName = res.locals.user.userName;
-    const userImage = res.locals.user.userImage;
+    const reUserImage = res.locals.user.reUserImage;
     const userId = res.locals.user.userId;
 
     //waitingUser table 데이터 넣기
     const sql =
-        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
+        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, reUserImage, User_userId, isPick) SELECT ?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
     const params = [
         postId,
         userEmail,
         userName,
-        userImage,
+        reUserImage,
         userId,
         'false',
         userId,
@@ -152,9 +156,10 @@ router.post('/postlist', (req, res) => {
 
     if (userId) {
         const sql =
-            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
+            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
 
         db.query(sql, [userId, findAddr + '%'], (err, data) => {
+            console.log(data)
             if (err) console.log(err);
             for (list of data) {
                 let head = list.headList;
@@ -173,7 +178,7 @@ router.post('/postlist', (req, res) => {
         });
     } else {
         const sql =
-            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
+            "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT(U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE `address` like ? and isDone = 0 GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage, P.lat, P.lng, P.address, P.createdAt, P.endTime ORDER BY P.createdAt DESC";
 
         db.query(sql, [findAddr + '%'], (err, data) => {
             if (err) console.log(err);
