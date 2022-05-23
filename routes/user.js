@@ -13,6 +13,7 @@ const { PollyCustomizations } = require('aws-sdk/lib/services/polly');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+// const fs = require('fs');
 
 // 회원가입
 router.post('/signup', (req, res, next) => {
@@ -20,6 +21,8 @@ router.post('/signup', (req, res, next) => {
 
     const { userEmail, userName, userPassword } = req.body;
     const param = [userEmail, userName, userPassword, userImage, 50];
+
+    // console.log( fs.readFile('../src/profile+image1.png'))
 
     db.query(
         'SELECT * FROM AuthNum WHERE userEmail=?',

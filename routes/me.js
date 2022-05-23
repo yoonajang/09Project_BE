@@ -6,16 +6,14 @@ const path = require('path');
 let appDir = path.dirname(require.main.filename);
 const upload = require('../S3/s3');
 
+const profile = require('../src/');
+
 
 // 유저 프로필 수정
 router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
     const userId = res.locals.user.userId;
     const userImage = req.file.transforms[1].location;
     const reUserImage = req.file.transforms[0].location;
-
-    console.log(req.file.profiles[0].location, '있는지 확인할 것!!!')
-
-    console.log(userId, userImage, reUserImage, '유저 이미지를 바꾸었어요 ')
  
     try {
         const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
