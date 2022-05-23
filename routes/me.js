@@ -13,7 +13,7 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     const userImage = req.file.transforms[1].location;
     const reUserImage = req.file.transforms[0].location;
 
-    console.log(req.file.profiles[0].location;)
+    console.log(req.file.profiles[0].location, '있는지 확인할 것!!!')
 
     console.log(userId, userImage, reUserImage, '유저 이미지를 바꾸었어요 ')
  

@@ -93,7 +93,7 @@ router.post(
                     (err, row) => {
                         if(err) console.log(err)
 
-                        db.query('SELECT userEmail, reUserImage userImage FROM User WHERE userId = ?', User_userId, (err, writerInfo) => { 
+                        db.query('SELECT userEmail, reUserImage FROM User WHERE userId = ?', User_userId, (err, writerInfo) => { 
                             if(err) console.log(err)   
 
                             const userEmail = writerInfo[0].userEmail

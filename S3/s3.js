@@ -41,6 +41,31 @@ const upload = multer({
             },
         ],
     }),
+    
+
+  //   //test (프로필)
+  //   storage: multerS3({
+  //     s3: s3,
+  //     bucket: 'nbbang-resizing/bread-profile',
+  //     limits: {
+  //         fileSize: 2 * 1024 * 1024,
+  //     },
+  //     acl: 'public-read',
+  //     contentType: multerS3.AUTO_CONTENT_TYPE,
+  //     shouldTransform: true,
+  //     profiles: [
+  //         {
+  //           id: 'profile',
+  //           key: function (req, file, cb) {
+  //             let extension = path.extname(file.profilename);
+  //             cb(null, Date.now().toString() + '_profile' + extension);
+  //           },
+  //           transform: function (req, file, cb) {
+  //             cb(null, sharp().jpeg());
+  //           }, 
+  //         },
+  //     ],
+  // }),
 });
 
 module.exports = upload;
