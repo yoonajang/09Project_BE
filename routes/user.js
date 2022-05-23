@@ -184,19 +184,66 @@ router.post('/login', (req, res) => {
         if (data.length > 0) {
             bcrypt.compare(param[1], data[0].password, (err, result) => {
                 if (result) {
-                    
-                    const userInfo = {
-                        userId: data[0].userId,
-                        userEmail: data[0].userEmail,
-                        userName: data[0].userName,
-                        userImage: data[0].userImage,
-                        tradeCount: data[0].tradeCount,
-                    };
-                    const token = jwt.sign(
-                        { userId: data[0].userId },
-                        process.env.JWT_SECRET,
-                    );
-                    res.send({ msg: 'success', token, userInfo });
+
+                    // 알림
+                    // SendMessage (게시물당 1개씩 알림보내기)
+                    const sql_1 = 
+                    'SELECT A.alarmId, A.status, A.userImage, A.createdAt, A.Post_postId, A.type FROM Alarm A WHERE A.User_userId=10 AND A.type="sendMessage" AND A.isChecked = 0 GROUP BY A.type, A.Post_postId;';
+                    const sql_1s = mysql.format(sql_1, userId);
+
+                    // leaveChat (모든 알림 다보내기)
+                    const sql_2 = 
+                        'SELECT alarmId, status, userImage, createdAt, Post_postId, type FROM Alarm WHERE User_userId=? AND type="leaveChat" AND isChecked = 0 ;';
+                    const sql_2s = mysql.format(sql_2, userId);
+
+                    // blockChat (모든 알림 다보내기)
+                    const sql_3 = 
+                        'SELECT alarmId, status, userImage, createdAt, Post_postId, type FROM Alarm WHERE User_userId=? AND type="blockChat" AND isChecked = 0 ;';
+                    const sql_3s = mysql.format(sql_3, userId);
+
+                    // addDeal (모든 알림 다보내기)
+                    const sql_4 = 
+                        'SELECT alarmId, status, userImage, createdAt, Post_postId, type FROM Alarm WHERE User_userId=? AND type="addDeal" AND isChecked = 0 ;';
+                    const sql_4s = mysql.format(sql_4, userId);
+
+                    // byebye (모든 알림 다보내기)
+                    const sql_5 = 
+                        'SELECT alarmId, status, userImage, createdAt, Post_postId, type FROM Alarm WHERE User_userId=? AND type="byebye" AND isChecked = 0 ;';
+                    const sql_5s = mysql.format(sql_5, userId);
+
+                    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, rows) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            const sendMessage = rows[0];
+                            const leaveChat = rows[1];
+                            const blockChat = rows[2];
+                            const addDeal = rows[3];
+                            const byebye = rows[4];
+                            
+                            const alarm = { sendMessage: sendMessage, 
+                                            leaveChat: leaveChat,
+                                            blockChat: blockChat,
+                                            addDeal: addDeal,
+                                            byebye: byebye }
+
+
+                            const userInfo = {
+                                userId: data[0].userId,
+                                userEmail: data[0].userEmail,
+                                userName: data[0].userName,
+                                userImage: data[0].userImage,
+                                tradeCount: data[0].tradeCount,
+                            };
+                            const token = jwt.sign(
+                                { userId: data[0].userId },
+                                process.env.JWT_SECRET,
+                            );
+
+                            res.send({ msg: 'success', token, userInfo, alarm});   
+                
+                        }
+                    });
                 } else {
                     res.send({ msg: 'fail' });
                 }
