@@ -31,7 +31,9 @@ module.exports = () => {
                 if (userImage === defaultKakaoImage){
                     userImage = defaultImage
                     params.push(userImage)
+                    params.push(userImage)
                 } else {
+                    params.push(userImage)
                     params.push(userImage)
                 }
             
@@ -47,7 +49,7 @@ module.exports = () => {
                         // 해당 유저가 존재하지 않는다면, 새로운 아이디를 만들어주고 로그인 시켜줌.
 
                         const sql =
-                            'INSERT User(userEmail, userName, provider, kakaoId, point, userImage) values(?,?,?,?,?,?)';
+                            'INSERT User(userEmail, userName, provider, kakaoId, point, userImage,reUserImage) values(?,?,?,?,?,?,?)';
 
                         db.query(sql, params, (err, results) => {
                             if (err) {

@@ -11,7 +11,7 @@ router.get('/getchat/:postId', authMiddleware, (req, res) => {
     const postId = req.params.postId;
     const userEmail = res.locals.user.userEmail;
     const userName = res.locals.user.userName;
-    const userImage = res.locals.user.userImage;
+    const userImage = res.locals.user.reUserImage;
     const userId = res.locals.user.userId;
 
     //waitingUser table 데이터 넣기

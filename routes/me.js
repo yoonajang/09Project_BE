@@ -31,7 +31,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
 
     // 유저 정보
     const userinfo =
-        'SELECT U.userId, U.userEmail, U.userName, U.userImage, U.tradeCount FROM `User` U WHERE `userId`=?';
+        'SELECT U.userId, U.userEmail, U.userName, U.reUserImage userImage, U.tradeCount FROM `User` U WHERE `userId`=?';
     db.query(userinfo, userId, (err, userInfo) => {
         if (err) console.log(err);
 
