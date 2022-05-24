@@ -8,8 +8,8 @@ module.exports = (server) => {
             origin: '*',
             methods: ['GET', 'POST'],
         },
-        // pingInterval: 10000,
-        // pingTimeout: 5000,
+        pingInterval: 10000,
+        pingTimeout: 5000,
     });
 
     io.on('connection', socket => {
@@ -33,6 +33,22 @@ module.exports = (server) => {
             socket.join(userId);
         });
         
+        // 브라우저 종료
+        socket.on('disconnect', () => {
+            const socketId = socket.id;
+    
+            db.query(
+                'UPDATE JoinPost SET isLogin = 0, isConnected = 0 WHERE socketId = ?',
+                socketId,
+                (err, rows) => {
+                    if (err) console.log(err);
+                    console.log('disconnect 끊김~!!!!')
+                    io.emit('disconnected', "leave")
+                    socket.to(postid).emit('disconnected', "leave")
+                    socket.leave();
+                },
+            );
+        });
 
         // 채팅방 나가기
         socket.on('closeChatroom', (postid, user) => {
