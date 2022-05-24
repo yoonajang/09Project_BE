@@ -8,7 +8,7 @@ module.exports = (server) => {
     const io = socketIo(server, {
         allowRequest: (req, callback) => {
             callback(null, false);
-          }
+          },
 
         cors: {
             origin: '*',
