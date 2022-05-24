@@ -21,8 +21,9 @@ module.exports = () => {
                 const provider = "kakao"
                 const kakaoId = profile._json.id
                 const point = 50
+                const tradeCount = 0
 
-                let params = [userEmail, userName, provider, kakaoId, point]
+                let params = [userEmail, userName, provider, kakaoId, point, tradeCount]
 
                 let userImage = profile._json.properties.thumbnail_image
                 const defaultKakaoImage = 'http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_110x110.jpg'
