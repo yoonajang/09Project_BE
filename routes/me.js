@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config');
+const mysql = require('mysql');
 const authMiddleware = require('../middlewares/auth');
 const path = require('path');
 let appDir = path.dirname(require.main.filename);
@@ -33,13 +34,26 @@ const upload = require('../S3/s3');
 // );
 router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
     const userId = res.locals.user.userId;
-    const userImage = req.file.transforms[1].location;
-    const reUserImage = req.file.transforms[0].location;
+    const userImage = req.file.transforms[0].location;
+    const reUserImage = req.file.transforms[1].location;
     console.log(userImage, reUserImage);
     try {
-        const sql = 'UPDATE User U RIGHT JOIN JoinPost JP ON JP.User_userId = U.userId Right JOIN Post P ON P.User_userId = U.userId Right JOIN Chat C ON C.User_userId = U.UserId SET U.userImage = ?, U.reUserImage=?, JP.userImage = ?, C.userImage = ? WHERE U.userId = ?';
-        db.query(sql, [userImage, reUserImage, reUserImage, reUserImage, userId], (err, rows) => {
-            res.send({ msg: '글 등록 성공',  userImage: reUserImage  });
+        const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
+        db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
+            'UPDATE JoinPost SET userImage=? WHERE userId=?'
+
+            const sql_1 =  'UPDATE JoinPost SET userImage=? WHERE userId=?';
+            const data_1 = [reUserImage, userId];
+            const sql_1s = mysql.format(sql_1, data);
+
+            const sql_2 =  'UPDATE JoinPost SET userImage=? WHERE userId=?';
+            const data_2 = [reUserImage, userId];
+            const sql_2s = mysql.format(sql_2, data);
+
+            db.query(sql_1s + sql_2s,(err, rows) => {
+                res.send({ msg: '글 등록 성공',  userImage: reUserImage  });
+
+            });
         });
     } catch (error) {
         res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
