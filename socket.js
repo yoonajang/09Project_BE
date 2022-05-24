@@ -45,7 +45,6 @@ module.exports = (server) => {
                     if (err) console.log(err);
                     console.log('disconnect 끊김~!!!!')
                     io.emit('disconnected', "leave")
-                    socket.to(postid).emit('disconnected', "leave")
                     socket.leave();
                 },
             );
@@ -550,7 +549,7 @@ module.exports = (server) => {
                                 db.query(insertAlarm, insertParam, (err, Inserted) => {
                                     if (err) console.log(err);
     
-                                    db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image', [postId, Inserted.insertId], (err, messageAlarm) => {
+                                    db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage', [postId, Inserted.insertId], (err, messageAlarm) => {
                                         socket.to(bossId).emit('leaved chatroom',messageAlarm);
                                     })
     
