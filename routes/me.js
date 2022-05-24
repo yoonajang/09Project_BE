@@ -29,7 +29,7 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
             const sql_2s = mysql.format(sql_2, data_2);
 
             db.query(sql_1s + sql_2s,(err, rows) => {
-                res.send({ msg: '글 등록 성공',  userImage  });
+                res.send({ msg: '글 등록 성공',  userImage: reUserImage  });
 
             });
         });
