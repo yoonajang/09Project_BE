@@ -16,7 +16,7 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     const reUserImage = req.file.transforms[0].location;
 
 
-    try {
+    // try {
 
         const sql = 
         'UPDATE User U RIGHT JOIN JoinPost JP ON JP.User_userId = U.userId Right JOIN Post P ON P.User_userId = U.userId Right JOIN Chat C ON C.User_userId = U.UserId SET U.userImage = ?, U.reUserImage=?, JP.userImage = ?, C.userImage = ? WHERE U.userId = ?'
@@ -26,9 +26,9 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
             console.log(userImage, reUserImage, userId, '이것 확인하기ㄴ')
             res.send({ msg: '글 등록 성공', userImage: reUserImage });
         });
-    } catch (error) {
-        res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
-    }
+    // } catch (error) {
+    //     res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
+    // }
 },
 );
 
