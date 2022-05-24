@@ -7,35 +7,12 @@ const path = require('path');
 let appDir = path.dirname(require.main.filename);
 const upload = require('../S3/s3');
 
-// const profile = require('../src/');
-
 
 // 유저 프로필 수정
-// router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
-//     const userId = res.locals.user.userId;
-//     const userImage = req.file.transforms[1].location;
-//     const reUserImage = req.file.transforms[0].location;
-
-
-//     // try {
-
-//         const sql = 
-//         'UPDATE User U RIGHT JOIN JoinPost JP ON JP.User_userId = U.userId Right JOIN Post P ON P.User_userId = U.userId Right JOIN Chat C ON C.User_userId = U.UserId SET U.userImage = ?, U.reUserImage=?, JP.userImage = ?, C.userImage = ? WHERE U.userId = ?'
-    
-//         db.query(sql, [userImage, reUserImage, reUserImage, reUserImage, userId], (err, rows) => {
-//             //  저장이 안됨.
-//             console.log(userImage, reUserImage, userId, '이것 확인하기ㄴ')
-//             res.send({ msg: '글 등록 성공', userImage: reUserImage });
-//         });
-//     // } catch (error) {
-//     //     res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
-//     // }
-// },
-// );
 router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
     const userId = res.locals.user.userId;
-    const userImage = req.file.transforms[0].location;
-    const reUserImage = req.file.transforms[1].location;
+    const userImage = req.file.transforms[1].location;
+    const reUserImage = req.file.transforms[0].location;
 
     console.log(userImage, reUserImage)
 
