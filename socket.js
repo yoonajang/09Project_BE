@@ -665,6 +665,7 @@ module.exports = (server) => {
                 socketId,
                 (err, rows) => {
                     if (err) console.log(err);
+                    console.log('끊김')
                     socket.leave();
                 },
             );
