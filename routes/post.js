@@ -101,7 +101,6 @@ router.post(
                                 if(err) console.log(err)             
                             }) 
 
-                        console.log(row)
                         res.status(201).send({ msg: 'success', row });
                     },
                 );
