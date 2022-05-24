@@ -582,6 +582,9 @@ module.exports = (server) => {
     
         })
 
+
+
+
         // 강퇴 (by 방장 > 작업필요)
         // socket.on('kickout chatroom', (postid, user) => {
 
@@ -654,6 +657,24 @@ module.exports = (server) => {
         //         });
         //     });
         // });
+
+        // 브라우저 종료 중
+        socket.on('disconnecting', () => {
+            const socketId = socket.id;
+    
+            db.query(
+                'UPDATE JoinPost SET isLogin = 0, isConnected = 0 WHERE socketId = ?',
+                socketId,
+                (err, rows) => {
+                    if (err) console.log(err);
+
+                    console.log('disconnecting 끊김')
+                    io.emit('disconnected', "leave")
+                    socket.to(postid).emit('disconnected', "leave")
+                    socket.leave();
+                },
+            );
+        });
     
     
         // 브라우저 종료
@@ -665,7 +686,9 @@ module.exports = (server) => {
                 socketId,
                 (err, rows) => {
                     if (err) console.log(err);
-                    console.log('끊김')
+                    console.log('disconnect 끊김')
+                    io.emit('disconnected', "leave")
+                    socket.to(postid).emit('disconnected', "leave")
                     socket.leave();
                 },
             );
