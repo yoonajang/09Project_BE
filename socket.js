@@ -73,49 +73,49 @@ module.exports = (server) => {
                     if (foundJoin[0].count >= foundJoin[0].headCount){
                         if (foundJoin[0].isJoin === 1){
                             io.to(userId).emit('block', 'success');
-                            socket.join(postid)
+                            // socket.join(postid)
 
-                            console.log(userId, 'block sucess -------------------------------1')
-                            const socketId = socket.id
+                            // console.log(userId, 'block sucess -------------------------------1')
+                            // const socketId = socket.id
     
-                            const sql_1 = 
-                                'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;';
-                            const data = [socketId, userId, postId];
-                            const sql_1s = mysql.format(sql_1, data);
+                            // const sql_1 = 
+                            //     'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;';
+                            // const data = [socketId, userId, postId];
+                            // const sql_1s = mysql.format(sql_1, data);
 
-                            // Nopick
-                            const sql_2 = 
-                                'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;';
-                            const sql_2s = mysql.format(sql_2, postId);
+                            // // Nopick
+                            // const sql_2 = 
+                            //     'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;';
+                            // const sql_2s = mysql.format(sql_2, postId);
 
-                            // Pick 
-                            const sql_3 = 
-                                'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;';
-                            const sql_3s = mysql.format(sql_3, postId);
+                            // // Pick 
+                            // const sql_3 = 
+                            //     'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;';
+                            // const sql_3s = mysql.format(sql_3, postId);
 
-                            // BossId
-                            const sql_4 = 
-                                'SELECT User_userId FROM Post WHERE postId = ?;';
-                            const sql_4s = mysql.format(sql_4, postId);
+                            // // BossId
+                            // const sql_4 = 
+                            //     'SELECT User_userId FROM Post WHERE postId = ?;';
+                            // const sql_4s = mysql.format(sql_4, postId);
 
-                            db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, rows) => {
-                                if (err) {
-                                    console.log(err);
-                                } else {
-                                    const noPick = rows[1];
-                                    const Pick = rows[2];
-                                    const bossId = rows[3];
+                            // db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, rows) => {
+                            //     if (err) {
+                            //         console.log(err);
+                            //     } else {
+                            //         const noPick = rows[1];
+                            //         const Pick = rows[2];
+                            //         const bossId = rows[3];
 
-                                    const userLists  = [param.loggedUser, noPick, Pick, bossId]
-                                    console.log(userLists)
-                                    io.to(postid).emit(
-                                        'connected',
-                                        userName +
-                                            ' 님이 입장했습니다.',
-                                        userLists
-                                    );
-                                }
-                            })
+                            //         const userLists  = [param.loggedUser, noPick, Pick, bossId]
+                            //         console.log(userLists)
+                            //         io.to(postid).emit(
+                            //             'connected',
+                            //             userName +
+                            //                 ' 님이 입장했습니다.',
+                            //             userLists
+                            //         );
+                            //     }
+                            // })
                         } else {
                             console.log(userId, 'block fail')
                             io.to(userId).emit('block', 'fail');
