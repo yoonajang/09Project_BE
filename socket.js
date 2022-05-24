@@ -334,6 +334,8 @@ module.exports = (server) => {
                     const headList = rows[1];
                     const waitList = rows[2];
 
+                    console.log(headList, waitList, '헤애ㅣ~~~')
+
                     socket
                         .to(postid)
                         .emit(
@@ -363,6 +365,7 @@ module.exports = (server) => {
                         if (err) console.log(err);
     
                         db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image', [postId, Inserted.insertId], (err, messageAlarm) => {
+                            console.log(messageAlarm)
                             socket.to(userId).emit('added_new_participant',messageAlarm);
                         })
                     });
