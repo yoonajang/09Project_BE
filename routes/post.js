@@ -57,7 +57,9 @@ router.post(
 
         const writer = res.locals.user.userName;
         const User_userId = res.locals.user.userId;
-
+        const userImage = res.locals.user.reUserImage;
+        const userEmail = res.locals.user.userEmail;
+        
         const image = req.file.transforms[1].location;
         const reImage = req.file.transforms[0].location;
         const endTimeAdd = moment(endTime).add("1439","m").format("YYYY-MM-DD HH:mm:ss")
@@ -93,18 +95,12 @@ router.post(
                     (err, row) => {
                         if(err) console.log(err)
 
-                        db.query('SELECT userEmail, reUserImage FROM User WHERE userId = ?', User_userId, (err, writerInfo) => { 
-                            if(err) console.log(err)   
-
-                            const userEmail = writerInfo[0].userEmail
-                            const userImage = writerInfo[0].reUserImage   
-                            
                             const insertParam = [User_userId, postId, userEmail, writer, userImage,1,1,0]
-                            db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,User_userEmail, User_userName, userImage, `isPick`,`isLogin`,`isConnected`) VALUES (?,?,?,?,?,?,?,?)', insertParam, (err, rows) => { 
+                            db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,`User_userEmail`, `User_userName`, `userImage`, `isPick`,`isLogin`,`isConnected`) VALUES (?,?,?,?,?,?,?,?)', insertParam, (err, inserted) => { 
+                                console.log(insertParam)
                                 if(err) console.log(err)             
                             }) 
 
-                        })  
                         console.log(row)
                         res.status(201).send({ msg: 'success', row });
                     },
