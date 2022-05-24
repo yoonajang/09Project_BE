@@ -13,10 +13,12 @@ module.exports = (server) => {
     });
 
     io.on('connection', socket => {
+        // 에러
         socket.on("connect_error", (err) => {
             console.log(`connect_error due to ${err.message}`);
           });
-        console.log(socket.id, '연결성공');
+
+        // console.log(socket.id, '연결성공');
     
         socket.on('socket is connected', loggedUser => {
             const socketId = socket.id
@@ -29,8 +31,6 @@ module.exports = (server) => {
                     if (err) console.log(err);
                 },
             );
-
-
             socket.join(userId);
         });
         
@@ -43,7 +43,7 @@ module.exports = (server) => {
                 socketId,
                 (err, rows) => {
                     if (err) console.log(err);
-                    console.log('disconnect 끊김~!!!!')
+                    // console.log(socket.io, '브라우저 종료')
                     io.emit('disconnected', "leave")
                     socket.leave();
                 },
@@ -52,7 +52,7 @@ module.exports = (server) => {
 
         // 채팅방 나가기
         socket.on('closeChatroom', (postid, user) => {
-            console.log(postid, user)
+
             const userId = user.userId
             const userName = user.userName
             const postId = Number(postid.replace('p', ''));
@@ -62,10 +62,6 @@ module.exports = (server) => {
                 [userId, postId],
                 (err, rows) => {
                     if (err) console.log(err);
-                
-                // io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
-                // socket.leave(postid)
-
             });
 
             io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
@@ -85,13 +81,11 @@ module.exports = (server) => {
             
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
-                    console.log(foundJoin,1)
                     if (foundJoin[0].count >= foundJoin[0].headCount){
                         if (foundJoin[0].isJoin === 1){
                             io.to(userId).emit('block', 'success');
                             socket.join(postid)
 
-                            console.log(userId, 'block sucess -------------------------------1')
                             const socketId = socket.id
     
                             const sql_1 = 
@@ -123,7 +117,7 @@ module.exports = (server) => {
                                     const bossId = rows[3];
 
                                     const userLists  = [param.loggedUser, noPick, Pick, bossId]
-                                    console.log(userLists)
+                                 
                                     io.to(postid).emit(
                                         'connected',
                                         userName +
@@ -133,12 +127,12 @@ module.exports = (server) => {
                                 }
                             })
                         } else {
-                            console.log(userId, 'block fail')
+                           
                             io.to(userId).emit('block', 'fail');
                         }  
                     } else if (foundJoin[0].headCount > foundJoin[0].count) {
                         io.to(userId).emit('block', 'success');
-                        console.log(userId, 'block sucess -------------------------------2')
+                    
                         socket.join(postid);
                         
 
@@ -173,7 +167,7 @@ module.exports = (server) => {
                                 const bossId = rows[3];
 
                                 const userLists  = [param.loggedUser, noPick, Pick, bossId]
-                                console.log(userLists)               
+                                          
                                 io.to(postid).emit(
                                     'connected',
                                     userName +
@@ -482,7 +476,7 @@ module.exports = (server) => {
         //         }
         //     });
         // });
-        console.log(486)
+       
         // 방나가기 버튼 눌렀을 때, 
         socket.on('leave chatroom', (postid, user) => {
             const postId = Number(postid.replace('p', ''));
@@ -597,9 +591,6 @@ module.exports = (server) => {
                 }
     
         })
-        console.log(601)
-
-
 
         // 강퇴 (by 방장 > 작업필요)
         // socket.on('kickout chatroom', (postid, user) => {
@@ -673,7 +664,7 @@ module.exports = (server) => {
         //         });
         //     });
         // });
-        console.log(677)
+     
         // 브라우저 종료 중
         socket.on('disconnecting', () => {
             const socketId = socket.id;
@@ -683,28 +674,8 @@ module.exports = (server) => {
                 socketId,
                 (err, rows) => {
                     if (err) console.log(err);
-
-                    console.log('disconnecting 끊김')
+                    // console.log(socket.io,'연결 종료 중')
                     io.emit('disconnected', "leave")
-                    socket.to(postid).emit('disconnected', "leave")
-                    socket.leave();
-                },
-            );
-        });
-    
-        
-        // 브라우저 종료
-        socket.on('disconnect', () => {
-            const socketId = socket.id;
-    
-            db.query(
-                'UPDATE JoinPost SET isLogin = 0, isConnected = 0 WHERE socketId = ?',
-                socketId,
-                (err, rows) => {
-                    if (err) console.log(err);
-                    console.log('disconnect 끊김~!!!!')
-                    io.emit('disconnected', "leave")
-                    socket.to(postid).emit('disconnected', "leave")
                     socket.leave();
                 },
             );
