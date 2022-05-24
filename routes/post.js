@@ -99,8 +99,8 @@ router.post(
                             const userEmail = writerInfo[0].userEmail
                             const userImage = writerInfo[0].userImage   
                             
-                            const insertParam = [User_userId, postId, userEmail, writer, userImage,1]
-                            db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,User_userEmail, User_userName, userImage, `isPick`) VALUES (?,?,?,?,?,?)', insertParam, (err, rows) => { 
+                            const insertParam = [User_userId, postId, userEmail, writer, userImage,1,1,1]
+                            db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,User_userEmail, User_userName, userImage, `isPick`, `isLogin`, `isConnected`) VALUES (?,?,?,?,?,?)', insertParam, (err, rows) => { 
                                 if(err) console.log(err)             
                             }) 
 
