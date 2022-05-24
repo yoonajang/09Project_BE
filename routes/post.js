@@ -97,15 +97,15 @@ router.post(
                             if(err) console.log(err)   
 
                             const userEmail = writerInfo[0].userEmail
-                            const userImage = writerInfo[0].userImage   
+                            const userImage = writerInfo[0].reUserImage   
                             
                             const insertParam = [User_userId, postId, userEmail, writer, userImage,1,1,0]
                             db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,User_userEmail, User_userName, userImage, `isPick`,`isLogin`,`isConnected`) VALUES (?,?,?,?,?,?,?,?)', insertParam, (err, rows) => { 
                                 if(err) console.log(err)             
                             }) 
 
-                        })
-
+                        })  
+                        console.log(row)
                         res.status(201).send({ msg: 'success', row });
                     },
                 );
