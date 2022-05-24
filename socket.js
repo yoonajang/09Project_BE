@@ -6,6 +6,10 @@ const mysql = require('mysql');
 
 module.exports = (server) => {
     const io = socketIo(server, {
+        allowRequest: (req, callback) => {
+            callback(null, false);
+          }
+
         cors: {
             origin: '*',
             // methods: ['GET', 'POST'],
@@ -15,6 +19,9 @@ module.exports = (server) => {
     });
 
     io.on('connection', socket => {
+        socket.on("connect_error", (err) => {
+            console.log(`connect_error due to ${err.message}`);
+          });
         console.log(socket.id, '연결성공');
     
         socket.on('socket is connected', loggedUser => {
