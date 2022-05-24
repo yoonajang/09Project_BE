@@ -17,7 +17,13 @@ const saltRounds = 10;
 
 // 회원가입
 router.post('/signup', (req, res, next) => {
-    const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
+    const profile_1 = '..src/profile_image1.png'
+    const profile_2 = '..src/profile_image2.png'
+    const profile_3 = '..src/profile_image3.png'
+    const profile_4 = '..src/profile_image4.png'
+
+    const Images = [profile_1, profile_2, profile_3, profile_4]
+    const userImage = Images[Math.floor(Math.random()*Images.length)]
 
     const { userEmail, userName, userPassword } = req.body;
     const param = [userEmail, userName, userPassword, userImage, 50, 0];
