@@ -17,13 +17,16 @@ const saltRounds = 10;
 
 // 회원가입
 router.post('/signup', (req, res, next) => {
-    const profile_1 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image1.png'
-    const profile_2 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image2.png'
-    const profile_3 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image3.png'
-    const profile_4 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image4.png'
+    // const profile_1 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image1.png'
+    // const profile_2 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image2.png'
+    // const profile_3 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image3.png'
+    // const profile_4 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image4.png'
 
-    const Images = [profile_1, profile_2, profile_3, profile_4]
-    const userImage = Images[Math.floor(Math.random()*Images.length)]
+    // const Images = [profile_1, profile_2, profile_3, profile_4]
+    // const userImage = Images[Math.floor(Math.random()*Images.length)]
+
+    const userImage = '/C:/Users/moon/OneDrive/Desktop/KakaoTalk_20220523_202406936.png'
+    console.log(userImage)
 
     const { userEmail, userName, userPassword } = req.body;
     const param = [userEmail, userName, userPassword, userImage, 50, 0];
