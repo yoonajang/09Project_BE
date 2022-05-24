@@ -14,8 +14,6 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     const userImage = req.file.transforms[1].location;
     const reUserImage = req.file.transforms[0].location;
 
-    console.log(userImage, reUserImage)
-
     try {
         const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
         db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
@@ -29,7 +27,7 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
             const sql_2s = mysql.format(sql_2, data_2);
 
             db.query(sql_1s + sql_2s,(err, rows) => {
-                res.send({ msg: '글 등록 성공',  userImage: reUserImage  });
+                res.send({ msg: '글 등록 성공',  userImage: reUserImage });
 
             });
         });
@@ -73,7 +71,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
 
     // 유저의 참여한 리스트
     const joinlist =
-        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE P.User_userId != ? AND JP.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime ORDER BY P.endTime DESC";
+        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U.userImage FROM `Post` P INNER JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId WHERE  JP.User_userId = ? AND P.User_userId != ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, U.userImage ORDER BY P.endTime DESC";
 
     db.query(joinlist, [userId, userId], (err, joinList) => {
         if (err) console.log(err);
@@ -95,7 +93,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
 
     // 유저의 좋아요 리스트
     const likelist =
-        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId  LEFT OUTER JOIN `Like` L ON P.postId = L.Post_postId WHERE L.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime ORDER BY P.endTime DESC";
+        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U.userImage FROM `Post` P INNER JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId  LEFT OUTER JOIN `Like` L ON P.postId = L.Post_postId WHERE L.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime , U.userImage ORDER BY P.endTime DESC";
 
     db.query(likelist, userId, (err, likeList) => {
         if (err) console.log(err);
