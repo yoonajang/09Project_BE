@@ -1,21 +1,15 @@
-// const { Server } = require('socket.io');
-// const { Server } = require('socket.io');
-const socketIo = require('socket.io');
+const { Server } = require('socket.io');
 const db = require('./config');
 const mysql = require('mysql');
 
 module.exports = (server) => {
-    const io = socketIo(server, {
-        allowRequest: (req, callback) => {
-            callback(null, false);
-          },
-
+    const io = new Server(server, {
         cors: {
             origin: '*',
             methods: ['GET', 'POST'],
         },
-        // pingInterval: 10000,
-        // pingTimeout: 5000,
+        pingInterval: 10000,
+        pingTimeout: 5000,
     });
 
     io.on('connection', socket => {
