@@ -40,7 +40,7 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     try {
         const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
         db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
-            
+
             const sql_1 =  'UPDATE JoinPost SET userImage=? WHERE userId=?';
             const data_1 = [reUserImage, userId];
             const sql_1s = mysql.format(sql_1, data_1);
@@ -50,7 +50,7 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
             const sql_2s = mysql.format(sql_2, data_2);
 
             db.query(sql_1s + sql_2s,(err, rows) => {
-                res.send({ msg: '글 등록 성공',  userImage: reUserImage  });
+                res.send({ msg: '글 등록 성공',  userImage  });
 
             });
         });
