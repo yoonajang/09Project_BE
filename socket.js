@@ -69,12 +69,13 @@ module.exports = (server) => {
             
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
-                    console.log(foundJoin)
+                    console.log(foundJoin,1)
                     if (foundJoin[0].count >= foundJoin[0].headCount){
                         if (foundJoin[0].isJoin === 1){
                             io.to(userId).emit('block', 'success');
                             socket.join(postid)
 
+                            console.log(userId, 'block sucess')
                             const socketId = socket.id
     
                             const sql_1 = 
@@ -106,7 +107,7 @@ module.exports = (server) => {
                                     const bossId = rows[3];
 
                                     const userLists  = [param.loggedUser, noPick, Pick, bossId]
-                                               
+                                    console.log(userLists)
                                     io.to(postid).emit(
                                         'connected',
                                         userName +
@@ -116,11 +117,12 @@ module.exports = (server) => {
                                 }
                             })
                         } else {
+                            console.log(userId, 'block fail')
                             io.to(userId).emit('block', 'fail');
                         }  
                     } else if (foundJoin[0].headCount > foundJoin[0].count) {
                         io.to(userId).emit('block', 'success');
-
+                        console.log(userId, 'block sucess')
                         socket.join(postid);
                         
 
@@ -155,7 +157,7 @@ module.exports = (server) => {
                                 const bossId = rows[3];
 
                                 const userLists  = [param.loggedUser, noPick, Pick, bossId]
-                                            
+                                console.log(userLists)               
                                 io.to(postid).emit(
                                     'connected',
                                     userName +
