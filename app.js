@@ -20,11 +20,11 @@ moment.tz.setDefault('Asia/seoul');
 kakaoPassport();
 app.use(cors()); 
 
-// const credentials = {
-//     key: fs.readFileSync(__dirname + '/redpingpong_shop.key', 'utf8'),
-//     cert: fs.readFileSync(__dirname + '/redpingpong_shop__crt.pem', 'utf8'),
-//     ca: fs.readFileSync(__dirname + '/redpingpong_shop__ca.pem', 'utf8'),
-// };
+const credentials = {
+    key: fs.readFileSync(__dirname + '/redpingpong_shop.key', 'utf8'),
+    cert: fs.readFileSync(__dirname + '/redpingpong_shop__crt.pem', 'utf8'),
+    ca: fs.readFileSync(__dirname + '/redpingpong_shop__ca.pem', 'utf8'),
+};
 
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
@@ -46,58 +46,47 @@ app.use('/', routers);
 
 
 
-// app_http.use((req, res, next) => {
-//     if (req.secure) {
-//         next();
-//     } else {
-//         const to = `https://${req.hostname}:${httpsPort}${req.url}`;
-//         // console.log(to);
-//         res.redirect(to);
-//     }
-// });
+app_http.use((req, res, next) => {
+    if (req.secure) {
+        next();
+    } else {
+        const to = `https://${req.hostname}:${httpsPort}${req.url}`;
+        // console.log(to);
+        res.redirect(to);
+    }
+});
 
-// app.get(
-//     '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
-//     (req, res) => {
-//         res.sendFile(
-//             __dirname +
-//                 '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
-//         );
-//     },
-// );
+app.get(
+    '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
+    (req, res) => {
+        res.sendFile(
+            __dirname +
+                '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
+        );
+    },
+);
 
-// 기존 
-// const httpServer = http.createServer(app_http);
-// const httpsServer = https.createServer(credentials, app);
-// SocketIO(httpsServer);
-
-// console.log(moment().format("YY-MM-DD HH:mm:ss"))
-// httpServer.listen(httpPort, () => {
-//     console.log(`${httpPort}`,'http서버가 켜졌어요!');
-// });
-
-// httpsServer.listen(httpsPort, () => {
-//     console.log(`${httpPort}`, 'https서버가 켜졌어요!');
-// });
-
-
-// 서버 작동용
-const httpServer = http.createServer(app);
-
-SocketIO(httpServer);
+const httpServer = http.createServer(app_http);
+const httpsServer = https.createServer(credentials, app);
+SocketIO(httpsServer);
 
 console.log(moment().format("YY-MM-DD HH:mm:ss"))
 httpServer.listen(httpPort, () => {
     console.log(`${httpPort}`,'http서버가 켜졌어요!');
 });
 
+httpsServer.listen(httpsPort, () => {
+    console.log(`${httpPort}`, 'https서버가 켜졌어요!');
+});
 
-// 다른시도 
-// const server = require('http').createServer(app)
 
-// SocketIO(server);
+// // 로드밸런서_서버 작동용
+// const httpServer = http.createServer(app);
+
+// SocketIO(httpServer);
 
 // console.log(moment().format("YY-MM-DD HH:mm:ss"))
-// server.listen(httpPort, () => {
+// httpServer.listen(httpPort, () => {
 //     console.log(`${httpPort}`,'http서버가 켜졌어요!');
 // });
+
