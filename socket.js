@@ -1,9 +1,11 @@
-const { Server } = require('socket.io');
+// const { Server } = require('socket.io');
+// const { Server } = require('socket.io');
+const socketIo = require('socket.io');
 const db = require('./config');
 const mysql = require('mysql');
 
 module.exports = (server) => {
-    const io = new Server(server, {
+    const io = socketIo(server, {
         cors: {
             origin: '*',
             methods: ['GET', 'POST'],

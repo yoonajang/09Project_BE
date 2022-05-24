@@ -17,6 +17,7 @@ const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
 
+const server = require('http').createServer(app)
 
 kakaoPassport();
 app.use(cors()); 
@@ -67,17 +68,38 @@ app.use('/', routers);
 //     },
 // );
 
+// 기존 
 // const httpServer = http.createServer(app_http);
-const httpServer = http.createServer(app);
 // const httpsServer = https.createServer(credentials, app);
-SocketIO(httpServer);
+// SocketIO(httpsServer);
 
-console.log(moment().format("YY-MM-DD HH:mm:ss"))
-httpServer.listen(httpPort, () => {
-    console.log(`${httpPort}`,'http서버가 켜졌어요!');
-});
+// console.log(moment().format("YY-MM-DD HH:mm:ss"))
+// httpServer.listen(httpPort, () => {
+//     console.log(`${httpPort}`,'http서버가 켜졌어요!');
+// });
 
 // httpsServer.listen(httpsPort, () => {
 //     console.log(`${httpPort}`, 'https서버가 켜졌어요!');
 // });
 
+
+// 서버 작동용
+// const httpServer = http.createServer(app);
+
+// SocketIO(httpServer);
+
+// console.log(moment().format("YY-MM-DD HH:mm:ss"))
+// httpServer.listen(httpPort, () => {
+//     console.log(`${httpPort}`,'http서버가 켜졌어요!');
+// });
+
+
+// 다른시도 
+// const server = require('http').createServer(app)
+
+SocketIO(server);
+
+console.log(moment().format("YY-MM-DD HH:mm:ss"))
+server.listen(httpPort, () => {
+    console.log(`${httpPort}`,'http서버가 켜졌어요!');
+});
