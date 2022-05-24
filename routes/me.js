@@ -36,25 +36,23 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     const userId = res.locals.user.userId;
     const userImage = req.file.transforms[0].location;
     const reUserImage = req.file.transforms[1].location;
-    console.log(userImage, reUserImage);
+
     try {
-        const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
-        db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
-            'UPDATE JoinPost SET userImage=? WHERE userId=?'
+        const sql_1 =  'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
+        const data_1 = [userImage, reUserImage, userId];
+        const sql_1s = mysql.format(sql_1, data_1);
 
-            const sql_1 =  'UPDATE JoinPost SET userImage=? WHERE userId=?';
-            const data_1 = [reUserImage, userId];
-            const sql_1s = mysql.format(sql_1, data_1);
+        const sql_2 =  'UPDATE JoinPost SET userImage=? WHERE userId=?';
+        const data_2 = [reUserImage, userId];
+        const sql_2s = mysql.format(sql_3, data_2);
 
-            const sql_2 =  'UPDATE Chat SET userImage=? WHERE userId=?';
-            const data_2 = [reUserImage, userId];
-            const sql_2s = mysql.format(sql_2, data_2);
+        const sql_3 =  'UPDATE Chat SET userImage=? WHERE userId=?';
+        const sql_3s = mysql.format(sql_3, data_2);
 
-            db.query(sql_1s + sql_2s,(err, rows) => {
-                res.send({ msg: '글 등록 성공',  userImage: reUserImage  });
-
-            });
+        db.query(sql_1s + sql_2s + sql_3s, (err, rows) => {
+            res.send({ msg: '글 등록 성공',  userImage: reUserImage });
         });
+       
     } catch (error) {
         res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
     }
