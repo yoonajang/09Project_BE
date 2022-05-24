@@ -29,12 +29,13 @@ module.exports = (server) => {
                     if (err) console.log(err);
                 },
             );
-    
+
+
             socket.join(userId);
         });
         
         // 브라우저 종료
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async() => {
             const socketId = socket.id;
     
             db.query(
@@ -482,7 +483,7 @@ module.exports = (server) => {
         //         }
         //     });
         // });
-    
+        console.log(486)
         // 방나가기 버튼 눌렀을 때, 
         socket.on('leave chatroom', (postid, user) => {
             const postId = Number(postid.replace('p', ''));
@@ -597,7 +598,7 @@ module.exports = (server) => {
                 }
     
         })
-
+        console.log(601)
 
 
 
@@ -673,7 +674,7 @@ module.exports = (server) => {
         //         });
         //     });
         // });
-
+        console.log(677)
         // 브라우저 종료 중
         socket.on('disconnecting', () => {
             const socketId = socket.id;
@@ -692,7 +693,7 @@ module.exports = (server) => {
             );
         });
     
-    
+        
         // 브라우저 종료
         socket.on('disconnect', () => {
             const socketId = socket.id;
