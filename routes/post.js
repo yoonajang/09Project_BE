@@ -141,12 +141,12 @@ router.put('/:postId', authMiddleware, (req, res) => {
     const sql =
         'UPDATE `Post` SET `isDone`= 1 WHERE `postId`=? AND `User_userId`=?';
     const param = [postId, userId];
-
+    
     db.query(sql, param, function (err, result) {
         if (err) console.log(err);
         else {
-            const updateSql = 'UPDATE User SET point = point+3, tradeCount = tradeCount+1 WHERE userId=?';
-            db.query(updateSql, userId, function (err, result) {
+            const updateSql = 'UPDATE User U INNER JOIN JoinPost JP ON U.userId = JP.User_userId SET U.tradeCount = tradeCount+1 WHERE JP.Post_postId = ? AND JP.isPick =1';
+            db.query(updateSql, postId, function (err, result) {
                 res.send({ msg: 'success' });
             });
         }
