@@ -20,7 +20,7 @@ router.post('/signup', (req, res, next) => {
     const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
 
     const { userEmail, userName, userPassword } = req.body;
-    const param = [userEmail, userName, userPassword, userImage, 50];
+    const param = [userEmail, userName, userPassword, userImage, 50, 0];
 
     // console.log( fs.readFile('../src/profile+image1.png'))
 
@@ -32,7 +32,7 @@ router.post('/signup', (req, res, next) => {
                 bcrypt.hash(param[2], saltRounds, (err, hash) => {
                     param[2] = hash;
                     db.query(
-                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`) VALUES (?,?,?,?,?)',
+                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`, `tradeCount`) VALUES (?,?,?,?,?,?)',
                         param,
                         (err, row) => {
                             if (err) {

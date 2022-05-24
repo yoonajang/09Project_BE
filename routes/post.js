@@ -145,8 +145,8 @@ router.put('/:postId', authMiddleware, (req, res) => {
     db.query(sql, param, function (err, result) {
         if (err) console.log(err);
         else {
-            const sql = 'UPDATE User SET point = point+3 WHERE userId=?';
-            db.query(sql, userId, function (err, result) {
+            const updateSql = 'UPDATE User SET point = point+3, tradeCount = tradeCount+1 WHERE userId=?';
+            db.query(updateSql, userId, function (err, result) {
                 res.send({ msg: 'success' });
             });
         }
