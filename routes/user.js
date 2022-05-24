@@ -17,10 +17,10 @@ const saltRounds = 10;
 
 // 회원가입
 router.post('/signup', (req, res, next) => {
-    const profile_1 = 'src\profile_image1.png'
-    const profile_2 = 'src\profile_image2.png'
-    const profile_3 = 'src\profile_image3.png'
-    const profile_4 = 'src\profile_image4.png'
+    const profile_1 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image1.png'
+    const profile_2 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image2.png'
+    const profile_3 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image3.png'
+    const profile_4 = 'file:///C:/Users/moon/OneDrive/Desktop/sparta/donationChallenge_BE/src/profile_image4.png'
 
     const Images = [profile_1, profile_2, profile_3, profile_4]
     const userImage = Images[Math.floor(Math.random()*Images.length)]
