@@ -686,7 +686,7 @@ module.exports = (server) => {
                 socketId,
                 (err, rows) => {
                     if (err) console.log(err);
-                    console.log('disconnect 끊김')
+                    console.log('disconnect 끊김~')
                     io.emit('disconnected', "leave")
                     socket.to(postid).emit('disconnected', "leave")
                     socket.leave();
