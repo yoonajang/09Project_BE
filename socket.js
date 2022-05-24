@@ -10,8 +10,8 @@ module.exports = (server) => {
             origin: '*',
             methods: ['GET', 'POST'],
         },
-        pingInterval: 10000,
-        pingTimeout: 5000,
+        // pingInterval: 10000,
+        // pingTimeout: 5000,
     });
 
     io.on('connection', socket => {
