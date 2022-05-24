@@ -75,7 +75,7 @@ module.exports = (server) => {
                             io.to(userId).emit('block', 'success');
                             socket.join(postid)
 
-                            console.log(userId, 'block sucess')
+                            console.log(userId, 'block sucess -------------------------------1')
                             const socketId = socket.id
     
                             const sql_1 = 
@@ -122,7 +122,7 @@ module.exports = (server) => {
                         }  
                     } else if (foundJoin[0].headCount > foundJoin[0].count) {
                         io.to(userId).emit('block', 'success');
-                        console.log(userId, 'block sucess')
+                        console.log(userId, 'block sucess -------------------------------2')
                         socket.join(postid);
                         
 
