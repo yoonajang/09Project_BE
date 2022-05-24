@@ -16,8 +16,11 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     const reUserImage = req.file.transforms[0].location;
  
     try {
-        const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
-        db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
+
+        const sql = 
+        'UPDATE User U RIGHT JOIN JoinPost JP ON JP.User_userId = U.userId Right JOIN Post P ON P.User_userId = U.userId Right JOIN Chat C ON C.User_userId = U.UserId SET U.userImage = ?, U.reUserImage=?, JP.userImage = ?, C.userImage = ? WHERE U.userId = ?'
+    
+        db.query(sql, [userImage, reUserImage, reUserImage, reUserImage, userId], (err, rows) => {
             res.send({ msg: '글 등록 성공', userImage: reUserImage });
         });
     } catch (error) {
@@ -39,7 +42,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
 
     // 유저가 작성한 리스트
     const mylist =
-        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U.userId SEPARATOR ',') headList FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U ON JP.User_userId = U.userId WHERE P.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime ORDER BY P.endTime DESC";
+        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, GROUP_CONCAT(DISTINCT U.userId SEPARATOR ',') headList, U.reUserImage userImage FROM `Post` P JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId WHERE P.User_userId = ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, U.reUserImage ORDER BY P.endTime DESC";
 
     db.query(mylist, userId, (err, myList) => {
         if (err) console.log(err);
