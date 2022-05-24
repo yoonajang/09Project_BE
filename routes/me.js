@@ -37,8 +37,8 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     const reUserImage = req.file.transforms[0].location;
     console.log(userImage, reUserImage);
     try {
-        const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
-        db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
+        const sql = 'UPDATE User U RIGHT JOIN JoinPost JP ON JP.User_userId = U.userId Right JOIN Post P ON P.User_userId = U.userId Right JOIN Chat C ON C.User_userId = U.UserId SET U.userImage = ?, U.reUserImage=?, JP.userImage = ?, C.userImage = ? WHERE U.userId = ?';
+        db.query(sql, [userImage, reUserImage, reUserImage, reUserImage, userId], (err, rows) => {
             res.send({ msg: '글 등록 성공',  userImage: reUserImage  });
         });
     } catch (error) {
