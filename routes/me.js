@@ -39,7 +39,7 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     try {
         const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
         db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
-            res.send({ msg: '글 등록 성공' });
+            res.send({ msg: '글 등록 성공',  userImage: reUserImage  });
         });
     } catch (error) {
         res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
