@@ -14,6 +14,8 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
     const userId = res.locals.user.userId;
     const userImage = req.file.transforms[1].location;
     const reUserImage = req.file.transforms[0].location;
+
+    console.log(userImage, reUserImage, '이것 확인하기ㄴ')
  
     try {
 
