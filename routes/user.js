@@ -13,22 +13,20 @@ const { PollyCustomizations } = require('aws-sdk/lib/services/polly');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-// const fs = require('fs');
+const { image1, reImage1, image2, reImage2, image3, reImage3, image4, reImage4 } = require('../src');
 
 // 회원가입
 router.post('/signup', (req, res, next) => {
-    const profile_1 = ['https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383370230_origin.png', 'https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383370230_resized.png' ]
-    const profile_2 = ['https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383345720_origin.png', 'https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383345720_resized.png' ]
-    const profile_3 = ['https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383406785_origin.png', 'https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383406785_resized.png' ]
-    const profile_4 = ['https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653381889650_origin.png', 'https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653381889650_resized.png' ]
+    const Index =  Math.floor(Math.random()*4)
+    const selectUserImage = [image1, image2, image3, image4]
+    const selectReeUserImage = [reImage1, reImage2, reImage3, reImage4]
+    const userImage = selectUserImage[Index]
+    const reUserImage = selectReeUserImage[Index]
 
-    const Images = [profile_1, profile_2, profile_3, profile_4]
-    const userImage = Images[Math.floor(Math.random()*Images.length)]
-
-    console.log(userImage)
+    console.log(Index, userImage, reUserImage)
 
     const { userEmail, userName, userPassword } = req.body;
-    const param = [userEmail, userName, userPassword, userImage, 50, 0];
+    const param = [userEmail, userName, userPassword, userImage, reUserImage, 50, 0];
 
     db.query(
         'SELECT * FROM AuthNum WHERE userEmail=?',
@@ -38,7 +36,7 @@ router.post('/signup', (req, res, next) => {
                 bcrypt.hash(param[2], saltRounds, (err, hash) => {
                     param[2] = hash;
                     db.query(
-                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`, `tradeCount`) VALUES (?,?,?,?,?,?)',
+                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`,`reUserImage`, `point`, `tradeCount`) VALUES (?,?,?,?,?,?,?)',
                         param,
                         (err, row) => {
                             if (err) {
