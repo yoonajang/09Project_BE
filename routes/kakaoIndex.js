@@ -14,7 +14,7 @@ module.exports = () => {
             },
 
             async (accessToken, refreshToken, profile, done) => {
-                console.log(profile);
+                // console.log(profile);
 
                 const userEmail = profile._json.kakao_account.email;
                 const userName = profile._json.properties.nickname

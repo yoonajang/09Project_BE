@@ -20,7 +20,7 @@ router.get('/:postId', (req, res) => {
     db.query(sql, postId, (err, data) => {
         if (err) console.log(err);
 
-        console.log(data)
+        // console.log(data)
         let head = data[0].headList;
         const bossId = data[0].User_userId
         let newList =[];
@@ -99,7 +99,7 @@ router.post(
 
                             const insertParam = [User_userId, postId, userEmail, writer, userImage,1,1,0]
                             db.query('INSERT INTO `JoinPost` (`User_userId`, `Post_postId`,`User_userEmail`, `User_userName`, `userImage`, `isPick`,`isLogin`,`isConnected`) VALUES (?,?,?,?,?,?,?,?)', insertParam, (err, inserted) => { 
-                                console.log(insertParam)
+                                // console.log(insertParam)
                                 if(err) console.log(err)             
                             }) 
 
