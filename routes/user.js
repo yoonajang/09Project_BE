@@ -14,19 +14,16 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+
 // 회원가입
 router.post('/signup', (req, res, next) => {
     
-    const Index =  Math.floor(Math.random()*4) +1
-    console.log(Index)
+    const Index =  Math.floor(Math.random()*4)
+    const profileImages = ['1653383370230','1653383345720','1653383406785','1653381889650']
+    const baseURL = 'https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/'
 
-    const selectUserImage = 'image'+ Index +'.png'
-    const selectReUserImage = 'reImage'+ Index +'.png'
- 
-    const userImage = path.join('../src', selectUserImage)
-    const reUserImage = path.join('../src', selectReUserImage)
-
-    console.log(Index, userImage, reUserImage)
+    const userImage = baseURL + profileImages[Index] +'_resized.png'
+    const reUserImage = baseURL + profileImages[Index] +'_origin.png'
 
     const { userEmail, userName, userPassword } = req.body;
     const param = [userEmail, userName, userPassword, userImage, reUserImage, 50, 0];
