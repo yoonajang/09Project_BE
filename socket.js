@@ -18,7 +18,7 @@ module.exports = (server) => {
             console.log(`connect_error due to ${err.message}`);
           });
 
-        // console.log(socket.id, '연결성공');
+        console.log(socket.id, '연결성공');
     
         socket.on('socket is connected', loggedUser => {
             const socketId = socket.id
@@ -35,7 +35,7 @@ module.exports = (server) => {
         });
         
         // 브라우저 종료
-        socket.on('disconnect', async() => {
+        socket.on('disconnect',() => {
             const socketId = socket.id;
     
             db.query(
@@ -43,7 +43,7 @@ module.exports = (server) => {
                 socketId,
                 (err, rows) => {
                     if (err) console.log(err);
-                    // console.log(socket.io, '브라우저 종료')
+                    console.log(socket.io, '브라우저 종료')
                     io.emit('disconnected', "leave")
                     socket.leave();
                 },
@@ -666,7 +666,7 @@ module.exports = (server) => {
         // });
      
         // 브라우저 종료 중
-        socket.on('disconnecting', () => {
+        socket.on('disconnecting', async() => {
             const socketId = socket.id;
     
             db.query(
@@ -674,7 +674,7 @@ module.exports = (server) => {
                 socketId,
                 (err, rows) => {
                     if (err) console.log(err);
-                    // console.log(socket.io,'연결 종료 중')
+                    console.log(socket.io,'연결 종료 중')
                     io.emit('disconnected', "leave")
                     socket.leave();
                 },
