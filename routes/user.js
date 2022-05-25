@@ -217,7 +217,7 @@ router.post('/login', (req, res) => {
 
                     // byebye (모든 알림 다보내기)
                     const sql_5 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND type="byebye" AND isChecked = 0 ;';
+                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="byebye" AND A.isChecked = 0 ;';
                     const sql_5s = mysql.format(sql_5, userId);
 
                     db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, rows) => {
