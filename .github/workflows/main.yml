@@ -1,8 +1,9 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
 
-# name: CI-CD-2
+# name: CI-CD-MAIN
+
 # on:
 #   push:
 #     branches:
@@ -17,7 +18,7 @@
 #       - name: Deploy
 #         uses: appleboy/ssh-action@master
 #         with:
-#           host: ${{ secrets.SSH_IP_2 }}
+#           host: ${{ secrets.SSH_IP }}
 #           username: ${{ secrets.SSH_ID }}
 #           KEY: ${{ secrets.SSH_KEY }}
 #           port: ${{ secrets.SSH_PORT }}
