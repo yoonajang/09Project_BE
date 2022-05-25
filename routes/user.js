@@ -13,51 +13,46 @@ const { PollyCustomizations } = require('aws-sdk/lib/services/polly');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const fs = require('fs');
-// const { image1, reImage1, image2, reImage2, image3, reImage3, image4, reImage4 } = require('../src');
 
-// // 회원가입
-// router.post('/signup', (req, res, next) => {
-//     fs.readFile('image1.png'),() =>{
+// 회원가입
+router.post('/signup', (req, res, next) => {
+    
+    const Index =  Math.floor(Math.random()*4) +1
+    const profileImages = ['1653383370230','1653383345720','1653383406785','1653381889650']
+    const baseURL = 'https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/'
 
-//     }
-//     const Index =  Math.floor(Math.random()*4)
-//     const selectUserImage = [image1, image2, image3, image4]
-//     const selectReeUserImage = [reImage1, reImage2, reImage3, reImage4]
-//     const userImage = selectUserImage[Index]
-//     const reUserImage = selectReeUserImage[Index]
+    const userImage = baseURL + profileImages[Index] +'_resized.png'
+    const reUserImage = baseURL + profileImages[Index] +'_origin.png'
 
-//     console.log(Index, userImage, reUserImage)
+    const { userEmail, userName, userPassword } = req.body;
+    const param = [userEmail, userName, userPassword, userImage, reUserImage, 50, 0];
 
-//     const { userEmail, userName, userPassword } = req.body;
-//     const param = [userEmail, userName, userPassword, userImage, reUserImage, 50, 0];
-
-//     db.query(
-//         'SELECT * FROM AuthNum WHERE userEmail=?',
-//         userEmail,
-//         (err, data) => {
-//             if (data.length) {
-//                 bcrypt.hash(param[2], saltRounds, (err, hash) => {
-//                     param[2] = hash;
-//                     db.query(
-//                         'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`,`reUserImage`, `point`, `tradeCount`) VALUES (?,?,?,?,?,?,?)',
-//                         param,
-//                         (err, row) => {
-//                             if (err) {
-//                                 console.log(err);
-//                                 res.send({ meg: 'fail' });
-//                             } else {
-//                                 res.send({ meg: 'success' });
-//                             }
-//                         },
-//                     );
-//                 });
-//             } else {
-//                 res.send({ meg: 'fail' });
-//             }
-//         },
-//     );
-// });
+    db.query(
+        'SELECT * FROM AuthNum WHERE userEmail=?',
+        userEmail,
+        (err, data) => {
+            if (data.length) {
+                bcrypt.hash(param[2], saltRounds, (err, hash) => {
+                    param[2] = hash;
+                    db.query(
+                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`,`reUserImage`, `point`, `tradeCount`) VALUES (?,?,?,?,?,?,?)',
+                        param,
+                        (err, row) => {
+                            if (err) {
+                                console.log(err);
+                                res.send({ meg: 'fail' });
+                            } else {
+                                res.send({ meg: 'success' });
+                            }
+                        },
+                    );
+                });
+            } else {
+                res.send({ meg: 'fail' });
+            }
+        },
+    );
+});
 
 //회원가입시 이메일 인증코드 보내기
 router.post('/mail', async (req, res) => {

@@ -79,6 +79,11 @@ httpsServer.listen(httpsPort, () => {
     console.log(`${httpPort}`, 'https서버가 켜졌어요!');
 });
 
+//테스트용
+// app.listen(3000, () => {
+//     console.log('3000서버가 켜졌어요!');
+// });
+
 
 // // 로드밸런서_서버 작동용 //
 // const httpServer = http.createServer(app);
