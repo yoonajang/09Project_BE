@@ -45,7 +45,7 @@ module.exports = (server) => {
                     if (err) console.log(err);
                     // console.log(socket.io, '브라우저 종료')
                     io.emit('disconnected', "leave")
-                    socket.leave();
+                    socket.leave();//
                 },
             );
         });
