@@ -15,7 +15,7 @@ router.get('/:postId', (req, res) => {
     const postId = req.params.postId;
     
     const sql =
-        "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U1.userId SEPARATOR ',') headList, U.userName, U.reUserImage userImage FROM `Post` P  JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and JP.isPick = 1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId LEFT OUTER JOIN `User` U2 ON P.User_userId = U2.userId WHERE `postId`= ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, U.userName, U.reUserImage";
+        "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, P.type, GROUP_CONCAT( DISTINCT U1.userId SEPARATOR ',') headList, U.userName, U.reUserImage userImage FROM `Post` P  JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and JP.isPick = 1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId LEFT OUTER JOIN `User` U2 ON P.User_userId = U2.userId WHERE `postId`= ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, P.type, U.userName, U.reUserImage";
 
     db.query(sql, postId, (err, data) => {
         if (err) console.log(err);
@@ -55,6 +55,7 @@ router.post(
             address,
             lat,
             lng,
+            type,
         } = req.body;
 
         const writer = res.locals.user.userName;
@@ -80,10 +81,12 @@ router.post(
             User_userId,
             image,
             reImage,
+            0,
+            type
         ];
 
         const sql =
-            'INSERT INTO Post (`title`, `content`, `price`, `headCount`, `category`, `endTime`, `address`, `lat`, `lng`, `writer`, `User_userId`, `image`,`reImage`, `isDone`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,false)';
+            'INSERT INTO Post (`title`, `content`, `price`, `headCount`, `category`, `endTime`, `address`, `lat`, `lng`, `writer`, `User_userId`, `image`,`reImage`, `isDone`, `type`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
         db.query(sql, datas, (err, rows) => {
             if (err) {
@@ -93,7 +96,7 @@ router.post(
                 const postId = rows.insertId;
                 
                 db.query(
-                    'SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage image, P.lat, P.lng, P.address, P.createdAt, P.endTime, CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `postId`= ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage, P.lat, P.lng, P.address, P.createdAt, P.endTime', [User_userId, postId],
+                    'SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage image, P.lat, P.lng, P.address, P.createdAt, P.endTime, P.type CASE WHEN GROUP_CONCAT(L.User_userId) is null THEN false ELSE true END isLike FROM `Post` P LEFT OUTER JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `Like` L ON L.Post_postId = P.postId and L.User_userId = ? WHERE `postId`= ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.reImage, P.lat, P.lng, P.address, P.createdAt, P.endTime, P.type', [User_userId, postId],
                     (err, row) => {
                         if(err) console.log(err)
 
