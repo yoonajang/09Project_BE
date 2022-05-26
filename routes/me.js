@@ -71,7 +71,7 @@ router.get('/:userId', authMiddleware, (req, res) => {
 
     // 유저의 참여한 리스트
     const joinlist =
-        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U.userImage FROM `Post` P INNER JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId WHERE  JP.User_userId = ? AND P.User_userId != ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, U.userImage ORDER BY P.endTime DESC";
+        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U1.userImage, JP.needReview FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId WHERE  JP.User_userId = ? AND P.User_userId != ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, U1.userImage, JP.needReview ORDER BY P.endTime DESC";
 
     db.query(joinlist, [userId, userId], (err, joinList) => {
         if (err) console.log(err);
