@@ -220,7 +220,12 @@ router.post('/login', (req, res) => {
                         'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="byebye" AND A.isChecked = 0 ;';
                     const sql_5s = mysql.format(sql_5, userId);
 
-                    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, rows) => {
+                    // review (모든 알림 다보내기)
+                    const sql_6 = 
+                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="review" AND A.isChecked = 0 ;';
+                    const sql_6s = mysql.format(sql_6, userId);
+
+                    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s + sql_6s, (err, rows) => {
                         if (err) {
                             console.log(err);
                         } else {
@@ -229,6 +234,7 @@ router.post('/login', (req, res) => {
                             const blockChat = rows[2];
                             const addDeal = rows[3];
                             const byebye = rows[4];
+                            const review = rows[5];
 
                             const userInfo = {
                                 userId: data[0].userId,
@@ -242,7 +248,8 @@ router.post('/login', (req, res) => {
                                             leaveChat: leaveChat,
                                             blockChat: blockChat,
                                             addDeal: addDeal,
-                                            byebye: byebye }
+                                            byebye: byebye,
+                                            review: review }
 
 
                             const token = jwt.sign(
@@ -297,7 +304,12 @@ router.get('/islogin', authMiddleware, (req, res) => {
         'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="byebye" AND A.isChecked = 0 ;';
     const sql_5s = mysql.format(sql_5, userId);
     
-    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, rows) => {
+    // review (모든 알림 다보내기)
+    const sql_6 = 
+        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="review" AND A.isChecked = 0 ;';
+    const sql_6s = mysql.format(sql_6, userId);
+
+    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s + sql_6s, (err, rows) => {
         if (err) {
             console.log(err);
         } else {
@@ -306,14 +318,15 @@ router.get('/islogin', authMiddleware, (req, res) => {
             const blockChat = rows[2];
             const addDeal = rows[3];
             const byebye = rows[4];
+            const review = rows[5];
             
             const alarm = { sendMessage: sendMessage, 
                             leaveChat: leaveChat,
                             blockChat: blockChat,
                             addDeal: addDeal,
-                            byebye: byebye }
+                            byebye: byebye,
+                            review: review }
             
-        
             res.send({
                 userInfo: {
                     userId: user.userId,
