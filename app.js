@@ -92,19 +92,19 @@ const httpServer = http.createServer(app_http);
 const httpsServer = https.createServer(credentials, app);
 SocketIO(httpsServer);
 
-// console.log(moment().format("YY-MM-DD HH:mm:ss"))
-// httpServer.listen(httpPort, () => {
-//     console.log(`${httpPort}`,'http서버가 켜졌어요!');
-// });
+console.log(moment().format("YY-MM-DD HH:mm:ss"))
+httpServer.listen(httpPort, () => {
+    console.log(`${httpPort}`,'http서버가 켜졌어요!');
+});
 
-// httpsServer.listen(httpsPort, () => {
-//     console.log(`${httpPort}`, 'https서버가 켜졌어요!');
-// });
+httpsServer.listen(httpsPort, () => {
+    console.log(`${httpPort}`, 'https서버가 켜졌어요!');
+});
 
 // 테스트용
-app.listen(3000, () => {
-    console.log('3000서버가 켜졌어요!');
-});
+// app.listen(3000, () => {
+//     console.log('3000서버가 켜졌어요!');
+// });
 
 
 // // 로드밸런서_서버 작동용
