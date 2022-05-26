@@ -22,8 +22,8 @@ jobs:
           KEY: ${{ secrets.SSH_KEY_KY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /home/ubuntu/DEV_09Project_BE
-            git config --global --add safe.directory /home/ubuntu/DEV_09Project_BE
+            cd /home/ubuntu/09Project_BE
+            git config --global --add safe.directory /home/ubuntu/09Project_BE
             sudo git pull
             sudo npm update
             sudo npm install
