@@ -94,7 +94,7 @@ SocketIO(httpsServer);
 
 console.log(moment().format("YY-MM-DD HH:mm:ss"))
 httpServer.listen(httpPort, () => {
-    console.log(`${httpPort}`,'http서버가 켜졌어요___!');
+    console.log(`${httpPort}`,'http서버가 켜졌어요!');
 });
 
 httpsServer.listen(httpsPort, () => {
