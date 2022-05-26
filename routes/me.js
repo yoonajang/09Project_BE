@@ -23,6 +23,19 @@ router.post('/me',upload.single('userImage'), authMiddleware, async (req, res) =
     },
 );
 
+router.post('/nickname',authMiddleware,(req, res) =>{
+    const userId = res.locals.user.userId;
+    const userName = res.locals.user.userName;
+    try {
+        const sql = 'UPDATE User SET userName= ? WHERE userId=?';
+        db.query(sql, [userId, userName], (err, rows)=> {
+            res.send({msg: '닉네임 변경 성공'});
+        });    
+    } catch(error){
+        res.status(400).send({msg :' 닉네임 변경 실패'});
+    }
+})
+
 //유저 마이페이지 (참여한 게시판 조회) *** 자신의 것 조회할때랑 다른사람것 조회할때를... 프론트와 의논.
 router.get('/:userId', authMiddleware, (req, res) => {
     console.log('아니 왜 읽지를 못하니?')
