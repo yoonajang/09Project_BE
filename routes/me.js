@@ -69,11 +69,27 @@ router.get('/:userId', authMiddleware, (req, res) => {
             }
         }
 
+        // SELECT *
+        // FROM (
+        //    SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U1.userImage 
+        //    /*여기에 User_userId <> 55 이부분만 사용자 아이디로 들어가게 수정하면 돼 */
+        //    FROM (SELECT * FROM `Post` WHERE User_userId <> 55) P 
+        //    /* -------------------------------------------------------*/
+        //    INNER JOIN (SELECT * FROM `JoinPost` WHERE isPick=1) JP ON P.postId = JP.Post_postId  
+        //    LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId 
+        //    GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type
+        // ) A
+        // /*여기에 '%55%' 이부분만 사용자 아이디로 들어가게 수정하면 돼 */
+        // WHERE headList LIKE '%55%'
+        // /* -------------------------------------------------------*/
+        // ORDER BY A.endTime DESC;
+
+
     // 유저의 참여한 리스트
     const joinlist =
-        "SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U1.userImage, JP.needReview FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and isPick=1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId WHERE  JP.User_userId = ? AND P.User_userId != ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, U1.userImage, JP.needReview ORDER BY P.endTime DESC";
+        "SELECT * FROM (SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U1.userImage FROM (SELECT * FROM `Post` WHERE User_userId <> ?) P  INNER JOIN (SELECT * FROM `JoinPost` WHERE isPick=1) JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId  GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type) A WHERE headList LIKE ? ORDER BY A.endTime DESC;";
 
-    db.query(joinlist, [userId, userId], (err, joinList) => {
+    db.query(joinlist, [userId, '%'+userId+'%'], (err, joinList) => {
         if (err) console.log(err);
         for (join of joinList) {
             let joined = join.headList;
