@@ -134,7 +134,7 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
     });
 });
 
-// 게시글 거래완료
+// 게시글 거래완료 1
 router.put('/:postId', authMiddleware, (req, res) => {  
     const postId = Number(req.params.postId);
     const userId = res.locals;
@@ -157,7 +157,7 @@ router.put('/:postId', authMiddleware, (req, res) => {
 
     db.query(sql_1s + sql_2s + sql_3s, (err, results) => {
         if(err) console.log(err)
-        
+
         results[2].forEach( u => {
             const sendId = u.userId
             const sendName = u.userName
