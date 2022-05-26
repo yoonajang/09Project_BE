@@ -5,6 +5,7 @@ const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
 const multerS3 = require('multer-s3-transform');
+const mysql = require('mysql');
 
 const authMiddleware = require('../middlewares/auth');
 const upload = require('../S3/s3');
@@ -134,24 +135,44 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
 });
 
 // 게시글 거래완료
-router.put('/:postId', authMiddleware, (req, res) => {
-    const postId = req.params.postId;
-    const userId = res.locals.user.userId;
+router.put('/:postId', authMiddleware, (req, res) => {  
+    const postId = Number(req.params.postId);
+    const userId = res.locals;
 
-    const sql =
-        'UPDATE `Post` SET `isDone`= 1 WHERE `postId`=? AND `User_userId`=?';
-    const param = [postId, userId];
-    
-    db.query(sql, param, function (err, result) {
-        if (err) console.log(err);
-        else {
-            const updateSql = 'UPDATE User U INNER JOIN JoinPost JP ON U.userId = JP.User_userId SET U.tradeCount = tradeCount+1 WHERE JP.Post_postId = ? AND JP.isPick =1';
-            db.query(updateSql, postId, function (err, result) {
+    // Post table 완료
+    const sql_1 =
+        'UPDATE `Post` SET `isDone`= 1 WHERE `postId`=? AND `User_userId`=?;';
+    const param_1 = [postId, userId];
+    const sql_1s = mysql.format(sql_1, param_1);
+
+    // 게시글 참여자들의 tradeCount=1, needReview=1 변경
+    const sql_2 =
+        'UPDATE User U INNER JOIN JoinPost JP ON U.userId = JP.User_userId SET U.tradeCount = tradeCount+1, needReview = 1 WHERE JP.Post_postId = ? AND JP.isPick =1;';
+    const sql_2s = mysql.format(sql_2, postId);
+
+    // 게시글 참여자들에게 알림추가
+    const sql_3 =
+        'SELECT U.userId, U.userName, U.userEmail, U.userImage FROM User U INNER JOIN JoinPost JP ON U.userId = JP.User_userId WHERE JP.Post_postId=? AND JP.isPick=1 AND JP.needReview=1;';
+    const sql_3s = mysql.format(sql_3, postId);
+
+    db.query(sql_1s + sql_2s + sql_3s, (err, results) => {
+        if(err) console.log(err)
+        
+        results[2].forEach( u => {
+            const sendId = u.userId
+            const sendName = u.userName
+            const sendEmail = u.userEmail
+            const sendImage = u.userImage
+
+            // 참여자에게 리뷰알림 보내기
+            const sendAlarm = 
+                'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)'
+            const param = [0, , sendEmail, sendId, sendName, sendImage, postId , 'Review', 1]
+            db.query(sendAlarm, param, (err, sentAlarm) => {
                 res.send({ msg: 'success' });
-            });
-        }
-
-    });
+            })
+        })
+    })
 });
 
 
