@@ -62,6 +62,7 @@ router.post(
 
         const image = req.file.transforms[1].location;
         const reImage = req.file.transforms[0].location;
+        console.log(image, reImage)
         const endTimeAdd = moment(endTime)
             .add('1439', 'm')
             .format('YYYY-MM-DD HH:mm:ss');
