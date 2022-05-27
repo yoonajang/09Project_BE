@@ -21,8 +21,9 @@ module.exports = () => {
                 const provider = "kakao"
                 const kakaoId = profile._json.id
                 const point = 50
+                const isActive = 1
 
-                let params = [userEmail, userName, provider, kakaoId, point]
+                let params = [userEmail, userName, provider, kakaoId, point, isActive]
 
                 let userImage = profile._json.properties.thumbnail_image
                 const defaultKakaoImage = 'http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_110x110.jpg'
@@ -49,7 +50,7 @@ module.exports = () => {
                         // 해당 유저가 존재하지 않는다면, 새로운 아이디를 만들어주고 로그인 시켜줌.
 
                         const sql =
-                            'INSERT User(userEmail, userName, provider, kakaoId, point, userImage,reUserImage) values(?,?,?,?,?,?,?)';
+                            'INSERT User(userEmail, userName, provider, kakaoId, point, userImage,reUserImage, isActive) values(?,?,?,?,?,?,?,?)';
 
                         db.query(sql, params, (err, results) => {
                             if (err) {

@@ -19,7 +19,7 @@ router.post('/signup', (req, res, next) => {
     const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
 
     const { userEmail, userName, userPassword } = req.body;
-    const param = [userEmail, userName, userPassword, userImage, 50];
+    const param = [userEmail, userName, userPassword, userImage, 50, 1];
 
     db.query(
         'SELECT * FROM AuthNum WHERE userEmail=?',
@@ -29,7 +29,7 @@ router.post('/signup', (req, res, next) => {
                 bcrypt.hash(param[2], saltRounds, (err, hash) => {
                     param[2] = hash;
                     db.query(
-                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`, `point`) VALUES (?,?,?,?,?)',
+                        'INSERT INTO User (userEmail, userName, password, userImage, point, isActive) VALUES (?,?,?,?,?,?)',
                         param,
                         (err, row) => {
                             if (err) {
@@ -195,22 +195,22 @@ router.post('/login', (req, res) => {
 
                     // leaveChat (모든 알림 다보내기)
                     const sql_2 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND type="leaveChat" AND isChecked = 0 ;';
+                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="leaveChat" AND A.isChecked = 0 ;';
                     const sql_2s = mysql.format(sql_2, userId);
 
                     // blockChat (모든 알림 다보내기)
                     const sql_3 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND type="blockChat" AND isChecked = 0 ;';
+                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="blockChat" AND A.isChecked = 0 ;';
                     const sql_3s = mysql.format(sql_3, userId);
 
                     // addDeal (모든 알림 다보내기)
                     const sql_4 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND type="addDeal" AND isChecked = 0 ;';
+                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="addDeal" AND A.isChecked = 0 ;';
                     const sql_4s = mysql.format(sql_4, userId);
 
                     // byebye (모든 알림 다보내기)
                     const sql_5 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND type="byebye" AND isChecked = 0 ;';
+                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="byebye" AND A.isChecked = 0 ;';
                     const sql_5s = mysql.format(sql_5, userId);
 
                     db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, rows) => {
@@ -340,6 +340,18 @@ router.patch('/ischecked', authMiddleware, (req, res) => {
         } else {
             res.send({ msg: 'empty' });
         }
+    });
+});
+
+//회원탈퇴
+router.delete('/:userId', authMiddleware, (req, res) => {    
+    const userId = res.locals.user.userId;
+    const sql =
+        'UPDATE User SET isActive = 0 WHERE userId = ?';
+
+    db.query(sql, userId, (err, rows) => {
+        if (err) console.log(err);
+        res.send({ msg: 'success'});
     });
 });
 
