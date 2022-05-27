@@ -2,6 +2,38 @@
 # # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
 
+name: CI-CD-DEV
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_IP_KY }}
+          username: ${{ secrets.SSH_ID }}
+          KEY: ${{ secrets.SSH_KEY_KY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /home/ubuntu/09Project_BE
+            git config --global --add safe.directory /home/ubuntu/09Project_BE
+            sudo git pull
+            sudo npm update
+            sudo npm install
+            sudo pm2 reload all
+
+
+
+
+
+
 # name: CI-CD-MAIN
 
 # on:
@@ -29,5 +61,3 @@
 #             sudo npm update
 #             sudo npm install
 #             sudo pm2 reload all
-
-

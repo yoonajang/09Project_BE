@@ -21,18 +21,18 @@ kakaoPassport();
 app.use(cors()); 
 
 // Main
-const credentials = {
-    key: fs.readFileSync(__dirname + '/redpingpong_shop.key', 'utf8'),
-    cert: fs.readFileSync(__dirname + '/redpingpong_shop__crt.pem', 'utf8'),
-    ca: fs.readFileSync(__dirname + '/redpingpong_shop__ca.pem', 'utf8'),
-};
+// const credentials = {
+//     key: fs.readFileSync(__dirname + '/redpingpong_shop.key', 'utf8'),
+//     cert: fs.readFileSync(__dirname + '/redpingpong_shop__crt.pem', 'utf8'),
+//     ca: fs.readFileSync(__dirname + '/redpingpong_shop__ca.pem', 'utf8'),
+// };
 
 // DEV
-// const credentials = {
-//     key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
-//     cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8'),
-//     ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
-// };
+const credentials = {
+    key: fs.readFileSync(__dirname + '/private.key', 'utf8'),
+    cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8'),
+    ca: fs.readFileSync(__dirname + '/ca_bundle.crt', 'utf8'),
+};
 
 
 // 미들웨어 (가장 상위에 위치)
@@ -65,27 +65,27 @@ app_http.use((req, res, next) => {
 });
 
 // MAIN
-app.get(
-    '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
-    (req, res) => {
-        res.sendFile(
-            __dirname +
-                '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
-        );
-    },
-);
-
-
-//DEV
 // app.get(
-//     '/.well-known/pki-validation/C2AACFAA5E08A42B412AC9999A86DE43.txt',
+//     '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
 //     (req, res) => {
 //         res.sendFile(
 //             __dirname +
-//                 '/.well-known/pki-validation/C2AACFAA5E08A42B412AC9999A86DE43.txt',
+//                 '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
 //         );
 //     },
 // );
+
+
+//DEV
+app.get(
+    '/.well-known/pki-validation/C2AACFAA5E08A42B412AC9999A86DE43.txt',
+    (req, res) => {
+        res.sendFile(
+            __dirname +
+                '/.well-known/pki-validation/C2AACFAA5E08A42B412AC9999A86DE43.txt',
+        );
+    },
+);
 
 const httpServer = http.createServer(app_http);
 const httpsServer = https.createServer(credentials, app);
