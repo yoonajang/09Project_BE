@@ -39,34 +39,33 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
 },
 );
 
-//닉네임변경
+// //닉네임변경
+// router.post('/nickname/:userId', authMiddleware, (req,res) => {
+//     const userId = req.params.userId;
 
-router.post('/nickname/:userId', authMiddleware, (req,res) => {
-    const userId = req.params.userId;
+//     const sql= 'UPDATE User SET userId=? WHERE User_userId=?'
 
-    const sql= 'UPDATE User SET userId=? WHERE User_userId=?'
+//     db.query (sql, [userId], function(err,data){ 
+//         if (err) 
+//         console.log(err);
+//         else{
+//         res.send({msg:"fail"})
+//     }
+//     })
+// });
 
-    db.query (sql, [userId], function(err,data){ 
-        if (err) 
-        console.log(err);
-        else{
-        res.send({msg:"fail"})
-    }
-    })
-});
 
-//상태메시지 
+// //상태메시지 
+// router.post('/status/:userId',authMiddleware, (req,res)=>{
+//     const userId = req.params.userId;
+//     const sql ='INSERT INTO `User` (status) VALUES(?)';
 
-router.post('/status/:userId',authMiddleware, (req,res)=>{
-    const userId = req.params.userId;
-    const sql ='INSERT INTO `User` (status) VALUES(?)';
+//     db.query(sql, [userId],(err,rows)=>{
+//         if(err) console.log(err);
+//         res.send({msg:'success'});
+//         })
 
-    db.query(sql, [userId],(err,rows)=>{
-        if(err) console.log(err);
-        res.send({msg:'success'});
-        })
-
-})
+// })
 
 
 //유저 마이페이지
@@ -99,22 +98,6 @@ router.get('/:userId', authMiddleware, (req, res) => {
                 my.headList = mynewList;
             }
         }
-
-        // SELECT *
-        // FROM (
-        //    SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U1.userImage 
-        //    /*여기에 User_userId <> 55 이부분만 사용자 아이디로 들어가게 수정하면 돼 */
-        //    FROM (SELECT * FROM `Post` WHERE User_userId <> 55) P 
-        //    /* -------------------------------------------------------*/
-        //    INNER JOIN (SELECT * FROM `JoinPost` WHERE isPick=1) JP ON P.postId = JP.Post_postId  
-        //    LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId 
-        //    GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type
-        // ) A
-        // /*여기에 '%55%' 이부분만 사용자 아이디로 들어가게 수정하면 돼 */
-        // WHERE headList LIKE '%55%'
-        // /* -------------------------------------------------------*/
-        // ORDER BY A.endTime DESC;
-
 
     // 유저의 참여한 리스트
     const joinlist =
