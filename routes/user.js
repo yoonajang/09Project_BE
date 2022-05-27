@@ -26,7 +26,7 @@ router.post('/signup', (req, res, next) => {
     const reUserImage = baseURL + profileImages[Index] +'_origin.png'
 
     const { userEmail, userName, userPassword } = req.body;
-    const param = [userEmail, userName, userPassword, userImage, reUserImage, 50, 0];
+    const param = [userEmail, userName, userPassword, userImage, reUserImage, 50, 0, 1];
 
     db.query(
         'SELECT * FROM AuthNum WHERE userEmail=?',
@@ -36,7 +36,8 @@ router.post('/signup', (req, res, next) => {
                 bcrypt.hash(param[2], saltRounds, (err, hash) => {
                     param[2] = hash;
                     db.query(
-                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`,`reUserImage`, `point`, `tradeCount`) VALUES (?,?,?,?,?,?,?)',
+                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`,`reUserImage`, `point`, `tradeCount`,`isActive`) VALUES (?,?,?,?,?,?,?,?)',
+
                         param,
                         (err, row) => {
                             if (err) {
@@ -360,6 +361,18 @@ router.patch('/ischecked', authMiddleware, (req, res) => {
         } else {
             res.send({ msg: 'empty' });
         }
+    });
+});
+
+//회원탈퇴
+router.delete('/:userId', authMiddleware, (req, res) => {    
+    const userId = res.locals.user.userId;
+    const sql =
+        'UPDATE User SET isActive = 0 WHERE userId = ?';
+
+    db.query(sql, userId, (err, rows) => {
+        if (err) console.log(err);
+        res.send({ msg: 'success'});
     });
 });
 
