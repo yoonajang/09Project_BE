@@ -124,9 +124,9 @@ router.get('/:userId', (req, res) => {
 
     // 유저의 좋아요 리스트
     const likelist =
-        "SELECT * FROM (SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U1.reUserImage userImage FROM (SELECT * FROM `Post`) P INNER JOIN (SELECT * FROM `Like` WHERE User_userId=68) L ON P.postId = L.Post_postId LEFT OUTER JOIN `User` U1 ON L.User_userId = U1.userId  GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type) A WHERE headList LIKE '%68%' ORDER BY A.endTime DESC";
+        "SELECT * FROM (SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U1.reUserImage userImage FROM `Post` P INNER JOIN `JoinPost` JP ON P.postId = JP.Post_postId INNER JOIN `Like` l ON P.postId = l.Post_postId AND l.User_userId =? LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId  GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type) A WHERE headList LIKE ? ORDER BY A.endTime DESC;";
 
-    db.query(likelist, userId, (err, likeList) => {
+    db.query(likelist, [userId, '%'+userId+'%'], (err, likeList) => {
         if (err) console.log(err);
         for (like of likeList) {
             let liked = like.headList;

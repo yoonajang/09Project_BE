@@ -182,6 +182,7 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
             });
         }
     });
+
 });
 
 // 게시글 거래완료
