@@ -108,6 +108,35 @@ router.get('/:userId', authMiddleware, (req, res) => {
             }
 
         }
+        
+    //닉네임변경
+
+router.post('/nickname/:userId', authMiddleware, (req,res) => {
+    const userId = req.params.userId;
+
+    const sql= 'UPDATE User SET userId=? WHERE User_userId=?'
+
+    db.query (sql, [userId], function(err,data){ 
+        if (err) 
+        console.log(err);
+        else{
+        res.send({msg:"fail"})
+    }
+    })
+});
+
+//상태메시지 
+
+router.post('/status/:userId',authMiddleware, (req,res)=>{
+    const userId = req.params.userId;
+    const sql ='INSERT INTO `User` (status) VALUES(?)';
+
+    db.query(sql, [userId],(err,rows)=>{
+        if(err) console.log(err);
+        res.send({msg:'success'});
+        })
+
+})
 
     // 유저의 좋아요 리스트
     const likelist =
