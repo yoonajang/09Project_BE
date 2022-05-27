@@ -5,6 +5,7 @@ const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
 const multerS3 = require('multer-s3-transform');
+// const multerS3 = require('multer-s3-transform');
 
 const authMiddleware = require('../middlewares/auth');
 const upload = require('../S3/s3');
@@ -86,6 +87,7 @@ router.post(
                 console.log(err);
                 res.status(201).send({ msg: 'fail' });
             } else {
+                console.log(rows)
                 const postId = rows.insertId;
                 
                 db.query(
