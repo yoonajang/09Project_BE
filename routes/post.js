@@ -64,10 +64,24 @@ router.post(
         const User_userId = res.locals.user.userId;
         const userImage = res.locals.user.reUserImage;
         const userEmail = res.locals.user.userEmail;
-        
-        const image = req.file.transforms[1].location;
-        const reImage = req.file.transforms[0].location;
+
+        //s3 사진 뒤바뀜 수정부분
+        const image = [];
+        const reImage = [];
+
+        if (req.file.transforms[0].id === 'resized') {
+            let image_origin = req.file.transforms[1].location;
+            let reImage_resized = req.file.transforms[0].location;
+            image.push(image_origin);
+            reImage.push(reImage_resized);
+        } else {
+            const image_origin = req.file.transforms[0].location;
+            const reImage_resized = req.file.transforms[1].location;
+            image.push(image_origin);
+            reImage.push(reImage_resized);
+        }
         console.log(image, reImage)
+        ////////////뒤바뀜 수정부분//////////
         const endTimeAdd = moment(endTime)
             .add('1439', 'm')
             .format('YYYY-MM-DD HH:mm:ss');
