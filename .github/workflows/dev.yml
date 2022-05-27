@@ -28,13 +28,10 @@
 #             sudo npm update
 #             sudo npm install
 #             sudo pm2 reload all
-<<<<<<< HEAD
-=======
-            
-            
-            
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+
+
+
 
 
 name: CI-CD-MAIN
@@ -64,8 +61,3 @@ jobs:
             sudo npm update
             sudo npm install
             sudo pm2 reload all
->>>>>>> e40e621ec3e472f5020e5dbde0e636cf05a2b569
-
-
-
-
