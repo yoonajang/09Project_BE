@@ -4,7 +4,8 @@ const db = require('../config');
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
-// const multerS3 = require('multer-s3-transform');
+const multerS3 = require('multer-s3-transform');
+const mysql = require('mysql');
 
 const authMiddleware = require('../middlewares/auth');
 const upload = require('../S3/s3');
@@ -14,10 +15,12 @@ router.get('/:postId', (req, res) => {
     const postId = req.params.postId;
 
     const sql =
-        "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, GROUP_CONCAT( DISTINCT U1.userId SEPARATOR ',') headList, U.userName, U.reUserImage userImage FROM `Post` P  JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and JP.isPick = 1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId LEFT OUTER JOIN `User` U2 ON P.User_userId = U2.userId WHERE `postId`= ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, U.userName, U.reUserImage";
+        "SELECT P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, P.type, GROUP_CONCAT( DISTINCT U1.userId SEPARATOR ',') headList, U.userName, U.reUserImage userImage FROM `Post` P  JOIN `User` U ON P.User_userId = U.userId LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId and JP.isPick = 1 LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId LEFT OUTER JOIN `User` U2 ON P.User_userId = U2.userId WHERE `postId`= ? GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.lat, P.lng, P.address, P.createdAt, P.endTime, P.type, U.userName, U.reUserImage";
 
     db.query(sql, postId, (err, data) => {
         if (err) console.log(err);
+
+        // console.log(data)
         let head = data[0].headList;
         const bossId = data[0].User_userId;
         let newList = [];
@@ -54,11 +57,14 @@ router.post(
             address,
             lat,
             lng,
+            type,
         } = req.body;
 
         const writer = res.locals.user.userName;
         const User_userId = res.locals.user.userId;
-
+        const userImage = res.locals.user.reUserImage;
+        const userEmail = res.locals.user.userEmail;
+        
         const image = req.file.transforms[1].location;
         const reImage = req.file.transforms[0].location;
         console.log(image, reImage)
@@ -89,11 +95,12 @@ router.post(
                 image,
                 reImage,
                 0,
+                type,
                 content,
             ];
 
             const sql =
-                'INSERT INTO Post (title, content, price, headCount, category, endTime, address, lat, lng, writer, User_userId, image, reImage, isDone) SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,? WHERE NOT EXISTS (SELECT content FROM Post WHERE content = ?)';
+                'INSERT INTO Post (title, content, price, headCount, category, endTime, address, lat, lng, writer, User_userId, image, reImage, isDone, `type`) SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,?,? WHERE NOT EXISTS (SELECT content FROM Post WHERE content = ?)';
 
             db.query(sql, datas, (err, rows) => {
                 if (err) {
@@ -164,23 +171,44 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
 });
 
 // 게시글 거래완료
-router.put('/:postId', authMiddleware, (req, res) => {
-    const postId = req.params.postId;
-    const userId = res.locals.user.userId;
+router.put('/:postId', authMiddleware, (req, res) => {  
+    const postId = Number(req.params.postId);
+    const userId = res.locals;
 
-    const sql =
-        'UPDATE `Post` SET `isDone`= 1 WHERE `postId`=? AND `User_userId`=?';
-    const param = [postId, userId];
+    // Post table 완료
+    const sql_1 =
+        'UPDATE `Post` SET `isDone`= 1 WHERE `postId`=? AND `User_userId`=?;';
+    const param_1 = [postId, userId];
+    const sql_1s = mysql.format(sql_1, param_1);
 
-    db.query(sql, param, function (err, result) {
-        if (err) console.log(err);
-        else {
-            const sql = 'UPDATE User SET point = point+3 WHERE userId=?';
-            db.query(sql, userId, function (err, result) {
+    // 게시글 참여자들의 tradeCount=1, needReview=1 변경
+    const sql_2 =
+        'UPDATE User U INNER JOIN JoinPost JP ON U.userId = JP.User_userId SET U.tradeCount = tradeCount+1, needReview = 1 WHERE JP.Post_postId = ? AND JP.isPick =1;';
+    const sql_2s = mysql.format(sql_2, postId);
+
+    // 게시글 참여자들에게 알림추가
+    const sql_3 =
+        'SELECT U.userId, U.userName, U.userEmail, U.userImage FROM User U INNER JOIN JoinPost JP ON U.userId = JP.User_userId WHERE JP.Post_postId=? AND JP.isPick=1 AND JP.needReview=1;';
+    const sql_3s = mysql.format(sql_3, postId);
+
+    db.query(sql_1s + sql_2s + sql_3s, (err, results) => {
+        if(err) console.log(err)
+
+        results[2].forEach( u => {
+            const sendId = u.userId
+            const sendName = u.userName
+            const sendEmail = u.userEmail
+            const sendImage = u.userImage
+
+            // 참여자에게 리뷰알림 보내기
+            const sendAlarm = 
+                'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)'
+            const param = [0, , sendEmail, sendId, sendName, sendImage, postId , 'Review', 1]
+            db.query(sendAlarm, param, (err, sentAlarm) => {
                 res.send({ msg: 'success' });
-            });
-        }
-    });
+            })
+        })
+    })
 });
 
 module.exports = router;

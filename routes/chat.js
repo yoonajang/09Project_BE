@@ -16,13 +16,14 @@ router.get('/getchat/:postId', authMiddleware, (req, res) => {
 
     //waitingUser table 데이터 넣기
     const sql_1 =
-        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick, isLogin, isConnected) SELECT ?,?,?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
+        'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick, isLogin, isConnected, needReview) SELECT ?,?,?,?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
     const param_1 = [
         postId,
         userEmail,
         userName,
         userImage,
         userId,
+        0,
         0,
         0,
         0,
@@ -68,18 +69,5 @@ router.get('/getchat/:postId', authMiddleware, (req, res) => {
     });
 });
 
-
-// // 채팅 나가기
-// router.get('/outchat/:postid', authMiddleware, (req, res) => {
-//     const postId = req.params.postid;
-//     const userId = res.locals.user.userId;
-//     const sql = 'DELETE FROM JoinPost WHERE Post_postId=? and User_userId=?';
-//     const params = [postId, userId];
-
-//     db.query(sql, params, (err, data) => {
-//         if (err) console.log(err);
-//         res.status(201).send({ msg: 'success', data });
-//     });
-// });
 
 module.exports = router;

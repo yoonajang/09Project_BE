@@ -14,12 +14,19 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+
 // 회원가입
 router.post('/signup', (req, res, next) => {
-    const userImage = 'https://t1.daumcdn.net/cfile/tistory/263B293C566DA66B27';
+    
+    const Index =  Math.floor(Math.random()*4)
+    const profileImages = ['1653383370230','1653383345720','1653383406785','1653381889650']
+    const baseURL = 'https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/'
+
+    const userImage = baseURL + profileImages[Index] +'_resized.png'
+    const reUserImage = baseURL + profileImages[Index] +'_origin.png'
 
     const { userEmail, userName, userPassword } = req.body;
-    const param = [userEmail, userName, userPassword, userImage, 50, 1];
+    const param = [userEmail, userName, userPassword, userImage, reUserImage, 50, 0, 1];
 
     db.query(
         'SELECT * FROM AuthNum WHERE userEmail=?',
@@ -29,7 +36,8 @@ router.post('/signup', (req, res, next) => {
                 bcrypt.hash(param[2], saltRounds, (err, hash) => {
                     param[2] = hash;
                     db.query(
-                        'INSERT INTO User (userEmail, userName, password, userImage, point, isActive) VALUES (?,?,?,?,?,?)',
+                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`,`reUserImage`, `point`, `tradeCount`,`isActive`) VALUES (?,?,?,?,?,?,?,?)',
+
                         param,
                         (err, row) => {
                             if (err) {
@@ -213,7 +221,12 @@ router.post('/login', (req, res) => {
                         'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="byebye" AND A.isChecked = 0 ;';
                     const sql_5s = mysql.format(sql_5, userId);
 
-                    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, rows) => {
+                    // review (모든 알림 다보내기)
+                    const sql_6 = 
+                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="review" AND A.isChecked = 0 ;';
+                    const sql_6s = mysql.format(sql_6, userId);
+
+                    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s + sql_6s, (err, rows) => {
                         if (err) {
                             console.log(err);
                         } else {
@@ -222,6 +235,7 @@ router.post('/login', (req, res) => {
                             const blockChat = rows[2];
                             const addDeal = rows[3];
                             const byebye = rows[4];
+                            const review = rows[5];
 
                             const userInfo = {
                                 userId: data[0].userId,
@@ -235,7 +249,8 @@ router.post('/login', (req, res) => {
                                             leaveChat: leaveChat,
                                             blockChat: blockChat,
                                             addDeal: addDeal,
-                                            byebye: byebye }
+                                            byebye: byebye,
+                                            review: review }
 
 
                             const token = jwt.sign(
@@ -272,25 +287,30 @@ router.get('/islogin', authMiddleware, (req, res) => {
 
     // leaveChat (모든 알림 다보내기)
     const sql_2 = 
-        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND type="leaveChat" AND isChecked = 0 ;';
+        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="leaveChat" AND A.isChecked = 0 ;';
     const sql_2s = mysql.format(sql_2, userId);
 
     // blockChat (모든 알림 다보내기)
     const sql_3 = 
-        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND type="blockChat" AND isChecked = 0 ;';
+        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="blockChat" AND A.isChecked = 0 ;';
     const sql_3s = mysql.format(sql_3, userId);
 
     // addDeal (모든 알림 다보내기)
     const sql_4 = 
-        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND type="addDeal" AND isChecked = 0 ;';
+        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="addDeal" AND A.isChecked = 0 ;';
     const sql_4s = mysql.format(sql_4, userId);
 
     // byebye (모든 알림 다보내기)
     const sql_5 = 
-        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND type="byebye" AND isChecked = 0 ;';
+        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="byebye" AND A.isChecked = 0 ;';
     const sql_5s = mysql.format(sql_5, userId);
     
-    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, rows) => {
+    // review (모든 알림 다보내기)
+    const sql_6 = 
+        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="review" AND A.isChecked = 0 ;';
+    const sql_6s = mysql.format(sql_6, userId);
+
+    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s + sql_6s, (err, rows) => {
         if (err) {
             console.log(err);
         } else {
@@ -299,14 +319,15 @@ router.get('/islogin', authMiddleware, (req, res) => {
             const blockChat = rows[2];
             const addDeal = rows[3];
             const byebye = rows[4];
+            const review = rows[5];
             
             const alarm = { sendMessage: sendMessage, 
                             leaveChat: leaveChat,
                             blockChat: blockChat,
                             addDeal: addDeal,
-                            byebye: byebye }
+                            byebye: byebye,
+                            review: review }
             
-        
             res.send({
                 userInfo: {
                     userId: user.userId,

@@ -17,7 +17,7 @@ const kakaoCallback = (req, res, next) => {
     passport.authenticate('kakao', { failureRedirect: '/' }, (err, user) => {
         if (err) return next(err);
 
-        const { userId, provider, userEmail, userName, userImage } = user;
+        const { userId, provider, userEmail, userName, userImage, point, tradeCount } = user;
         const token = jwt.sign({ userId: userId }, process.env.JWT_SECRET);
 
         result = {
@@ -26,7 +26,9 @@ const kakaoCallback = (req, res, next) => {
             provider,
             userEmail, 
             userName,
-            userImage
+            userImage,
+            point, 
+            tradeCount
         };
         res.send({ msg:"success", user: result, });
     })(req, res, next);

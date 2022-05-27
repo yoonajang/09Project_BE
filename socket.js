@@ -13,7 +13,12 @@ module.exports = (server) => {
     });
 
     io.on('connection', socket => {
-        console.log(socket.id, '연결성공');
+        // 에러
+        socket.on("connect_error", (err) => {
+            console.log(`connect_error due to ${err.message}`);
+          });
+
+        // console.log(socket.id, '연결성공');
     
         socket.on('socket is connected', loggedUser => {
             const socketId = socket.id
@@ -26,14 +31,28 @@ module.exports = (server) => {
                     if (err) console.log(err);
                 },
             );
-    
             socket.join(userId);
         });
         
+        // 브라우저 종료
+        socket.on('disconnect',() => {
+            const socketId = socket.id;
+    
+            db.query(
+                'UPDATE JoinPost SET isLogin = 0, isConnected = 0 WHERE socketId = ?',
+                socketId,
+                (err, rows) => {
+                    if (err) console.log(err);
+                    // console.log(socket.io, '브라우저 종료')
+                    io.emit('disconnected', "leave")
+                    socket.leave();
+                },
+            );
+        });
 
         // 채팅방 나가기
         socket.on('closeChatroom', (postid, user) => {
-            console.log(postid, user)
+
             const userId = user.userId
             const userName = user.userName
             const postId = Number(postid.replace('p', ''));
@@ -43,10 +62,6 @@ module.exports = (server) => {
                 [userId, postId],
                 (err, rows) => {
                     if (err) console.log(err);
-                
-                // io.to(postid).emit('closed', userName + ' 님이 나가셨습니다.');
-                // socket.leave(postid)
-
             });
 
             io.to(postid).emit('connected', userName + ' 님이 나가셨습니다.');
@@ -63,93 +78,105 @@ module.exports = (server) => {
        
   
             const findJoin = 'SELECT P.headCount, JP.User_userId, JP.isPick, COUNT(CASE WHEN JP.isPick =1 then 1 end) count, EXISTS (SELECT JP.User_userId, JP.Post_postId FROM `JoinPost`JP where JP.User_userId=? AND JP.Post_postId  =? AND JP.isPick=1) isJoin FROM `Post` P LEFT OUTER JOIN `JoinPost` JP ON P.postId = JP.Post_postId WHERE JP.Post_postId =?'
-
+            
             db.query( findJoin, [userId, postId, postId],(err, foundJoin) => {
                     if (err) console.log(err);
-                    console.log(foundJoin)
                     if (foundJoin[0].count >= foundJoin[0].headCount){
                         if (foundJoin[0].isJoin === 1){
                             io.to(userId).emit('block', 'success');
                             socket.join(postid)
 
-                            const socketId = socket.id;
-                            db.query(
-                                'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;', 
-                                [socketId, userId, postId],
-                                (err, rows) => {
-                                    if (err) console.log(err);
-                                },
-                            );
-                    
-                            db.query(
-                                'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
-                                postId,
-                                (err, noPick) => {
-                                    db.query(
-                                        'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
-                                        postId,
-                                        (err, Pick) => {
-                                            db.query(
-                                                'SELECT User_userId FROM Post WHERE postId = ?',
-                                                postId,
-                                                (err, bossId) => {
-                                                    const userLists  = [param.loggedUser, noPick, Pick, bossId]
-                                               
-                                                    io.to(postid).emit(
-                                                        'connected',
-                                                        userName +
-                                                            ' 님이 입장했습니다.',
-                                                        userLists
-                                                 );
+                            const socketId = socket.id
     
-                                            })
-    
-                                        },
+                            const sql_1 = 
+                                'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;';
+                            const data = [socketId, userId, postId];
+                            const sql_1s = mysql.format(sql_1, data);
+
+                            // Nopick
+                            const sql_2 = 
+                                'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;';
+                            const sql_2s = mysql.format(sql_2, postId);
+
+                            // Pick 
+                            const sql_3 = 
+                                'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;';
+                            const sql_3s = mysql.format(sql_3, postId);
+
+                            // BossId
+                            const sql_4 = 
+                                'SELECT User_userId FROM Post WHERE postId = ?;';
+                            const sql_4s = mysql.format(sql_4, postId);
+
+                            db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, rows) => {
+                                if (err) {
+                                    console.log(err);
+                                } else {
+                                    const noPick = rows[1];
+                                    const Pick = rows[2];
+                                    const bossId = rows[3];
+
+                                    const userLists  = [param.loggedUser, noPick, Pick, bossId]
+                                 
+                                    io.to(postid).emit(
+                                        'connected',
+                                        userName +
+                                            ' 님이 입장했습니다.',
+                                        userLists
                                     );
-                                },
-                            );
+                                }
+                            })
                         } else {
+                           
                             io.to(userId).emit('block', 'fail');
                         }  
                     } else if (foundJoin[0].headCount > foundJoin[0].count) {
                         io.to(userId).emit('block', 'success');
-
+                    
                         socket.join(postid);
                         
-                        const socketId = socket.id;
-                        db.query(
-                            'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;',
-                            [socketId, userId, postId],
-                            (err, rows) => {
-                                if (err) console.log(err);
-                                db.query(
-                                    'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;',
-                                    postId,
-                                    (err, noPick) => {
-                                        db.query(
-                                            'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;',
-                                            postId,
-                                            (err, Pick) => {
+
+                        const socketId = socket.id
     
-                                                db.query(
-                                                    'SELECT User_userId FROM Post WHERE postId = ?',
-                                                    postId,
-                                                    (err, bossId) => {
-                                                        const userLists  = [param.loggedUser, noPick, Pick, bossId]
+                        const sql_1 = 
+                            'UPDATE JoinPost SET isConnected = 1, isLogin = 1, socketId = ? WHERE User_userId=? and Post_postId =?;';
+                        const data = [socketId, userId, postId];
+                        const sql_1s = mysql.format(sql_1, data);
 
-                                                        io.to(postid).emit(
-                                                            'connected',
-                                                            userName +
-                                                                ' 님이 입장했습니다.',
-                                                            userLists
-                                                        );
+                        // Nopick
+                        const sql_2 = 
+                            'SELECT * FROM `JoinPost` JP WHERE JP.Post_postId = ? AND JP.isPick = 0;';
+                        const sql_2s = mysql.format(sql_2, postId);
 
-                                                })
+                        // Pick 
+                        const sql_3 = 
+                            'SELECT JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId FROM `JoinPost` JP LEFT OUTER JOIN `Post` P ON JP.Post_postId = P.postId WHERE JP.isPick=1 AND JP.Post_postId =? AND JP.User_userId NOT IN (P.User_userId) GROUP BY JP.User_userId, JP.User_userEmail, JP.User_userName, JP.userImage, JP.Post_postId;';
+                        const sql_3s = mysql.format(sql_3, postId);
 
-                                        })
-                                    });
-                            },
-                        );
+                        // BossId
+                        const sql_4 = 
+                            'SELECT User_userId FROM Post WHERE postId = ?;';
+                        const sql_4s = mysql.format(sql_4, postId);
+
+                        db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, rows) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                const noPick = rows[1];
+                                const Pick = rows[2];
+                                const bossId = rows[3];
+
+                                const userLists  = [param.loggedUser, noPick, Pick, bossId]
+                                          
+                                io.to(postid).emit(
+                                    'connected',
+                                    userName +
+                                        ' 님이 입장했습니다.',
+                                    userLists
+                                );
+                            }
+                        })
+
                     }
 
                 },
@@ -347,7 +374,8 @@ module.exports = (server) => {
                     db.query(insertAlarm, insertParam, (err, Inserted) => {
                         if (err) console.log(err);
     
-                        db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image', [postId, Inserted.insertId], (err, messageAlarm) => {
+                        db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage', [postId, Inserted.insertId], (err, messageAlarm) => {
+                            
                             socket.to(userId).emit('added_new_participant',messageAlarm);
                         })
                     });
@@ -448,7 +476,7 @@ module.exports = (server) => {
         //         }
         //     });
         // });
-    
+       
         // 방나가기 버튼 눌렀을 때, 
         socket.on('leave chatroom', (postid, user) => {
             const postId = Number(postid.replace('p', ''));
@@ -515,7 +543,7 @@ module.exports = (server) => {
                                 db.query(insertAlarm, insertParam, (err, Inserted) => {
                                     if (err) console.log(err);
     
-                                    db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image', [postId, Inserted.insertId], (err, messageAlarm) => {
+                                    db.query('SELECT A.alarmId, A.status, date_format(A.createdAt, "%Y-%m-%d %T") createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage image FROM `Alarm` A JOIN `Post` P ON P.postId = ? WHERE alarmId=? GROUP BY A.alarmId, A.status, A.createdAt, A.isChecked, A.User_userId, A.User_userEmail, A.User_userName, A.userImage, P.postId, P.title, P.reImage', [postId, Inserted.insertId], (err, messageAlarm) => {
                                         socket.to(bossId).emit('leaved chatroom',messageAlarm);
                                     })
     
@@ -636,10 +664,9 @@ module.exports = (server) => {
         //         });
         //     });
         // });
-    
-    
-        // 브라우저 종료
-        socket.on('disconnect', () => {
+     
+        // 브라우저 종료 중
+        socket.on('disconnecting', async() => {
             const socketId = socket.id;
     
             db.query(
@@ -647,6 +674,8 @@ module.exports = (server) => {
                 socketId,
                 (err, rows) => {
                     if (err) console.log(err);
+                    // console.log(socket.io,'연결 종료 중')
+                    io.emit('disconnected', "leave")
                     socket.leave();
                 },
             );
