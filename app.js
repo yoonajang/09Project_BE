@@ -64,7 +64,7 @@ app_http.use((req, res, next) => {
     }
 });
 
-MAIN
+// MAIN
 app.get(
     '/.well-known/pki-validation/FFEC2ED1BEB777C09AC4AA133CA52BC5.txt',
     (req, res) => {
