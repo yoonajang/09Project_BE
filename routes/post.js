@@ -55,7 +55,6 @@ router.post(
             lat,
             lng,
         } = req.body;
-        console.log(title.length, content.length, address.length);
 
         const writer = res.locals.user.userName;
         const User_userId = res.locals.user.userId;
@@ -101,7 +100,6 @@ router.post(
                     console.log(err);
                     res.status(201).send({ msg: 'fail' });
                 } else {
-                    console.log(rows);
                     const postId = rows.insertId;
 
                     db.query(
