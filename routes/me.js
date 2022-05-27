@@ -69,8 +69,10 @@ router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) 
 
 
 //유저 마이페이지
-router.get('/:userId', authMiddleware, (req, res) => {
+// router.get('/:userId', authMiddleware, (req, res) => {
+router.get('/:userId', (req, res) => {
     const userId = req.params.userId;
+
 
     // 유저 정보
     const userinfo =
@@ -87,7 +89,6 @@ router.get('/:userId', authMiddleware, (req, res) => {
         for (my of myList) {
             let mine = my.headList;
             let mynewList = [];
-
             if (isNaN(Number(mine))) {
                 mine.split(',').map(id => mynewList.push(Number(id)));
                 my.headList = mynewList;
