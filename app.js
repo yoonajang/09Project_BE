@@ -12,11 +12,12 @@ const app = express();
 const app_http = express();
 const httpPort = 3000; 
 const httpsPort = 443;
+const port = 3000;
 const SocketIO = require('./socket');
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
-// const port = 3000;
+
 
 kakaoPassport();
 app.use(cors()); 

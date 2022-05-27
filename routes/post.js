@@ -172,9 +172,12 @@ router.delete('/:postId', authMiddleware, (req, res, next) => {
 });
 
 // 게시글 거래완료
-router.put('/:postId', authMiddleware, (req, res) => {  
+router.put('/:postId', authMiddleware, (req, res) => {
     const postId = Number(req.params.postId);
-    const userId = res.locals;
+    const userId = Number(res.locals);
+
+
+    console.log(postId, userId, typeof postId, typeof userId)
 
     // Post table 완료
     const sql_1 =
@@ -184,7 +187,7 @@ router.put('/:postId', authMiddleware, (req, res) => {
 
     // 게시글 참여자들의 tradeCount=1, needReview=1 변경
     const sql_2 =
-        'UPDATE User U INNER JOIN JoinPost JP ON U.userId = JP.User_userId SET U.tradeCount = tradeCount+1, needReview = 1 WHERE JP.Post_postId = ? AND JP.isPick =1;';
+        'UPDATE User U INNER JOIN JoinPost JP ON U.userId = JP.User_userId SET U.tradeCount = tradeCount+1, JP.needReview = 1 WHERE JP.Post_postId = ? AND JP.isPick =1;';
     const sql_2s = mysql.format(sql_2, postId);
 
     // 게시글 참여자들에게 알림추가
@@ -195,6 +198,8 @@ router.put('/:postId', authMiddleware, (req, res) => {
     db.query(sql_1s + sql_2s + sql_3s, (err, results) => {
         if(err) console.log(err)
 
+        console.log(results, '<<<<<<<<<<<')
+
         results[2].forEach( u => {
             const sendId = u.userId
             const sendName = u.userName
@@ -203,7 +208,7 @@ router.put('/:postId', authMiddleware, (req, res) => {
 
             // 참여자에게 리뷰알림 보내기
             const sendAlarm = 
-                'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?)'
+                'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?);'
             const param = [0, , sendEmail, sendId, sendName, sendImage, postId , 'Review', 1]
             db.query(sendAlarm, param, (err, sentAlarm) => {
                 res.send({ msg: 'success' });
