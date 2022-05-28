@@ -24,32 +24,15 @@ module.exports = () => {
                 const tradeCount = 0
                 const isActive = 1
 
-                let params = [userEmail, userName, provider, kakaoId, point, tradeCount, isActive]
-
-
-                let reUserImage = profile._json.properties.thumbnail_image
-                let userImage = profile._json.properties.profile_image
-
-                const defaultKakaoOriginImage = 'http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg'
-                
-                // 랜덤 프로필 이미지
                 const Index =  Math.floor(Math.random()*4)
                 const profileImages = ['1653383370230','1653383345720','1653383406785','1653381889650']
                 const baseURL = 'https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/'
 
-                const defaultImage = baseURL + profileImages[Index] +'_resized.png'
-                const defaultOriginImage = baseURL + profileImages[Index] +'_origin.png'
-                
-                if (userImage === defaultKakaoOriginImage){
-                    reUserImage = defaultImage
-                    userImage = defaultOriginImage
-                    params.push(userImage)
-                    params.push(reUserImage)
-                } else {
-                    params.push(userImage)
-                    params.push(reUserImage)
-                }
-            
+                const userImage = baseURL + profileImages[Index] +'_resized.png'
+                const reUserImage = baseURL + profileImages[Index] +'_origin.png'
+
+                const params = [userEmail, userName, provider, kakaoId, point, tradeCount, isActive, userImage, reUserImage]
+                          
                 const sql = 'select * from User where userEmail = ? AND provider="kakao"'
 
                 db.query(sql, userEmail, (err, results) => {
