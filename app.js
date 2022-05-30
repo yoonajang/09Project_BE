@@ -12,7 +12,7 @@ const app = express();
 const app_http = express();
 const httpPort = 3000; 
 const httpsPort = 443;
-const port = 3000;
+const port = 3005;
 const SocketIO = require('./socket');
 const moment = require('moment');
 require('moment-timezone');

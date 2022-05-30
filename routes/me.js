@@ -8,6 +8,7 @@ let appDir = path.dirname(require.main.filename);
 const upload = require('../S3/s3');
 
 const AWS = require('aws-sdk');
+const { Console } = require('console');
 const s3 = new AWS.S3();
 
 // 유저 프로필 수정
@@ -16,59 +17,110 @@ router.post(
     upload.single('userImage'),
     authMiddleware,
     async (req, res) => {
+        
+        const { userName, statusMsg } = req.body 
         const userId = res.locals.user.userId;
-        const userImage = req.file.transforms[1].location;
-        const reUserImage = req.file.transforms[0].location;
-        const UuserName = req.locals.user.userName;
-        const CUser_userName = req.locals.Chat.User_userName;
-        const Pwriter = req.locals.post.writer;
-        const AUser_userName = req.locals.alarm.User_userName;
-        const JPUser_userName = req.locals.JoinPost.User_userName;
+        const originImage = res.locals.user.reUserImage;
+        console.log(userName, statusMsg, userId)
+        // if (req.file){
+        //     const userImage = req.file.transforms[1].location;
+        //     const reUserImage = req.file.transforms[0].location;
+        // }
 
         try {
-            const sql =
-                'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
-            db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
-                const sql_1 = 'UPDATE JoinPost SET userImage=? WHERE userId=?';
-                const data_1 = [reUserImage, userId];
-                const sql_1s = mysql.format(sql_1, data_1);
+            const sqlList = [];
 
-                const sql_2 = 'UPDATE Chat SET userImage=? WHERE userId=?';
-                const data_2 = [reUserImage, userId];
-                const sql_2s = mysql.format(sql_2, data_2);
+            // 이미지변경
+            if (req.file){
+                const userImage = req.file.transforms[1].location;
+                const reUserImage = req.file.transforms[0].location;
 
-                db.query(sql_1s + sql_2s, (err, rows) => {
+                console.log(1)
+                // User 테이블 변경
+                const sql_1_1 = 
+                'UPDATE `User` U SET U.userImage=?, U.reUserImage=? WHERE U.userId=?;'
+                const data_1_1 = [userImage, reUserImage, userId]
+                const sql_1s_1 = mysql.format(sql_1_1, data_1_1);
+                
+                // Chat 테이블 변경
+                const sql_1_2 = 
+                'UPDATE `Chat` C SET C.userImage=? WHERE C.User_userId=?;'
+                const data_1_2 = [reUserImage, userId]
+                const sql_1s_2 = mysql.format(sql_1_2, data_1_2);
+
+                // JoinPost 테이블 변경
+                const sql_1_3 = 
+                'UPDATE `JoinPost` JP SET JP.userImage=? WHERE JP.User_userId=?;'
+                const data_1_3 = [reUserImage, userId]
+                const sql_1s_3 = mysql.format(sql_1_3, data_1_3);
+                
+                sqlList.push(sql_1s_1 + sql_1s_2 + sql_1s_3)
+            }
+                
+            // 닉네임변경
+            if (userName){
+                console.log(2)
+                // User 테이블 변경    
+                const sql_2_1 =
+                'UPDATE `User` U SET U.userName = ? WHERE U.userId = ?;';
+                const data_2_1 = [userName, userId]
+                const sql_2s_1 = mysql.format(sql_2_1, data_2_1);
+
+                // JoinPost 테이블 변경  
+                const sql_2_2 =
+                'UPDATE `JoinPost` JP SET JP.User_userName = ? WHERE JP.User_userId = ?;';
+                const data_2_2 = [userName, userId]
+                const sql_2s_2 = mysql.format(sql_2_2, data_2_2);
+
+                // Chat 테이블 변경
+                const sql_2_3 =
+                'UPDATE `Chat` C SET C.User_userName = ? WHERE C.User_userId = ?;';
+                const data_2_3 = [userName, userId]
+                const sql_2s_3 = mysql.format(sql_2_3, data_2_3);
+
+                // Post 테이블 변경
+                const sql_2_4 =
+                'UPDATE `Post` P SET P.writer = ? WHERE P.User_userId = ?;';
+                const data_2_4 = [userName, userId]
+                const sql_2s_4 = mysql.format(sql_2_4, data_2_4);
+
+                // Alarm 테이블 변경
+                const sql_2_5 =
+                'UPDATE `Alarm` A SET A.User_userName = ? WHERE A.User_userId = ?;';
+                const data_2_5 = [userName, userId]
+                const sql_2s_5 = mysql.format(sql_2_5, data_2_5);
+
+                sqlList.push(sql_2s_1 + sql_2s_2 + sql_2s_3 + sql_2s_4 + sql_2s_5)
+            }
+
+            //상태메시지
+            if (statusMsg) {
+                console.log(3)
+                const sql_3 =
+                'UPDATE `User` SET status = ? WHERE userId = ?;';
+                const data_3 = [statusMsg, userId]
+                const sql_3s = mysql.format(sql_3, data_3);
+
+                sqlList.push(sql_3s)
+            }
+
+            const saveSql = sqlList.join('')
+            console.log(saveSql)
+            db.query(saveSql, (err, rows) => {
+              
+                if (!req.file) {
+                    res.send({ msg: '글 등록 성공', userImage: originImage });
+                } else {
+                    const reUserImage = req.file.transforms[0].location;
                     res.send({ msg: '글 등록 성공', userImage: reUserImage });
-                });
+                }
             });
+            
+            
         } catch (error) {
             res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
         }
-        // 닉네임변경
-        const changename =
-            ' UPDATE `User` U RIGHT OUTER JOIN `Chat` C ON U.userId = C.User_userId RIGHT OUTER JOIN `Post` P ON U.userId = P.User_userId RIGHT OUTER JOIN `Alarm` A ON U.userId = A.User_userId RIGHT OUTER JOIN `JoinPost` JP ON U.userId = JP.User_userId  SET userName = ?, CUser_userName = ?, Pwriter = ?, AUser_userName = ?, JPUser_userName = ?  WHERE userId = ? ';
-        db.query(
-            changename,
-            [
-                UuserName,
-                CUser_userName,
-                Pwriter,
-                AUser_userName,
-                JPUser_userName,
-                userId,
-            ],
-            (err, data) => {
-                if (err) console.log(err);
-                res.send({ msg: 'success' });
-            },
-        );
-        //상태메시지
-        const status = 'INSERT INTO `User` (status) values (?)';
 
-        db.query(status, [userId], (err, data) => {
-            if (err) console.log(err);
-            res.send({ msg: 'success' });
-        });
     },
 );
 
