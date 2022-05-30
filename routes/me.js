@@ -115,7 +115,7 @@ router.post(
                     res.send({ msg: '글 등록 성공', userImage: findImage, statusMsg: findStatus, userName: findUserName });
                 })
             });   
-            
+
         } catch (error) {
             res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
         }
@@ -134,7 +134,7 @@ router.get('/:userId', (req, res) => {
 
     // 유저 정보
     const userinfo =
-        'SELECT U.userId, U.userEmail, U.userName, U.reUserImage userImage, U.tradeCount, U.status FROM `User` U WHERE `userId`=?';
+        'SELECT U.userId, U.userEmail, U.userName, U.reUserImage userImage, U.tradeCount, U.status statusMsg FROM `User` U WHERE `userId`=?';
     db.query(userinfo, userId, (err, userInfo) => {
         if (err) console.log(err);
 
