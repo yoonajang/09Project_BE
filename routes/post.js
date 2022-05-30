@@ -189,9 +189,6 @@ router.put('/:postId', authMiddleware, (req, res) => {
     const postId = Number(req.params.postId);
     const userId = res.locals.user.userId;
 
-
-    console.log(postId, userId, typeof postId, typeof userId, ',,,,,')
-
     // Post table 완료
     const sql_1 =
         'UPDATE `Post` SET `isDone`= 1 WHERE `postId`=? AND `User_userId`=?;';
@@ -208,10 +205,17 @@ router.put('/:postId', authMiddleware, (req, res) => {
         'SELECT U.userId, U.userName, U.userEmail, U.userImage FROM User U INNER JOIN JoinPost JP ON U.userId = JP.User_userId WHERE JP.Post_postId=? AND JP.isPick=1 AND JP.needReview=1;';
     const sql_3s = mysql.format(sql_3, postId);
 
-    db.query(sql_1s + sql_2s + sql_3s, (err, results) => {
+    const sql_4 =
+        'SELECT title FROM Post WHERE postId = ?';
+    const sql_4s = mysql.format(sql_4, postId);
+
+    db.query(sql_1s + sql_2s + sql_3s + sql_4s , (err, results) => {
         if(err) console.log(err)
 
         console.log(results, '<<<<<<<<<<<')
+
+        const title = results[3].title
+        const status = title + ' 게시물 공구 완료! 리뷰를 남겨주세요.'
 
         results[2].forEach( u => {
             const sendId = u.userId
@@ -222,7 +226,7 @@ router.put('/:postId', authMiddleware, (req, res) => {
             // 참여자에게 리뷰알림 보내기
             const sendAlarm = 
                 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?);'
-            const param = [0, , sendEmail, sendId, sendName, sendImage, postId , 'Review', 1]
+            const param = [0,status, sendEmail, sendId, sendName, sendImage, postId , 'Review', 1]
             db.query(sendAlarm, param, (err, sentAlarm) => {
             })
         })
