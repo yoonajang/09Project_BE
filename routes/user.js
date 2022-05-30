@@ -28,32 +28,36 @@ router.post('/signup', (req, res, next) => {
     const { userEmail, userName, userPassword } = req.body;
     const param = [userEmail, userName, userPassword, userImage, reUserImage, 50, 0, 1];
 
-    db.query(
-        'SELECT * FROM AuthNum WHERE userEmail=?',
-        userEmail,
-        (err, data) => {
-            if (data.length) {
-                bcrypt.hash(param[2], saltRounds, (err, hash) => {
-                    param[2] = hash;
-                    db.query(
-                        'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`,`reUserImage`, `point`, `tradeCount`,`isActive`) VALUES (?,?,?,?,?,?,?,?)',
-
-                        param,
-                        (err, row) => {
-                            if (err) {
-                                console.log(err);
-                                res.send({ meg: 'fail' });
-                            } else {
-                                res.send({ meg: 'success' });
-                            }
-                        },
-                    );
-                });
-            } else {
-                res.send({ meg: 'fail' });
-            }
-        },
-    );
+    if (userName.length < 2 || userName.length > 8 || userPassword.length < 6 || userPassword.length > 20) {
+        res.status(201).send({ msg : '닉네임과 비밀번호 글자수를 확인하세요' })
+    } else {
+        db.query(
+            'SELECT * FROM AuthNum WHERE userEmail=?',
+            userEmail,
+            (err, data) => {
+                if (data.length) {
+                    bcrypt.hash(param[2], saltRounds, (err, hash) => {
+                        param[2] = hash;
+                        db.query(
+                            'INSERT INTO `User`(`userEmail`, `userName`, `password`, `userImage`,`reUserImage`, `point`, `tradeCount`,`isActive`) VALUES (?,?,?,?,?,?,?,?)',
+    
+                            param,
+                            (err, row) => {
+                                if (err) {
+                                    console.log(err);
+                                    res.send({ meg: 'fail' });
+                                } else {
+                                    res.send({ meg: 'success' });
+                                }
+                            },
+                        );
+                    });
+                } else {
+                    res.send({ meg: 'fail' });
+                }
+            },
+        );
+    }
 });
 
 //회원가입시 이메일 인증코드 보내기

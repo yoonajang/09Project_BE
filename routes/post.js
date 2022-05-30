@@ -59,13 +59,13 @@ router.post(
             lng,
             type,
         } = req.body;
-        console.log(title.length, content.length, address.length);
 
         const writer = res.locals.user.userName;
         const User_userId = res.locals.user.userId;
         const userImage = res.locals.user.reUserImage;
         const userEmail = res.locals.user.userEmail;
-        
+
+        //s3 사진 뒤바뀜 수정부분
         const image = [];
         const reImage = [];
 
@@ -120,7 +120,6 @@ router.post(
                     console.log(err);
                     res.status(201).send({ msg: 'fail' });
                 } else {
-                    console.log(rows);
                     const postId = rows.insertId;
 
                     db.query(
