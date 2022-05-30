@@ -224,9 +224,9 @@ router.put('/:postId', authMiddleware, (req, res) => {
                 'INSERT INTO Alarm (`isChecked`, `status`, `User_userEmail`, `User_userId`, `User_userName`, `userImage`, `Post_postId`, `type`, `count`) VALUES (?,?,?,?,?,?,?,?,?);'
             const param = [0, , sendEmail, sendId, sendName, sendImage, postId , 'Review', 1]
             db.query(sendAlarm, param, (err, sentAlarm) => {
-                res.send({ msg: 'success' });
             })
         })
+        res.send({ msg: 'success' });
     })
 });
 
