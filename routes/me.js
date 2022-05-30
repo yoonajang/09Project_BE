@@ -11,61 +11,68 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 
 // 유저 프로필 수정
-router.post('/me', upload.single('userImage'), authMiddleware, async (req, res) => {
-    const userId = res.locals.user.userId;
-    const userImage = req.file.transforms[1].location;
-    const reUserImage = req.file.transforms[0].location;
- 
-    try {
-        const sql = 'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
-        db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
+router.post(
+    '/me',
+    upload.single('userImage'),
+    authMiddleware,
+    async (req, res) => {
+        const userId = res.locals.user.userId;
+        const userImage = req.file.transforms[1].location;
+        const reUserImage = req.file.transforms[0].location;
+        const UuserName = req.locals.user.userName;
+        const CUser_userName = req.locals.Chat.User_userName;
+        const Pwriter = req.locals.post.writer;
+        const AUser_userName = req.locals.alarm.User_userName;
+        const JPUser_userName = req.locals.JoinPost.User_userName;
 
-            const sql_1 =  'UPDATE JoinPost SET userImage=? WHERE userId=?';
-            const data_1 = [reUserImage, userId];
-            const sql_1s = mysql.format(sql_1, data_1);
+        try {
+            const sql =
+                'UPDATE User SET userImage=?, reUserImage=? WHERE userId=?';
+            db.query(sql, [userImage, reUserImage, userId], (err, rows) => {
+                const sql_1 = 'UPDATE JoinPost SET userImage=? WHERE userId=?';
+                const data_1 = [reUserImage, userId];
+                const sql_1s = mysql.format(sql_1, data_1);
 
-            const sql_2 =  'UPDATE Chat SET userImage=? WHERE userId=?';
-            const data_2 = [reUserImage, userId];
-            const sql_2s = mysql.format(sql_2, data_2);
+                const sql_2 = 'UPDATE Chat SET userImage=? WHERE userId=?';
+                const data_2 = [reUserImage, userId];
+                const sql_2s = mysql.format(sql_2, data_2);
 
-            db.query(sql_1s + sql_2s,(err, rows) => {
-                res.send({ msg: '글 등록 성공',  userImage: reUserImage });
-
+                db.query(sql_1s + sql_2s, (err, rows) => {
+                    res.send({ msg: '글 등록 성공', userImage: reUserImage });
+                });
             });
+        } catch (error) {
+            res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
+        }
+        // 닉네임변경
+        const changename =
+            ' UPDATE `User` U RIGHT OUTER JOIN `Chat` C ON U.userId = C.User_userId RIGHT OUTER JOIN `Post` P ON U.userId = P.User_userId RIGHT OUTER JOIN `Alarm` A ON U.userId = A.User_userId RIGHT OUTER JOIN `JoinPost` JP ON U.userId = JP.User_userId  SET userName = ?, CUser_userName = ?, Pwriter = ?, AUser_userName = ?, JPUser_userName = ?  WHERE userId = ? ';
+        db.query(
+            changename,
+            [
+                UuserName,
+                CUser_userName,
+                Pwriter,
+                AUser_userName,
+                JPUser_userName,
+                userId,
+            ],
+            (err, data) => {
+                if (err) console.log(err);
+                res.send({ msg: 'success' });
+            },
+        );
+        //상태메시지
+        const status = 'INSERT INTO `User` (status) values (?)';
+
+        db.query(status, [userId], (err, data) => {
+            if (err) console.log(err);
+            res.send({ msg: 'success' });
         });
-    } catch (error) {
-        res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
-    }
-},
+    },
 );
 
-// //닉네임변경
-// router.post('/nickname/:userId', authMiddleware, (req,res) => {
-//     const userId = req.params.userId;
 
-//     const sql= 'UPDATE User SET userId=? WHERE User_userId=?'
-
-//     db.query (sql, [userId], function(err,data){ 
-//         if (err) 
-//         console.log(err);
-//         else{
-//         res.send({msg:"fail"})
-//     }
-//     })
-// });
-
-
-// //상태메시지 
-// router.post('/status/:userId',authMiddleware, (req,res)=>{
-//     const userId = req.params.userId;
-//     const sql ='INSERT INTO `User` (status) VALUES(?)';
-
-//     db.query(sql, [userId],(err,rows)=>{
-//         if(err) console.log(err);
-//         res.send({msg:'success'});
-//         })
-
-// })
 
 
 //유저 마이페이지
