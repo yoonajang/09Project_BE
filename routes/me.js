@@ -103,19 +103,18 @@ router.post(
 
                 sqlList.push(sql_3s)
             }
+            
 
             const saveSql = sqlList.join('')
-            console.log(saveSql)
             db.query(saveSql, (err, rows) => {
-              
-                if (!req.file) {
-                    res.send({ msg: '글 등록 성공', userImage: originImage });
-                } else {
-                    const reUserImage = req.file.transforms[0].location;
-                    res.send({ msg: '글 등록 성공', userImage: reUserImage });
-                }
-            });
-            
+                db.query('SELECT * FROM User WHERE userId = ?',userId, (err, foundUser) => {
+                    const findUserName = foundUser[0].userName
+                    const findStatus = foundUser[0].status
+                    const findImage = foundUser[0].reUserImage
+
+                    res.send({ msg: '글 등록 성공', userImage: findImage, statusMsg: findStatus, userName: findUserName });
+                })
+            });   
             
         } catch (error) {
             res.status(400).send({ msg: '프로필이 수정되지 않았습니다.' });
@@ -135,7 +134,7 @@ router.get('/:userId', (req, res) => {
 
     // 유저 정보
     const userinfo =
-        'SELECT U.userId, U.userEmail, U.userName, U.reUserImage userImage, U.tradeCount FROM `User` U WHERE `userId`=?';
+        'SELECT U.userId, U.userEmail, U.userName, U.reUserImage userImage, U.tradeCount, U.status FROM `User` U WHERE `userId`=?';
     db.query(userinfo, userId, (err, userInfo) => {
         if (err) console.log(err);
 
