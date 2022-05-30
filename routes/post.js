@@ -80,7 +80,7 @@ router.post(
             image.push(image_origin);
             reImage.push(reImage_resized);
         }
-        console.log(image, reImage)
+        console.log(req.file.transforms)
         ////////////뒤바뀜 수정부분//////////
         const endTimeAdd = moment(endTime)
             .add('1439', 'm')

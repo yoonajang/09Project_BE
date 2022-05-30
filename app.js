@@ -16,7 +16,7 @@ const SocketIO = require('./socket');
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault('Asia/seoul');
-// const port = 3005;
+const port = 3005;
 
 kakaoPassport();
 app.use(cors()); 
@@ -97,14 +97,14 @@ httpServer.listen(httpPort, () => {
     console.log(`${httpPort}`,'http서버가 켜졌어요!');
 });
 
-httpsServer.listen(httpsPort, () => {
-    console.log(`${httpPort}`, 'https서버가 켜졌어요!');
-});
+// httpsServer.listen(httpsPort, () => {
+//     console.log(`${httpPort}`, 'https서버가 켜졌어요!');
+// });
 
 // 테스트용
-// app.listen(port, () => {
-//     console.log(port, '포트로 서버가 켜졌어요!');
-// });
+app.listen(port, () => {
+    console.log(port, '포트로 서버가 켜졌어요!');
+});
 
 
 // // 로드밸런서_서버 작동용
