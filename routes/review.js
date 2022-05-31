@@ -11,7 +11,7 @@ const authMiddleware = require('../middlewares/auth');
 router.post('/me/:postId', authMiddleware, (req, res) => {
     // writerId : 글쓴이Id, userId : 방장Id
     const writerId = res.locals.user.userId; 
-    const postId = Number(req.params.userId);
+    const postId = Number(req.params.postId);
     const userId = req.body.userId
     const review = req.body.review
 
