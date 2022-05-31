@@ -8,7 +8,7 @@ const authMiddleware = require('../middlewares/auth');
 
 
 // Review 작성
-router.get('/me/:postId', authMiddleware, (req, res) => {
+router.post('/me/:postId', authMiddleware, (req, res) => {
     // writerId : 글쓴이Id, userId : 방장Id
     const writerId = res.locals.user.postId; 
     const postId = Number(req.params.userId);
