@@ -410,7 +410,7 @@ router.delete('/:userId', authMiddleware, (req, res) => {
     const data_5 = [userEmail, userName, userImage, userId]
     const sql_5s = mysql.format(sql_5, data_5);
 
-    db.query(sql_1 + sql_2 + sql_3 + sql_4 + sql_5, (err, rows) => {
+    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s, (err, rows) => {
         if (err) console.log(err);
         res.send({ msg: 'success'});
     });
