@@ -121,7 +121,7 @@ router.post(
 //유저 마이페이지
 // router.get('/:userId', authMiddleware, (req, res) => {
 router.get('/:userId', (req, res) => {
-    const userId = req.params.userId;
+    const userId = Number(req.params.userId);
 
 
     // 유저 정보
