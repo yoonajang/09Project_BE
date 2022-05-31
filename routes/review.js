@@ -19,15 +19,15 @@ router.post('/me/:postId', authMiddleware, (req, res) => {
 
     // Review 생성
     const sql_1 =
-        'INSERT INTO `Like` (`Post_postId`,`User_userId`,`review`, `writerId`) VALUES (?,?,?,?)';
+        'INSERT INTO `Like` (`Post_postId`,`User_userId`,`review`, `writerId`) VALUES (?,?,?,?);';
     const param_1 = [postId, userId, review, writerId]
     const sql_1s = mysql.format(sql_1, param_1 );
 
     // JoinPost에서 Review 상태 변경
     const sql_2 =
-        'UPDATE JoinPost SET needReview = 0 WHERE Post_postId = ? AND User_userId = ?'
+        'UPDATE JoinPost SET needReview = 0 WHERE Post_postId = ? AND User_userId = ?;';
     const param_2 = [postId, writerId]
-    const sql_2s = mysql.format(sql_2, postId);
+    const sql_2s = mysql.format(sql_2, param_2);
 
     db.query(sql_1s + sql_2s, (err, results) => {
         if(err) console.log(err)
