@@ -16,25 +16,26 @@ router.post('/me/:postId', authMiddleware, (req, res) => {
     const userId = req.body.userId
     const review = req.body.review
 
-    console.log(typeof postId,typeof userId, review, typeof writerId)
+    if (review.length > 100){
+        res.send({ msg: 'fail' });
+    } else {
+        // Review 생성
+        const sql_1 =
+            'INSERT INTO `Review` (`Post_postId`,`User_userId`,`review`, `writerId`) VALUES (?,?,?,?);';
+        const param_1 = [postId, userId, review, writerId]
+        const sql_1s = mysql.format(sql_1, param_1 );
 
-    // Review 생성
-    const sql_1 =
-        'INSERT INTO `Review` (`Post_postId`,`User_userId`,`review`, `writerId`) VALUES (?,?,?,?);';
-    const param_1 = [postId, userId, review, writerId]
-    const sql_1s = mysql.format(sql_1, param_1 );
+        // JoinPost에서 Review 상태 변경
+        const sql_2 =
+            'UPDATE JoinPost SET needReview = 0 WHERE Post_postId = ? AND User_userId = ?;';
+        const param_2 = [postId, writerId]
+        const sql_2s = mysql.format(sql_2, param_2);
 
-    // JoinPost에서 Review 상태 변경
-    const sql_2 =
-        'UPDATE JoinPost SET needReview = 0 WHERE Post_postId = ? AND User_userId = ?;';
-    const param_2 = [postId, writerId]
-    const sql_2s = mysql.format(sql_2, param_2);
-
-    db.query(sql_1s + sql_2s, (err, results) => {
-        if(err) console.log(err)
-        res.send({ msg: 'success' });
-    });
-
+        db.query(sql_1s + sql_2s, (err, results) => {
+            if(err) console.log(err)
+            res.send({ msg: 'success' });
+        });
+    }       
 });
 
 
