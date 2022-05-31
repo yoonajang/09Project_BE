@@ -21,11 +21,6 @@ router.post(
         const { userName, statusMsg } = req.body 
         const userId = res.locals.user.userId;
         const originImage = res.locals.user.reUserImage;
-        console.log(userName, statusMsg, userId)
-        // if (req.file){
-        //     const userImage = req.file.transforms[1].location;
-        //     const reUserImage = req.file.transforms[0].location;
-        // }
 
         try {
             const sqlList = [];
