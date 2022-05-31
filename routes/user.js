@@ -194,88 +194,85 @@ router.post('/login', (req, res) => {
         if (err) console.log(err);
 
         if (data.length > 0) {
-            console.log(data[0].isActive)
-            if (data[0].isActive === 0){
-                res.send({ msg: 'fail' });
-            } else {
-                bcrypt.compare(param[1], data[0].password, (err, result) => {
-                if (result) {
+   
+            bcrypt.compare(param[1], data[0].password, (err, result) => {
+            if (result) {
 
-                    const userId = data[0].userId
+                const userId = data[0].userId
 
-                    // 알림
-                    // SendMessage (게시물당 1개씩 알림보내기)
-                    const sql_1 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="sendMessage" AND A.isChecked = 0 GROUP BY A.type, A.Post_postId;';
-                    const sql_1s = mysql.format(sql_1, userId);
+                // 알림
+                // SendMessage (게시물당 1개씩 알림보내기)
+                const sql_1 = 
+                    'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="sendMessage" AND A.isChecked = 0 GROUP BY A.type, A.Post_postId;';
+                const sql_1s = mysql.format(sql_1, userId);
 
-                    // leaveChat (모든 알림 다보내기)
-                    const sql_2 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="leaveChat" AND A.isChecked = 0 ;';
-                    const sql_2s = mysql.format(sql_2, userId);
+                // leaveChat (모든 알림 다보내기)
+                const sql_2 = 
+                    'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="leaveChat" AND A.isChecked = 0 ;';
+                const sql_2s = mysql.format(sql_2, userId);
 
-                    // blockChat (모든 알림 다보내기)
-                    const sql_3 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="blockChat" AND A.isChecked = 0 ;';
-                    const sql_3s = mysql.format(sql_3, userId);
+                // blockChat (모든 알림 다보내기)
+                const sql_3 = 
+                    'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="blockChat" AND A.isChecked = 0 ;';
+                const sql_3s = mysql.format(sql_3, userId);
 
-                    // addDeal (모든 알림 다보내기)
-                    const sql_4 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="addDeal" AND A.isChecked = 0 ;';
-                    const sql_4s = mysql.format(sql_4, userId);
+                // addDeal (모든 알림 다보내기)
+                const sql_4 = 
+                    'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="addDeal" AND A.isChecked = 0 ;';
+                const sql_4s = mysql.format(sql_4, userId);
 
-                    // byebye (모든 알림 다보내기)
-                    const sql_5 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="byebye" AND A.isChecked = 0 ;';
-                    const sql_5s = mysql.format(sql_5, userId);
+                // byebye (모든 알림 다보내기)
+                const sql_5 = 
+                    'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="byebye" AND A.isChecked = 0 ;';
+                const sql_5s = mysql.format(sql_5, userId);
 
-                    // review (모든 알림 다보내기)
-                    const sql_6 = 
-                        'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="review" AND A.isChecked = 0 ;';
-                    const sql_6s = mysql.format(sql_6, userId);
+                // review (모든 알림 다보내기)
+                const sql_6 = 
+                    'SELECT A.alarmId, A.status, A.createdAt, A.Post_postId, A.type, P.title, P.reImage image FROM Alarm A Join Post P ON P.postId = A.Post_postId WHERE A.User_userId=? AND A.type="review" AND A.isChecked = 0 ;';
+                const sql_6s = mysql.format(sql_6, userId);
 
-                    db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s + sql_6s, (err, rows) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            const sendMessage = rows[0];
-                            const leaveChat = rows[1];
-                            const blockChat = rows[2];
-                            const addDeal = rows[3];
-                            const byebye = rows[4];
-                            const review = rows[5];
+                db.query(sql_1s + sql_2s + sql_3s + sql_4s + sql_5s + sql_6s, (err, rows) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        const sendMessage = rows[0];
+                        const leaveChat = rows[1];
+                        const blockChat = rows[2];
+                        const addDeal = rows[3];
+                        const byebye = rows[4];
+                        const review = rows[5];
 
-                            const userInfo = {
-                                userId: data[0].userId,
-                                userEmail: data[0].userEmail,
-                                userName: data[0].userName,
-                                userImage: data[0].userImage,
-                                tradeCount: data[0].tradeCount,
-                            };
-                            
-                            const alarm = { sendMessage: sendMessage, 
-                                            leaveChat: leaveChat,
-                                            blockChat: blockChat,
-                                            addDeal: addDeal,
-                                            byebye: byebye,
-                                            review: review }
+                        const userInfo = {
+                            userId: data[0].userId,
+                            userEmail: data[0].userEmail,
+                            userName: data[0].userName,
+                            userImage: data[0].userImage,
+                            tradeCount: data[0].tradeCount,
+                        };
+                        
+                        const alarm = { sendMessage: sendMessage, 
+                                        leaveChat: leaveChat,
+                                        blockChat: blockChat,
+                                        addDeal: addDeal,
+                                        byebye: byebye,
+                                        review: review }
 
 
-                            const token = jwt.sign(
-                                { userId: data[0].userId },
-                                process.env.JWT_SECRET,
-                            );
+                        const token = jwt.sign(
+                            { userId: data[0].userId },
+                            process.env.JWT_SECRET,
+                        );
 
-                            res.send({ msg: 'success', token, userInfo, alarm});   
+                        res.send({ msg: 'success', token, userInfo, alarm});   
+            
+                    }
+                });
                 
-                        }
-                    });
-                    
-                } else {
-                    res.send({ msg: 'fail' });
-                }
-            });
-        }
+            } else {
+                res.send({ msg: 'fail' });
+            }
+        });
+        
         } else {
             res.send({ msg: 'fail' });
         }
@@ -378,7 +375,7 @@ router.patch('/ischecked', authMiddleware, (req, res) => {
 router.delete('/:userId', authMiddleware, (req, res) => {    
     const userId = res.locals.user.userId;
     const sql =
-        'UPDATE User SET isActive = 0 WHERE userId = ?';
+        'UPDATE User SET userEmail = "Deleted Email", userName = "Deleted Name", userImage = "https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383406785_resized.png", reUserImage = "https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383406785_resized.png", tradeCount = 0, provider = 0, kakaoId = 0, isActive = 0 WHERE userId = ?';
 
     db.query(sql, userId, (err, rows) => {
         if (err) console.log(err);
