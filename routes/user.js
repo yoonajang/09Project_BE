@@ -194,11 +194,11 @@ router.post('/login', (req, res) => {
         if (err) console.log(err);
 
         if (data.length > 0) {
-
+            console.log(data[0].isActive)
             if (data[0].isActive === 0){
                 res.send({ msg: 'fail' });
-            } 
-            bcrypt.compare(param[1], data[0].password, (err, result) => {
+            } else {
+                bcrypt.compare(param[1], data[0].password, (err, result) => {
                 if (result) {
 
                     const userId = data[0].userId
@@ -270,10 +270,12 @@ router.post('/login', (req, res) => {
                 
                         }
                     });
+                    
                 } else {
                     res.send({ msg: 'fail' });
                 }
             });
+        }
         } else {
             res.send({ msg: 'fail' });
         }
