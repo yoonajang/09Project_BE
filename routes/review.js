@@ -15,7 +15,7 @@ router.post('/me/:postId', authMiddleware, (req, res) => {
     const userId = req.body.userId
     const review = req.body.review
 
-    console.log(postId, userId, review, writerId)
+    console.log(typeof postId,typeof userId, review, typeof writerId)
 
     // Review 생성
     const sql_1 =
