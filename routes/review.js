@@ -43,6 +43,8 @@ router.get('/review/:userId', authMiddleware, (req, res) => {
     // writerId : 글쓴이Id, userId : 방장Id 
     const userId = Number(req.params.userId);     
 
+    console.log(userId, req.params.userId)
+
     const sql =
         'SELECT R.review, date_format(R.createdAt, "%Y-%m-%d %T") createdAt, U.reUserImage userImage, U.userName FROM Review R INNER JOIN User U On U.userId = R.writerId WHERE User_userId = ?';
     db.query(sql, userId, (err, rows) => {
