@@ -35,17 +35,19 @@ router.get('/me/:postId', authMiddleware, (req, res) => {
 
 
 
-// // Review 조회
-// router.get('/me/review', authMiddleware, (req, res) => {
-//     // writerId : 글쓴이Id, userId : 방장Id
-//     const writerId = res.locals.user.userId;  
-//     const { postId, userId, review } = req.body       
+// Review 조회
+router.get('/me/review', authMiddleware, (req, res) => {
+    // writerId : 글쓴이Id, userId : 방장Id
+    const writerId = res.locals.user.userId;  
+    const { postId, userId, review } = req.body       
 
-//     const sql =
-//         'SELECT R.review, R.createdAt, U.reUserImage userImage, U.userName FROM Review R INNER JOIN User U On U.userId = R.writerId WHERE User_userId = ?';
+    const sql =
+        'SELECT R.review, R.createdAt, U.reUserImage userImage, U.userName FROM Review R INNER JOIN User U On U.userId = R.writerId WHERE User_userId = ?';
 
-//     db.query(sql, userId, (err, rows) => {
-//         if (err) console.log(err);
-//         res.send({ msg: 'success' , review : row[0] });
-//     });
-// });
+    db.query(sql, userId, (err, rows) => {
+        if (err) console.log(err);
+        res.send({ msg: 'success' , review : row[0] });
+    });
+});
+
+module.exports = router;

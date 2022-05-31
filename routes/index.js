@@ -5,7 +5,7 @@ const mainRouter = require('./main');
 const postRouter = require('./post');
 const likeRouter = require('./like');
 const chatRouter = require('./chat');
-// const reviewRouter = require('./review');
+const reviewRouter = require('./review');
 const kakaoRouter = require('./kakao');  //소셜로그인
 
 
@@ -20,7 +20,7 @@ router.use('/main', mainRouter);
 router.use('/main', postRouter);
 router.use('/main/like', likeRouter);
 router.use('/main', chatRouter);
-// router.use('/user', reviewRouter);
+router.use('/user', reviewRouter);
 router.use('/kakao-auth', kakaoRouter);
 
 module.exports = router;
