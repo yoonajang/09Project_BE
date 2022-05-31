@@ -211,9 +211,7 @@ router.put('/:postId', authMiddleware, (req, res) => {
 
     db.query(sql_1s + sql_2s + sql_3s + sql_4s , (err, results) => {
         if(err) console.log(err)
-
-        console.log(results, '<<<<<<<<<<<')
-
+        
         const title = results[3].title
         const status = title + ' 게시물 공구 완료! 리뷰를 남겨주세요.'
 

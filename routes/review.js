@@ -3,7 +3,10 @@ const router = express.Router();
 const db = require('../config');
 const mysql = require('mysql');
 const authMiddleware = require('../middlewares/auth');
-const e = require('express');
+
+const moment = require('moment');
+require('moment-timezone');
+moment.tz.setDefault('Asia/seoul');
 
 // domain/user
 
@@ -48,14 +51,18 @@ router.get('/review/:userId', authMiddleware, (req, res) => {
     console.log(userId, req.params.userId)
 
     const sql =
-        'SELECT R.review, date_format(R.createdAt, "%Y-%m-%d %T") createdAt, U.reUserImage userImage, U.userName FROM Review R INNER JOIN User U On U.userId = R.writerId WHERE User_userId = ?';
+        'SELECT R.review, R.createdAt, U.reUserImage userImage, U.userName FROM Review R INNER JOIN User U On U.userId = R.writerId WHERE User_userId = ?';
     db.query(sql, userId, (err, rows) => {
         if (err) console.log(err);
         
         const count = rows.length
         if (count === 0){
+            // const createdAt = rows[0].createdAt
+            // console.log(createdAt, moment(rows[0].createdAt), '1111')
             res.send({ msg: 'success', review:rows, count: 0});
         } else {
+            // const createdAt = rows[0].createdAt
+            // console.log(createdAt, moment(rows[0].createdAt), '1111')
             res.send({ msg: 'success', review:rows, count: count});
         }
     });

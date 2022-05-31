@@ -29,7 +29,7 @@ router.post(
             if (req.file){
                 const userImage = req.file.transforms[1].location;
                 const reUserImage = req.file.transforms[0].location;
-                
+
                 // User 테이블 변경
                 const sql_1_1 = 
                 'UPDATE `User` U SET U.userImage=?, U.reUserImage=? WHERE U.userId=?;'
@@ -53,7 +53,6 @@ router.post(
                 
             // 닉네임변경
             if (userName){
-                console.log(2)
                 // User 테이블 변경    
                 const sql_2_1 =
                 'UPDATE `User` U SET U.userName = ? WHERE U.userId = ?;';
@@ -89,7 +88,6 @@ router.post(
 
             //상태메시지
             if (statusMsg) {
-                console.log(3)
                 const sql_3 =
                 'UPDATE `User` SET status = ? WHERE userId = ?;';
                 const data_3 = [statusMsg, userId]
