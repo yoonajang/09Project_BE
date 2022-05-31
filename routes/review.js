@@ -16,7 +16,7 @@ router.post('/me/:postId', authMiddleware, (req, res) => {
     const userId = req.body.userId
     const review = req.body.review
 
-    if (review.length > 100){
+    if (review.length > 200){
         res.send({ msg: 'fail' });
     } else {
         // Review 생성
