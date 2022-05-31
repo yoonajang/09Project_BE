@@ -19,7 +19,7 @@ router.post('/me/:postId', authMiddleware, (req, res) => {
 
     // Review 생성
     const sql_1 =
-        'INSERT INTO `Like` (`Post_postId`,`User_userId`,`review`, `writerId`) VALUES (?,?,?,?);';
+        'INSERT INTO `Review` (`Post_postId`,`User_userId`,`review`, `writerId`) VALUES (?,?,?,?);';
     const param_1 = [postId, userId, review, writerId]
     const sql_1s = mysql.format(sql_1, param_1 );
 
