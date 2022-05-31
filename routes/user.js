@@ -371,13 +371,46 @@ router.patch('/ischecked', authMiddleware, (req, res) => {
     });
 });
 
-//회원탈퇴
+//회원탈퇴 *** 다른 테이블에서도 삭제가 필요
 router.delete('/:userId', authMiddleware, (req, res) => {    
     const userId = res.locals.user.userId;
-    const sql =
-        'UPDATE User SET userEmail = "Deleted Email", userName = "Deleted Name", userImage = "https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383406785_resized.png", reUserImage = "https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383406785_resized.png", tradeCount = 0, provider = 0, kakaoId = 0, isActive = 0 WHERE userId = ?';
 
-    db.query(sql, userId, (err, rows) => {
+    const userEmail = "Deleted Email"
+    const userName = "Deleted Name"
+    const userImage = "https://nbbang-resizing.s3.ap-northeast-2.amazonaws.com/w_200/1653383406785_resized.png"
+
+
+    // User 테이블에서 변경
+    const sql_1 =
+        'UPDATE User SET userEmail = ?, userName =?, userImage = ?, reUserImage = ?, tradeCount = 0, provider = 0, kakaoId = 0, isActive = 0 WHERE userId = ?;';
+    const data_1 = [userEmail, userName, userImage, userImage, userId]
+    const sql_1s = mysql.format(sql_1, data_1);
+
+    // JoinPost 테이블에서 변경
+    const sql_2 =
+        'UPDATE JoinPost SET User_userEmail = ?, User_userName =? WHERE userId = ?;';
+    const data_2 = [userEmail, userName, userId]
+    const sql_2s = mysql.format(sql_2, data_2);
+
+    // Post 테이블 변경  
+    const sql_3 =
+        'UPDATE Post SET writer = ?, image = ?, reImage = ? WHERE User_userId = ?;';
+    const data_3 = [userName, userImage, userImage, userId]
+    const sql_3s = mysql.format(sql_3, data_3);
+
+    // Chat 테이블 변경
+    const sql_4 =
+        'UPDATE Chat SET User_userEmail =?, User_userName = ?, userImage = ? WHERE User_userId = ?;';
+    const data_4 = [userEmail, userName, userImage, userId]
+    const sql_4s = mysql.format(sql_4, data_4);
+
+    // Alarm 테이블 변경
+    const sql_5 =
+        'UPDATE Alarm SET User_userEmail = ?, User_userName = ?, userImage = ? WHERE A.User_userId = ?;';
+    const data_5 = [userEmail, userName, userImage, userId]
+    const sql_5s = mysql.format(sql_5, data_5);
+
+    db.query(sql_1 + sql_2 + sql_3 + sql_4 + sql_5, (err, rows) => {
         if (err) console.log(err);
         res.send({ msg: 'success'});
     });
