@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../config');
 const mysql = require('mysql');
 const authMiddleware = require('../middlewares/auth');
+const e = require('express');
 
 // domain/user
 
@@ -49,7 +50,12 @@ router.get('/review/:userId', authMiddleware, (req, res) => {
         'SELECT R.review, date_format(R.createdAt, "%Y-%m-%d %T") createdAt, U.reUserImage userImage, U.userName FROM Review R INNER JOIN User U On U.userId = R.writerId WHERE User_userId = ?';
     db.query(sql, userId, (err, rows) => {
         if (err) console.log(err);
-        res.send({ msg: 'success', review:rows, count: rows.length});
+        const count = rows.length
+        if (count === 0){
+            res.send({ msg: 'success', review:rows, count: 0});
+        } else {
+            res.send({ msg: 'success', review:rows, count: count});
+        }
     });
 });
 
