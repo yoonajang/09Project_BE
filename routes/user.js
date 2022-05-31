@@ -194,6 +194,10 @@ router.post('/login', (req, res) => {
         if (err) console.log(err);
 
         if (data.length > 0) {
+
+            if (data[0].isActive === 0){
+                res.send({ msg: 'fail' });
+            } 
             bcrypt.compare(param[1], data[0].password, (err, result) => {
                 if (result) {
 
