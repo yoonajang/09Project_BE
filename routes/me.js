@@ -155,9 +155,9 @@ router.get('/:userId', (req, res) => {
 
     // 유저의 참여한 리스트
     const joinlist =
-        "SELECT * FROM (SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U1.reUserImage userImage, JP.needReview FROM (SELECT * FROM `Post` WHERE User_userId <> ?) P  INNER JOIN (SELECT * FROM `JoinPost` WHERE isPick=1) JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId  GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type) A WHERE headList LIKE ? ORDER BY A.endTime DESC;";
+        "SELECT * FROM (SELECT P.postId, P.User_userId userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type, GROUP_CONCAT(DISTINCT U1.userId SEPARATOR ',') headList, U1.reUserImage userImage, JP1.needReview FROM (SELECT * FROM `Post` WHERE User_userId <> ?) P INNER JOIN (SELECT * FROM `JoinPost` WHERE isPick=1) JP ON P.postId = JP.Post_postId LEFT OUTER JOIN `User` U1 ON JP.User_userId = U1.userId LEFT OUTER JOIN (SELECT * FROM `JoinPost` WHERE User_userId = ?) JP1 ON P.postId = JP1.Post_postId GROUP BY P.postId, P.User_userId, P.title, P.content, P.writer, P.price, P.headCount, P.category, P.isDone, P.image, P.address, P.endTime, P.type) A WHERE headList LIKE ? ORDER BY A.endTime DESC;";
 
-    db.query(joinlist, [userId, '%'+userId+'%'], (err, joinList) => {
+    db.query(joinlist, [userId, userId, '%'+userId+'%'], (err, joinList) => {
         if (err) console.log(err);
         for (join of joinList) {
             let joined = join.headList;
