@@ -29,8 +29,7 @@ router.post(
             if (req.file){
                 const userImage = req.file.transforms[1].location;
                 const reUserImage = req.file.transforms[0].location;
-
-                console.log(1)
+                
                 // User 테이블 변경
                 const sql_1_1 = 
                 'UPDATE `User` U SET U.userImage=?, U.reUserImage=? WHERE U.userId=?;'
