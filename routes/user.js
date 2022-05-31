@@ -388,7 +388,7 @@ router.delete('/:userId', authMiddleware, (req, res) => {
 
     // JoinPost 테이블에서 변경
     const sql_2 =
-        'UPDATE JoinPost SET User_userEmail = ?, User_userName =? WHERE userId = ?;';
+        'UPDATE JoinPost SET User_userEmail = ?, User_userName =? WHERE User_userId = ?;';
     const data_2 = [userEmail, userName, userId]
     const sql_2s = mysql.format(sql_2, data_2);
 
@@ -406,7 +406,7 @@ router.delete('/:userId', authMiddleware, (req, res) => {
 
     // Alarm 테이블 변경
     const sql_5 =
-        'UPDATE Alarm SET User_userEmail = ?, User_userName = ?, userImage = ? WHERE A.User_userId = ?;';
+        'UPDATE Alarm SET User_userEmail = ?, User_userName = ?, userImage = ? WHERE User_userId = ?;';
     const data_5 = [userEmail, userName, userImage, userId]
     const sql_5s = mysql.format(sql_5, data_5);
 
