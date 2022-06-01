@@ -10,8 +10,8 @@ const http = require('http');
 const https = require('https');
 const app = express();
 const app_http = express();
-const httpPort = 80; 
-const httpsPort = 3000;  //443
+const httpPort = 3000; 
+const httpsPort = 4000;  //443
 const port = 3005;
 const SocketIO = require('./socket');
 const moment = require('moment');
@@ -93,10 +93,10 @@ const httpServer = http.createServer(app_http);
 const httpsServer = https.createServer(credentials, app);
 SocketIO(httpsServer);
 
-// console.log(moment().format("YY-MM-DD HH:mm:ss"))
-// httpServer.listen(httpPort, () => {
-//     console.log(`${httpPort}`,'http서버가 켜졌어요!');
-// });
+console.log(moment().format("YY-MM-DD HH:mm:ss"))
+httpServer.listen(httpPort, () => {
+    console.log(`${httpPort}`,'http서버가 켜졌어요!');
+});
 
 httpsServer.listen(httpsPort, () => {
     console.log(`${httpPort}`, 'https서버가 켜졌어요!');
