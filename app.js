@@ -99,7 +99,7 @@ httpServer.listen(httpPort, () => {
 });
 
 httpsServer.listen(httpsPort, () => {
-    console.log(`${httpPort}`, 'https서버가 켜졌어요!');
+    console.log(`${httpsPort}`, 'https서버가 켜졌어요!');
 });
 
 // 테스트용
