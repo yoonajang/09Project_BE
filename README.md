@@ -36,6 +36,7 @@ Backend
 오경은 | https://github.com/KYUNGEUNOHH
 한재혁 | https://github.com/mulbinbich
 <br>
+
 ## 🗓 프로젝트 기간
 
 <br>
@@ -43,6 +44,7 @@ Backend
 * 2022년 4월 22일 ~ 2022년 6월 3일 
   
 <br>  
+
 ## 🛠️ 아키텍처
 
 <br>
@@ -58,6 +60,7 @@ Backend
 
 
 ## ⛏️ ER 다이어그램
+
 <br>
 
 <details>
@@ -178,7 +181,9 @@ Backend
 </details>
 
 <br>
+
 ## 🍞 API 설계
+
 <br>
 
 ![API](https://user-images.githubusercontent.com/99785621/171988880-9d88db79-4b4a-43df-bb3d-76a55a75d7ae.png)
