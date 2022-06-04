@@ -74,7 +74,9 @@ Backend
 </details>
 
 <br>
+
 # :hammer_and_wrench: 기능설명
+
 <br>
 <details>
 <summary>1. 지도 (Kakao Map)</summary>
