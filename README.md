@@ -22,7 +22,7 @@
 * 🤟[N빵 서비스 바로가기](https://nbbang.site/)
 * 👀[서비스 시연 및 발표 영상 보러가기](https://youtu.be/BtlWQiGYH0g)
 
-
+<br>
 
 ## 👥 팀 소개
 
@@ -35,14 +35,14 @@ Backend
 장윤아 | https://github.com/moonhjang
 오경은 | https://github.com/KYUNGEUNOHH
 한재혁 | https://github.com/mulbinbich
-
+<br>
 ## 🗓 프로젝트 기간
 
 <br>
 
 * 2022년 4월 22일 ~ 2022년 6월 3일 
   
-  
+<br>  
 ## 🛠️ 아키텍처
 
 <br>
@@ -70,9 +70,9 @@ Backend
 
 </details>
 
-
-## :hammer_and_wrench: 기능설명
-<br><br>
+<br>
+# :hammer_and_wrench: 기능설명
+<br>
 <details>
 <summary>1. 지도 (Kakao Map)</summary>
   
@@ -177,12 +177,12 @@ Backend
 </div>
 </details>
 
-
+<br>
 ## 🍞 API 설계
 <br>
 
 ![API](https://user-images.githubusercontent.com/99785621/171988880-9d88db79-4b4a-43df-bb3d-76a55a75d7ae.png)
-
+<br>
 [API 설계 자세히보기](https://www.notion.so/0d44c115d06240b98ba8ca171e9fed2c?v=329099a73f3d4e7595b8a6369a932387)
 
 
