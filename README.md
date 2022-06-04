@@ -57,6 +57,112 @@ Backend
 </details>
 
 
+# :hammer_and_wrench: 기능설명
+<details>
+<summary>1. 지도 (Kakao Map)</summary>
+  
+<div markdown="1">       
+
+- 사용자 위치 기준, 권역별 게시글 확인가능
+- 지도 마커 선택 시, 해당 게시글의 상세내용을 보여주며 위치로 이동
+
+![image](https://user-images.githubusercontent.com/100512708/171988121-3ffc2b22-dae7-41c0-bc29-b112eb8d150a.png)
+
+</div>
+</details>
+
+<details>
+<summary>2. 채팅 (Socket.io)</summary>
+  
+<div markdown="1">       
+
+- 각 게시물에 따른 채팅방 생성
+- 상대방이 채팅 입력 시, '입력중'이라는 상태 확인 가능
+- 상대방이 입장/퇴장 시 확인 가능
+- 채팅창 상단에 위치 시,  새로운 채팅메세지를 스크롤다운 없이 확인가능
+
+![image](https://user-images.githubusercontent.com/100512708/171988207-3256c153-eaf9-42f5-b757-abc1d6a75ef2.png)
+
+</div>
+</details>
+
+<details>
+<summary>3. 참가자 추가기능</summary>
+  
+<div markdown="1">       
+
+- 실시간으로 채팅 참여자 확인 가능
+- 방장은 대기자 :left_right_arrow: 거래자로 변경 가능
+- 거래자인 경우 취소 가능
+
+![image](https://user-images.githubusercontent.com/100512708/171988415-9339e4d4-bc20-406e-95bf-379063723e38.png)
+
+</div>
+</details>
+
+<details>
+<summary>4. 알림 (Socket.io)</summary>
+  
+<div markdown="1">       
+
+- 해당 채팅방에 있지 않거나 오프라인 상태 시, 알림 송신
+  * 새로운 메시지 전달 시
+  * 해당 게시글에 거래자로 확정 시
+  * 거래자가 거래 취소 시
+  
+![image](https://user-images.githubusercontent.com/100512708/171988502-845617fa-a8b1-4158-8375-f6379601a8b6.png)
+
+</div>
+</details>
+
+<details>
+<summary>5. 게시글 제목 기준으로 검색 가능</summary>
+  
+<div markdown="1">       
+  
+![image](https://user-images.githubusercontent.com/100512708/171988543-e9907e9f-0fd7-450b-82ec-35970639f291.png)
+
+</div>
+</details>
+
+<details>
+<summary>6. 마이페이지에서 내 정보 조회 기능</summary>
+  
+- 본인이 작성한 공구 / 참여한 공구 / 찜한 공구 를 확인 가능  
+  
+<div markdown="1">       
+  
+<img width="684" alt="스크린샷 2022-06-04 오후 4 08 53" src="https://user-images.githubusercontent.com/100512708/171988813-b64194bd-6067-4684-a7f9-17712af8168d.png">
+
+</div>
+</details>
+
+<details>
+<summary>7. 마이페이지에서 내 정보 변경 기능</summary>
+  
+- 닉네임 및 상태메시지 변경 가능
+- 회원 탈퇴 기능  
+  
+<div markdown="1">       
+  
+<img width="684" alt="스크린샷 2022-06-04 오후 4 13 43" src="https://user-images.githubusercontent.com/100512708/171988990-11e75a26-bdb2-4410-a3e7-9d813a883e6e.png">
+  
+</div>
+</details>
+
+<details>
+<summary>8. 글 작성자의 공구후기 확인 기능</summary>
+  
+- 작성자의 마이페이지에서 공구 후기 확인 가능 
+  
+<div markdown="1">       
+  
+<img width="684" alt="스크린샷 2022-06-04 오후 4 20 34" src="https://user-images.githubusercontent.com/100512708/171989131-d9116c17-6a10-4853-a585-70c147c13836.png">
+  
+</div>
+</details>
+
+
 ## API 설계
 
 
