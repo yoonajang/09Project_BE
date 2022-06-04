@@ -181,7 +181,7 @@ Backend
 
 ![API](https://user-images.githubusercontent.com/99785621/171988880-9d88db79-4b4a-43df-bb3d-76a55a75d7ae.png)
 
-[API 설계 자세히보기] (https://www.notion.so/0d44c115d06240b98ba8ca171e9fed2c?v=329099a73f3d4e7595b8a6369a932387)
+[API 설계 자세히보기(https://www.notion.so/0d44c115d06240b98ba8ca171e9fed2c?v=329099a73f3d4e7595b8a6369a932387)
 
 
 
