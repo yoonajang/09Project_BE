@@ -86,7 +86,7 @@ Backend
 - 사용자 위치 기준, 권역별 게시글 확인가능
 - 지도 마커 선택 시, 해당 게시글의 상세내용을 보여주며 위치로 이동
 
-![image](https://user-images.githubusercontent.com/100512708/171988121-3ffc2b22-dae7-41c0-bc29-b112eb8d150a.png)
+<img width="684" src="https://user-images.githubusercontent.com/100512708/171988121-3ffc2b22-dae7-41c0-bc29-b112eb8d150a.png">
 
 </div>
 </details>
@@ -101,7 +101,7 @@ Backend
 - 상대방이 입장/퇴장 시 확인 가능
 - 채팅창 상단에 위치 시,  새로운 채팅메세지를 스크롤다운 없이 확인가능
 
-![image](https://user-images.githubusercontent.com/100512708/171988207-3256c153-eaf9-42f5-b757-abc1d6a75ef2.png)
+<img width="684" src="https://user-images.githubusercontent.com/100512708/171988207-3256c153-eaf9-42f5-b757-abc1d6a75ef2.png">
 
 </div>
 </details>
@@ -115,7 +115,7 @@ Backend
 - 방장은 대기자 :left_right_arrow: 거래자로 변경 가능
 - 거래자인 경우 취소 가능
 
-![image](https://user-images.githubusercontent.com/100512708/171988415-9339e4d4-bc20-406e-95bf-379063723e38.png)
+<img width="684" src="https://user-images.githubusercontent.com/100512708/171988415-9339e4d4-bc20-406e-95bf-379063723e38.png">
 
 </div>
 </details>
@@ -130,7 +130,7 @@ Backend
   * 해당 게시글에 거래자로 확정 시
   * 거래자가 거래 취소 시
   
-![image](https://user-images.githubusercontent.com/100512708/171988502-845617fa-a8b1-4158-8375-f6379601a8b6.png)
+<img width="684" src="https://user-images.githubusercontent.com/100512708/171988502-845617fa-a8b1-4158-8375-f6379601a8b6.png">
 
 </div>
 </details>
@@ -140,7 +140,7 @@ Backend
   
 <div markdown="1">       
   
-![image](https://user-images.githubusercontent.com/100512708/171988543-e9907e9f-0fd7-450b-82ec-35970639f291.png)
+<img width="684" src="https://user-images.githubusercontent.com/100512708/171988543-e9907e9f-0fd7-450b-82ec-35970639f291.png">
 
 </div>
 </details>
