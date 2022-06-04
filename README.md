@@ -20,9 +20,9 @@ Backend
 
 팀원|github
 ---|---|
-장윤아https://github.com/moonhjang
-오경은https://github.com/KYUNGEUNOHH
-한재혁https://github.com/mulbinbich
+장윤아 https://github.com/moonhjang
+오경은 https://github.com/KYUNGEUNOHH
+한재혁 https://github.com/mulbinbich
 
 ## 🗓 프로젝트 기간
 
