@@ -30,7 +30,7 @@ Backend
   
   
 ##  아키텍처
----
+
 
 <details>
     <summary>아키텍처 바로보기</summary>
@@ -44,7 +44,7 @@ Backend
 
 
 ## ER 다이어그램
----
+
 
 <details>
     <summary>ERD 바로보기</summary>
@@ -58,7 +58,7 @@ Backend
 
 
 ## API 설계
----
+
 
 ![API](https://user-images.githubusercontent.com/99785621/171988880-9d88db79-4b4a-43df-bb3d-76a55a75d7ae.png)
 
