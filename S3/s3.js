@@ -1,7 +1,6 @@
 const multer = require('multer');
 const multerS3 = require('multer-s3-transform');
 const sharp = require('sharp');
-
 const AWS = require('aws-sdk');
 const path = require('path');
 AWS.config.loadFromPath(__dirname + '/s3config.json');
