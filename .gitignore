@@ -8,8 +8,8 @@ node_modules
 s3config.json
 
 # Key 파일(MAIN)
-redpingpong_shop_ca.pem
-redpingpong_shop_crt.pem
+redpingpong_shop__ca.pem
+redpingpong_shop__crt.pem
 redpingpong_shop.key
 
 # Key 파일(DEV)

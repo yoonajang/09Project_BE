@@ -57,12 +57,8 @@ router.get('/review/:userId', authMiddleware, (req, res) => {
         
         const count = rows.length
         if (count === 0){
-            // const createdAt = rows[0].createdAt
-            // console.log(createdAt, moment(rows[0].createdAt), '1111')
             res.send({ msg: 'success', review:rows, count: 0});
         } else {
-            // const createdAt = rows[0].createdAt
-            // console.log(createdAt, moment(rows[0].createdAt), '1111')
             res.send({ msg: 'success', review:rows, count: count});
         }
     });
