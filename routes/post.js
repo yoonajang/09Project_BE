@@ -65,7 +65,6 @@ router.post(
         const userImage = res.locals.user.reUserImage;
         const userEmail = res.locals.user.userEmail;
 
-        //s3 사진 뒤바뀜 수정부분
         const image = [];
         const reImage = [];
 
