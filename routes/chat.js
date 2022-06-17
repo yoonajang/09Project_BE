@@ -47,7 +47,6 @@ router.get('/getchat/:postId', authMiddleware, (req, res) => {
     const sql_4s = mysql.format(sql_4, postId);
 
     db.query(sql_1s + sql_2s + sql_3s + sql_4s, (err, results) => {
-        // console.log(results)
 
         if (err) console.log(err);
         else {
