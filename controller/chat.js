@@ -67,4 +67,4 @@ const startChat = (req, res, next) => {
     });
 }
 
-module.exports = {startChat};
+module.exports = startChat;
