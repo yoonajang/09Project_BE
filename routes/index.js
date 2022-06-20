@@ -8,10 +8,7 @@ const chatRouter = require('./chat');
 const reviewRouter = require('./review');
 const kakaoRouter = require('./kakao');  //소셜로그인
 
-
-
 const router = express.Router();
-
 
 // 앞에 /로 시작됨
 router.use('/user', userRouter);
