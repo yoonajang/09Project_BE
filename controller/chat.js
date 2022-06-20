@@ -2,11 +2,10 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config');
 const mysql = require('mysql');
-const authMiddleware = require('../middlewares/auth');
 
 
 // 채팅 시작하기
-startChat = (req, res) => {
+const startChat = (req, res) => {
     const postId = req.params.postId;
     const userEmail = res.locals.user.userEmail;
     const userName = res.locals.user.userName;
