@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/auth');
 
-const { startChat } = require ('../controller/chat');
+const chatController = require('../controller/chat');
 
 // 채팅 시작하기
-router.get('/getchat/:postId', authMiddleware, startChat) 
+router.get('/getchat/:postId', authMiddleware, chatController.startChat); 
 
 
 

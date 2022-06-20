@@ -6,7 +6,7 @@ const authMiddleware = require('../middlewares/auth');
 
 
 // 채팅 시작하기
-const startChat = (req, res, next) => {
+exports.startChat = (req, res) => {
     const postId = req.params.postId;
     const userEmail = res.locals.user.userEmail;
     const userName = res.locals.user.userName;
@@ -66,5 +66,3 @@ const startChat = (req, res, next) => {
         }
     });
 }
-
-module.exports = startChat;
