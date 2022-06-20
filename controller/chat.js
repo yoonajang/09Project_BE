@@ -12,7 +12,8 @@ exports.startChat = (req, res) => {
     const userName = res.locals.user.userName;
     const userImage = res.locals.user.reUserImage;
     const userId = res.locals.user.userId;
-
+    
+    try {
     //waitingUser table 데이터 넣기
     const sql_1 =
         'INSERT INTO JoinPost (Post_postId, User_userEmail, User_userName, userImage, User_userId, isPick, isLogin, isConnected, needReview) SELECT ?,?,?,?,?,?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT User_userId FROM JoinPost WHERE User_userId = ? and Post_postId = ?);';
@@ -65,4 +66,9 @@ exports.startChat = (req, res) => {
             })
         }
     });
+
+    } catch (err) {
+        res.status(400).json({ fail: '알 수 없는 오류가 발생했습니다.' });
+        next(err);
+    } 
 }
